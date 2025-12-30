@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import logo from '../../images/logo.png';
 import mainLogo from '../../images/main-logo.png';
+import simsLogo from '../../images/SIMSLogo.png';
 import {
   LogOut,
   Menu,
@@ -193,7 +194,7 @@ const Header = () => {
     className="h-12 w-auto md:h-16 object-contain"
   />
   <img
-    src="https://aoacon2025.com/images/logo3.jpg"
+    src={simsLogo}
     alt="Logo 3"
     className="h-12 w-auto md:h-16 object-contain"
   />

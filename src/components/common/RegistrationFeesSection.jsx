@@ -83,7 +83,7 @@ const RegistrationFeesSection = () => {
                     Category
                   </th>
                   <th className="border border-slate-200 px-3 py-2" scope="col">
-                    Conference
+                    Conference (Conf)
                   </th>
                   {!isSpot && (
                     <>
