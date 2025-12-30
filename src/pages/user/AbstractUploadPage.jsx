@@ -64,8 +64,19 @@ const AbstractUploadPage = () => {
   const handleFileChange = (file) => {
     if (!file) return;
 
-    if (file.type !== 'application/pdf') {
-      setErrors(prev => ({ ...prev, file: 'Please upload a PDF file only' }));
+    const allowedMimeTypes = new Set([
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    ]);
+    const allowedExtensions = new Set(['pdf', 'doc', 'docx', 'ppt', 'pptx']);
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+    const isAllowedType = allowedMimeTypes.has(file.type) || allowedExtensions.has(fileExtension);
+
+    if (!isAllowedType) {
+      setErrors(prev => ({ ...prev, file: 'Please upload a PDF, Word, or PowerPoint file' }));
       return;
     }
 
@@ -116,7 +127,7 @@ const AbstractUploadPage = () => {
     }
 
     if (!abstractFile && !existingAbstract) {
-      newErrors.file = 'Abstract PDF is required';
+      newErrors.file = 'Abstract file is required';
     }
 
     setErrors(newErrors);
@@ -439,7 +450,7 @@ const AbstractUploadPage = () => {
             <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-xl p-4">
               <h2 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
                 <Upload className="w-4 h-4 text-[#ff8a1f]" />
-                Abstract PDF *
+                Abstract File *
               </h2>
               
               <div
@@ -475,19 +486,19 @@ const AbstractUploadPage = () => {
                     <div>
                       <label htmlFor="abstract-file" className="inline-flex items-center px-4 py-2.5 border border-[#ff8a1f]/30 bg-[#ff8a1f]/10 text-[#ff8a1f] rounded-xl cursor-pointer hover:bg-[#ff8a1f]/20 transition-all font-medium text-xs">
                         <Upload className="w-3.5 h-3.5 mr-1.5" />
-                        Upload PDF
+                        Upload File
                         <input
                           id="abstract-file"
                           name="abstract-file"
                           type="file"
-                          accept=".pdf"
+                          accept=".pdf,.doc,.docx,.ppt,.pptx"
                           onChange={(e) => handleFileChange(e.target.files[0])}
                           className="sr-only"
                         />
                       </label>
                       <p className="text-slate-500 mt-1 text-[10px]">or drag & drop</p>
                     </div>
-                    <p className="text-[10px] text-slate-500 mt-2">Max 5MB • PDF only</p>
+                    <p className="text-[10px] text-slate-500 mt-2">Max 5MB • PDF, Word, or PPT</p>
                   </>
                 )}
               </div>
@@ -516,7 +527,7 @@ const AbstractUploadPage = () => {
                 </li>
                 <li className="flex items-center">
                   <CheckCircle className="w-3 h-3 text-[#7cb342] mr-2 flex-shrink-0" />
-                  PDF file below 5MB
+                  File below 5MB (PDF/Word/PPT)
                 </li>
               </ul>
             </div>

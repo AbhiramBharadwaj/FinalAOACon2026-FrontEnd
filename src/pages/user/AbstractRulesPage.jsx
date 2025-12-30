@@ -1,16 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  FileText, 
-  CheckCircle, 
-  AlertCircle, 
-  Clock, 
-  Upload,
-  ArrowRight,
-  Users
-} from 'lucide-react';
+import { Upload, ArrowRight } from 'lucide-react';
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
+import ePosterTemplate from '../../files/E-Poster-Template.pptx';
 
 const AbstractRulesPage = () => {
   const [acceptedRules, setAcceptedRules] = useState(false);
@@ -23,136 +16,149 @@ const AbstractRulesPage = () => {
   };
 
   return (
-    <div 
-      className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-      style={{
-        backgroundImage: "url('https://www.justmbbs.com/img/college/karnataka/shimoga-institute-of-medical-sciences-shimoga-banner.jpg')"
-      }}
-    >
-      <div className="absolute inset-0 bg-white/80 pt-20 sm:pt-24" />
-      
+    <div className="min-h-screen bg-slate-50">
       <Header />
-      
-      <div className="relative z-10 mx-auto px-4 lg:px-6 py-6 lg:py-10 space-y-6 pb-20">
-        <div className="bg-[#9c3253] text-white rounded-md px-4 py-3 lg:py-4 flex items-center mb-6">
-          <div className="ml-3">
-            <h1 className="text-lg lg:text-xl font-semibold mb-1">Submission Guidelines</h1>
-            <p className="text-xs lg:text-sm opacity-90">AOA Shivamogga 2026 Abstract Rules</p>
-          </div>
-        </div>
 
-        <div className="space-y-4 lg:space-y-6">
-          {}
-          <div className="bg-[#9c3253] text-white rounded-md p-4 lg:p-6">
-            <h2 className="text-sm lg:text-base font-semibold mb-3 flex items-center gap-2">
-              <FileText className="w-4 h-4 lg:w-5 lg:h-5" />
-              1. Abstract Format
-            </h2>
-            <div className="space-y-2 text-xs lg:text-sm leading-relaxed">
-              <div>• Max 300 words (excluding title/authors)</div>
-              <div>• Title ≤ 20 words</div>
-              <div>• All author names + affiliations</div>
-              <div>• Structure: Background, Methods, Results, Conclusion</div>
-              <div>• Times New Roman, 12pt, 1.5 spacing</div>
-              <div>• No images/tables/graphs/references</div>
-            </div>
+      <div className="mx-auto max-w-5xl px-4 lg:px-6 py-6 lg:py-10 pb-20">
+        <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-5 lg:p-8 space-y-6">
+          <div className="space-y-2">
+            <h1 className="text-lg lg:text-2xl font-semibold text-slate-900">
+              Abstract Submission Guidelines
+            </h1>
+            <p className="text-sm text-slate-600">
+              Greetings from Organising Committee AOACON 2026 (Free Paper & E-Poster Presentations only).
+              We invite original research and high-quality submissions for Free Paper and E-Poster presentations.
+              Kindly read and follow the guidelines below before submitting your abstract.
+            </p>
           </div>
 
-          {}
-          <div className="bg-[#ff8a1f] text-white rounded-md p-4 lg:p-6">
-            <h2 className="text-sm lg:text-base font-semibold mb-3 flex items-center gap-2">
-              <FileText className="w-4 h-4 lg:w-5 lg:h-5" />
-              2. File Requirements
-            </h2>
-            <div className="space-y-2 text-xs lg:text-sm leading-relaxed">
-              <div>• PDF format only</div>
-              <div>• Maximum 5MB</div>
-              <div>• Filename: LastName_FirstName_Abstract.pdf</div>
-              <div>• Single column, A4 size</div>
-            </div>
-          </div>
+          <section className="space-y-2">
+            <h2 className="text-sm lg:text-base font-semibold text-slate-900">Abstract Categories</h2>
+            <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
+              <li>Broad categories: Free Paper Presentation / E-Poster Presentation. Please mention the chosen category at submission.</li>
+              <li>
+                Abstracts can be submitted under: Original article, systematic review and meta-analysis, scoping review, audits,
+                retrospective studies, cross sectional survey, case series, case report (only related to anesthesia for obstetrics
+                and gynecological procedures).
+              </li>
+            </ul>
+          </section>
 
-          {}
-          <div className="bg-[#7cb342] text-white rounded-md p-4 lg:p-6">
-            <h2 className="text-sm lg:text-base font-semibold mb-3 flex items-center gap-2">
-              <Clock className="w-4 h-4 lg:w-5 lg:h-5" />
-              3. Important Dates
-            </h2>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between py-2 px-4 bg-white/20 rounded-lg text-xs lg:text-sm">
-                <span>Regular Deadline</span>
-                <span className="font-bold">Oct 15, 2025</span>
-              </div>
-              <div className="flex items-center justify-between py-2 px-4 bg-white/20 rounded-lg text-xs lg:text-sm">
-                <span>Final Deadline</span>
-                <span className="font-bold">Oct 25, 2025</span>
-              </div>
-              <div className="flex items-center justify-between py-2 px-4 bg-white/20 rounded-lg text-xs lg:text-sm">
-                <span>Review Results</span>
-                <span className="font-bold">Oct 28, 2025</span>
-              </div>
-            </div>
-          </div>
+          <section className="space-y-2">
+            <h2 className="text-sm lg:text-base font-semibold text-slate-900">General Instructions</h2>
+            <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
+              <li>Submit abstracts only through the online module via the official AOACON 2026 website.</li>
+              <li>Submissions via email or physical copy will not be accepted.</li>
+              <li>Abstracts must be original and not published or presented elsewhere.</li>
+              <li>Word limits: title max 25 words; abstract text max 300 words (excluding title, references, figure/table/graph).</li>
+              <li>MS Word (.doc or .docx) only; English language; Times New Roman, 12 pt.</li>
+              <li>Only one figure/table/graph is permitted.</li>
+              <li>Use generic names of drugs and standard abbreviations (define non-standard at first mention).</li>
+              <li>Use numerals, except when beginning a sentence.</li>
+            </ul>
+          </section>
 
-          {}
-          <div className="bg-[#9c3253] text-white rounded-md p-4 lg:p-6">
-            <h2 className="text-sm lg:text-base font-semibold mb-3 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 lg:w-5 lg:h-5" />
-              4. Rules & Regulations
-            </h2>
-            <div className="space-y-3 text-xs lg:text-sm">
-              <div className="p-3 bg-white/20 rounded-lg">
-                <div className="font-semibold mb-2">Eligibility:</div>
-                <div>• Registered participants only</div>
-                <div>• First author: medical professional</div>
-                <div>• Max 2 abstracts per first author</div>
-              </div>
-              <div className="p-3 bg-white/20 rounded-lg">
-                <div className="font-semibold mb-2">Restrictions:</div>
-                <div>• No previously published work</div>
-                <div>• No simultaneous submissions</div>
-                <div>• Plagiarism = rejection</div>
-                <div>• No commercial content</div>
-              </div>
-            </div>
-          </div>
+          <section className="space-y-2">
+            <h2 className="text-sm lg:text-base font-semibold text-slate-900">Abstract Structure</h2>
+            <p className="text-sm text-slate-600">Submit the abstract under the following headings:</p>
+            <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
+              <li>Type of study</li>
+              <li>Title: concise and specific</li>
+              <li>
+                Authors details: list all authors (max 6). Highlight the presenting author in bold and underline. Provide designation,
+                institute name, contact number, and email ID of presenting author.
+              </li>
+              <li>Background: rationale and specific objectives</li>
+              <li>Methods: brief description of the study and statistical tests used</li>
+              <li>Results: summary of the findings</li>
+              <li>Conclusion</li>
+              <li>References: limit to two</li>
+            </ul>
+            <p className="text-sm text-slate-600">
+              Note: A maximum of two presentations (Free Paper and/or E-Poster) are allowed per author as presenting author.
+            </p>
+          </section>
 
-          {}
-          <div className="bg-[#ff8a1f] text-white rounded-md p-4 lg:p-6">
-            <h2 className="text-sm lg:text-base font-bold mb-4 flex items-center gap-2">
-              <FileText className="w-4 h-4 lg:w-5 lg:h-5" />
-              Terms & Conditions
-            </h2>
-            
-            <div className="space-y-2 text-xs lg:text-sm mb-6">
-              <div>1. <span className="font-semibold">Originality:</span> Unpublished work only. Plagiarism detection required.</div>
-              <div>2. <span className="font-semibold">Copyright:</span> Authors retain rights, AOA gets publication rights.</div>
-              <div>3. <span className="font-semibold">Review:</span> Double-blind. Committee decision final.</div>
-              <div>4. <span className="font-semibold">Presentation:</span> One author must register & present.</div>
-              <div>5. <span className="font-semibold">Publication:</span> Accepted abstracts in proceedings.</div>
-              <div>6. <span className="font-semibold">Withdrawal:</span> Before review only. No refunds.</div>
+          <section className="space-y-2">
+            <h2 className="text-sm lg:text-base font-semibold text-slate-900">Presentation Format</h2>
+            <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
+              <li>Free Paper: 5-minute presentation + 2-minute discussion.</li>
+              <li>E-Poster: 3-minute presentation + 2-minute discussion.</li>
+              <li>Upon acceptance, authors must submit the E-Poster as per the provided format.</li>
+              <li>E-Poster: Digital display. Format guidelines will be shared after selection.</li>
+            </ul>
+            <div className="mt-3 rounded-md border border-slate-200 bg-slate-50 p-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="text-sm text-slate-700">
+                <div className="font-semibold text-slate-900">E-Poster Template</div>
+                <div>E-posters as per template provided in the website.</div>
+              </div>
+              <a
+                href={ePosterTemplate}
+                download
+                className="inline-flex items-center justify-center rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 transition-colors"
+              >
+                Download the template
+              </a>
             </div>
+          </section>
 
-            <label className="flex items-start gap-3 p-4 lg:p-6 border-2 border-white/30 rounded-md bg-black hover:border-white/50 transition-all cursor-pointer mb-6">
+          <section className="space-y-2">
+            <h2 className="text-sm lg:text-base font-semibold text-slate-900">Registration Policy</h2>
+            <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
+              <li>Conference registration is mandatory for both submission and presentation.</li>
+              <li>Unregistered authors will not be permitted to present even if selected.</li>
+            </ul>
+          </section>
+
+          <section className="space-y-2">
+            <h2 className="text-sm lg:text-base font-semibold text-slate-900">Review & Selection</h2>
+            <p className="text-sm text-slate-600">Abstracts will be reviewed by the Scientific Committee and evaluated on:</p>
+            <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
+              <li>Scientific merit</li>
+              <li>Originality</li>
+              <li>Methodology and analysis</li>
+              <li>Relevance and adherence to submission guidelines</li>
+            </ul>
+          </section>
+
+          <section className="space-y-2">
+            <h2 className="text-sm lg:text-base font-semibold text-slate-900">Important Dates</h2>
+            <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
+              <li>Abstract Submission Deadline: 25th October</li>
+              <li>Notification of Acceptance: 28th October</li>
+              <li>Final E-Poster Submission Deadline: 28th October</li>
+            </ul>
+          </section>
+
+          <section className="space-y-2">
+            <h2 className="text-sm lg:text-base font-semibold text-slate-900">Copyright Policy</h2>
+            <p className="text-sm text-slate-700">
+              By submitting an abstract, the author grants permission to the AOACON 2026 Organizing Committee to publish or display
+              the content in official conference materials.
+            </p>
+          </section>
+
+          <div className="border-t border-slate-200 pt-5 space-y-4">
+            <label className="flex items-start gap-3">
               <input
                 type="checkbox"
                 checked={acceptedRules}
                 onChange={(e) => setAcceptedRules(e.target.checked)}
-                className="mt-1 h-5 w-5 lg:h-6 lg:w-6 text-white border-2 border-white/50 focus:ring-white/50 rounded flex-shrink-0"
+                className="mt-1 h-4 w-4 border-slate-300 rounded text-slate-900 focus:ring-slate-400"
               />
-              <span className="text-xs lg:text-sm leading-relaxed flex-1">
-                I have read, understood, and agree to all guidelines, rules & terms above.
+              <span className="text-sm text-slate-700">
+                I have read, understood, and agree to all guidelines, rules, and terms above.
               </span>
             </label>
 
             <button
               onClick={handleProceed}
               disabled={!acceptedRules}
-              className="w-full px-6 py-3 lg:py-4 rounded-md border-2 border-white bg-white text-[#ff8a1f] text-sm lg:text-base font-bold hover:bg-[#ff8a1f]/90 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-lg"
+              className="w-full px-5 py-3 rounded-md border border-slate-300 bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
             >
-              <Upload className="w-4 h-4 lg:w-5 lg:h-5" />
+              <Upload className="w-4 h-4" />
               Proceed to Upload
-              <ArrowRight className="w-4 h-4 lg:w-5 lg:h-5" />
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>
