@@ -558,7 +558,6 @@ const AbstractUploadPage = () => {
               <div className="space-y-1 text-[10px] text-[#ff8a1f]">
                 <div>• One submission per participant</div>
                 <div>• Cannot modify after submission</div>
-                <div>• Results by Oct 28, 2025</div>
               </div>
             </div>
           </section>

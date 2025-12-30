@@ -155,10 +155,7 @@ const ConferenceDaysPage = () => {
             <h1 className="text-lg lg:text-xl font-semibold text-slate-900">Conference Schedule</h1>
           </div>
           <p className="text-xs lg:text-sm text-slate-600 mb-2">AOA Shivamogga 2026 • 3-Day Program</p>
-          <div className="flex items-center text-xs lg:text-sm text-slate-600">
-            <MapPin className="w-4 h-4 mr-2 text-[#ff8a1f]" />
-            Shivamogga Convention Center, MG Road
-          </div>
+          
         </div>
 
         {}

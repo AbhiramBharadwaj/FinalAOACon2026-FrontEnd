@@ -10,6 +10,10 @@ import {
 import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
 import logo from '../../images/main-logo.png';
+import virupakshappaImg from '../../images/OrganizingComittee/Virupakshappa.jpg';
+import ravindraImg from '../../images/OrganizingComittee/GL-Ravindra.jpg';
+import champaImg from '../../images/OrganizingComittee/Champa.jpg';
+import ashwiniImg from '../../images/OrganizingComittee/Ashwini.png';
 
 const targetDate = new Date('2026-10-30T09:00:00+05:30');
 
@@ -211,6 +215,92 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
                 </span>
               </p>
             </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+              {[
+                { name: 'Dr. Virupakshappa V', title: 'Chief Patron', img: virupakshappaImg },
+                { name: 'Dr. Ravindra G L', title: 'Organizing Chairperson', img: ravindraImg },
+                { name: 'Dr. Champa B V', title: 'Organizing Secretary', img: champaImg },
+                { name: 'Dr. Ashwini S', title: 'Treasurer', img: ashwiniImg },
+              ].map((member) => (
+                <div key={member.name} className="flex flex-col items-center text-center">
+                  <div className="h-24 w-24 rounded-full border-2 border-slate-200 bg-slate-100 overflow-hidden">
+                    <img
+                      src={member.img}
+                      alt={member.name}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <p className="mt-3 text-sm font-semibold text-slate-900">{member.name}</p>
+                  <p className="text-xs text-slate-600">{member.title}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {}
+      <section className="border-b border-slate-200 bg-[#f8fafc] py-12 lg:py-14">
+        <div className="max-w-5xl mx-auto px-4 lg:px-6">
+          <div className="bg-white border border-slate-100 rounded-lg p-6 lg:p-8 space-y-6 shadow-sm">
+            <div className="space-y-2">
+              <h2 className="text-[26px] lg:text-[28px] font-bold text-slate-900">
+                Conference Highlights
+              </h2>
+            </div>
+
+            <div className="space-y-5 text-[16px] text-slate-800">
+              <div className="space-y-1">
+                <p className="font-semibold text-slate-900">
+                  1. AOA‑Certified Course in Obstetric Critical Care
+                </p>
+                <p>
+                  An exclusive two‑day workshop on obstetric critical care, designed to empower
+                  practitioners with the clinical skills necessary to manage high‑risk obstetric
+                  cases in perioperative setups. The course will be held on 29th & 30th Oct 2026.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="font-semibold text-slate-900">2. Pre‑Conference Workshops</p>
+                <p>
+                  <span className="font-semibold">Choose your workshop</span> from our skill‑oriented, hands‑on sessions.
+                  These sessions focus on practical training, updated protocols, and real‑life clinical
+                  scenarios relevant to obstetric anaesthesia practice.
+                </p>
+                
+              </div>
+
+              <div className="space-y-1">
+                <p className="font-semibold text-slate-900">
+                  3. Lectures, Debates & Panel Discussions
+                </p>
+                <p>
+                  Lectures, debates and panel discussions with esteemed national and international
+                  faculty, bringing vast clinical experience, academic excellence, and global
+                  perspectives in obstetric anaesthesia and critical care.
+                </p>
+              </div>
+
+              <div className="space-y-1">
+                <p className="font-semibold text-slate-900">4. Live Master Classes from Experts</p>
+                <p>
+                  Interactive live master classes featuring expert demonstrations, advanced
+                  techniques, and case‑based discussions to enhance practical understanding and
+                  clinical decision‑making.
+                </p>
+              </div>
+
+              <div className="space-y-1">
+                <p className="font-semibold text-slate-900">5. Watch and learn Video sessions</p>
+                <p>
+                  Step‑by‑step video demonstrations of expert clinical procedures and techniques
+                  for managing complex obstetric cases.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -336,45 +426,7 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
       </section>
 
       {}
-      <section className="bg-slate-200 border-t border-slate-300 py-12 lg:py-14">
-        <div className="max-w-6xl mx-auto px-4 lg:px-6">
-          <div className="flex items-center gap-3 mb-8">
-            <Users className="w-6 h-6 text-[#0b60a8]" />
-            <h2 className="text-[24px] font-bold text-slate-900">
-              Organising team highlights
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-[18px]">
-            <div className="bg-white border border-slate-300 px-5 py-5">
-              <p className="font-semibold text-[17px] mb-3 text-slate-900">
-                Core committee
-              </p>
-              <p className="text-slate-800 leading-relaxed">
-                Organising Chairperson, Secretary, Treasurer and senior SIMS faculty overseeing
-                academic content, logistics and delegate experience.
-              </p>
-            </div>
-            <div className="bg-white border border-slate-300 px-5 py-5">
-              <p className="font-semibold text-[17px] mb-3 text-slate-900">
-                Scientific & workshop committee
-              </p>
-              <p className="text-slate-800 leading-relaxed">
-                Team curating symposia, panels, simulation tracks and hands‑on workshops across
-                key themes.
-              </p>
-            </div>
-            <div className="bg-white border border-slate-300 px-5 py-5">
-              <p className="font-semibold text-[17px] mb-3 text-slate-900">
-                Hospitality & cultural
-              </p>
-              <p className="text-slate-800 leading-relaxed">
-                Reception, travel, food and cultural teams ensuring smooth registrations, stay
-                and a memorable flavour of Shivamogga.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      
 
       <Footer />
     </div>
