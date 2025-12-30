@@ -1,7 +1,6 @@
 import { Download, FileText, MapPin, Calendar, Users } from 'lucide-react';
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
-import Footer from '../../components/common/Footer';
 
 const BrochurePage = () => {
   return (
@@ -25,14 +24,14 @@ const BrochurePage = () => {
                 <div className="space-y-3 max-w-xl">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/30 text-xs font-medium">
                     <Users className="w-4 h-4" />
-                    19th National Conference • AOA
+                    19th Annual Conference • AOA
                   </div>
                   <div>
                     <p className="text-[11px] tracking-[0.16em] uppercase text-sky-100 mb-1">
                       AOACON 2026 • Shivamogga
                     </p>
                     <h1 className="text-2xl sm:text-3xl font-semibold leading-snug">
-                      Welcome to the 19th National Conference of Association of Obstetric Anaesthesiologists
+                      Welcome to the 19th Annual Conference of Association of Obstetric Anaesthesiologists
                     </h1>
                   </div>
                   <div className="flex flex-wrap gap-2 text-[11px] sm:text-[12px]">
@@ -74,54 +73,39 @@ const BrochurePage = () => {
           </div>
 
           <div className="space-y-3 text-sm text-slate-700 leading-relaxed">
-            <p className="font-semibold text-slate-900">
-              Welcome to the 19th National Conference of Association of Obstetric Anaesthesiologists
-            </p>
-            <p className="text-slate-700">
-              THEME 2026 : BRIDGING THE URBAN–RURAL GAP IN OBSTETRIC ANAESTHESIA
-            </p>
             <p>
-              It gives us great pleasure to welcome you to the 19th National Conference of Obstetric
+              It gives us great pleasure to welcome you to the 19th Annual Conference of Obstetric
               Anaesthesiologists, proudly hosted by the Department of Anaesthesiology, SIMS and the
               ISA City Chapter, Shivamogga. The conference will be held at the Shimoga Institute of
-              Medical Sciences, located in the serene, culturally rich city and gateway of the
-              Western Ghats, Shivamogga, Karnataka.
+              Medical Sciences, located in the serene, culturally rich city and gateway of Western
+              Ghats, Shivamogga, Karnataka.
             </p>
             <p>
-              It is concerning to our fraternity that despite the advances in the medical field,
-              there exists a significant gap between urban and rural perioperative maternal care
-              contributing to maternal deaths in India. This year&apos;s theme highlights the vital need
-              to ensure equitable, evidence-based and safe obstetric anaesthesia services across
-              diverse healthcare settings. This prestigious gathering brings together experts,
-              practitioners, and learners in the field of obstetric anaesthesia to share knowledge,
-              discuss advances, and explore innovations that continue to shape safe motherhood and
-              perioperative care and address the challenges faced in both resource-rich and
-              resource-limited environments. The conference promises a vibrant academic program
-              featuring distinguished speakers, interactive sessions, hands-on workshops, and
-              opportunities to engage with peers from across the region and beyond.
+              It is concerning to our fraternity that despite advances in the medical field, there
+              exists a significant gap between urban and rural perioperative maternal care,
+              contributing to maternal deaths in India. This year&apos;s theme highlights the vital
+              need to ensure equitable, evidence‑based and safe obstetric anaesthesia services
+              across diverse healthcare settings.
+            </p>
+            <p>
+              This prestigious gathering brings together experts, practitioners, and learners in the
+              field of obstetric anaesthesia to share knowledge, discuss advances, and explore
+              innovations that continue to shape safe motherhood and perioperative care, while
+              addressing challenges faced in both resource‑rich and resource‑limited environments.
+              The conference promises a vibrant academic program featuring distinguished speakers,
+              interactive sessions, hands‑on workshops, and opportunities to engage with peers from
+              across the region and beyond.
             </p>
             <p>
               Set amidst the lush landscapes of Karnataka, Shivamogga offers the perfect backdrop
-              for academic exchange and rejuvenation.
-            </p>
-            <p>
-              We warmly invite you to join us in Shivamogga for an enriching scientific experience
-              amidst a welcoming environment. Together, let us work towards narrowing the urban–rural
-              gap and shaping safe motherhood everywhere.
+              for academic exchange and rejuvenation. We warmly invite you to join us in Shivamogga
+              for an enriching scientific experience amidst a welcoming environment. Together, let
+              us work towards narrowing the urban–rural gap and shaping safe motherhood everywhere.
             </p>
             <p className="font-semibold text-slate-900">
-              We look forward to your participation.
+              We look forward to your participation!
               <br />
-              <span className="font-normal">
-                Regards,
-                <br />
-                The Organizing committee
-                <br />
-                AOACON 2026
-                <br />
-                Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and ISA
-                City Chapter, Shivamogga
-              </span>
+              <span className="font-normal">Regards, Organizing Committee • AOACON 2026</span>
             </p>
           </div>
         </section>
@@ -161,7 +145,6 @@ const BrochurePage = () => {
         </section>
       </main>
 
-      <Footer />
       <MobileNav />
     </div>
   );

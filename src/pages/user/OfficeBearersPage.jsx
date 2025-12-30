@@ -1,5 +1,4 @@
 import Header from '../../components/common/Header';
-import Footer from '../../components/common/Footer';
 import anjuGrewal from '../../images/AOAOfficeBearers/Anju-Grewal.jpg';
 import arunaParameswari from '../../images/AOAOfficeBearers/Aruna-Parameswari.jpg';
 import kajalJain from '../../images/AOAOfficeBearers/Kajal-Jain.jpg';
@@ -92,8 +91,6 @@ const OfficeBearersPage = () => {
           ))}
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 };

@@ -194,8 +194,9 @@ const RegistrationPage = () => {
 
   const isAOACourse = formData.registrationType === 'AOA_CERTIFIED_COURSE';
 
+  // Accompanying persons are now allowed for ALL categories (including AOA Certified Course)
   const getAccompanyingPrice = () =>
-    isAOACourse ? 0 : formData.accompanyingPersons * 7000;
+    formData.accompanyingPersons * 7000;
 
   const getTotalAmount = () => {
     if (
@@ -235,14 +236,11 @@ const RegistrationPage = () => {
         backgroundImage: "url('https://www.justmbbs.com/img/college/karnataka/shimoga-institute-of-medical-sciences-shimoga-banner.jpg')"
       }}
     >
-      {}
       <div className="absolute inset-0 bg-white/70 pt-20 sm:pt-24" />
       
-      {}
       <Header />
       
       <div className="relative z-10 container mx-auto px-4 lg:px-6 py-6 lg:py-10 space-y-6 pb-20 max-w-6xl">
-        {}
         <div className="bg-white/95 backdrop-blur-xl border border-white/40 px-4 py-4 rounded-lg">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
@@ -281,9 +279,7 @@ const RegistrationPage = () => {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6">
-          {}
           <section className="lg:col-span-2 space-y-5">
-            {}
             <div className="bg-white/90 backdrop-blur-xl border border-white/40 px-4 py-4 rounded-lg">
               <h2 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
                 <User className="w-4 h-4 text-[#9c3253]" />
@@ -323,7 +319,6 @@ const RegistrationPage = () => {
               </div>
             </div>
 
-            {}
             {user?.role === 'PGS' && (
               <div className="bg-white/90 backdrop-blur-xl border border-white/40 px-4 py-4 rounded-lg">
                 <h2 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
@@ -354,9 +349,7 @@ const RegistrationPage = () => {
               </div>
             )}
 
-            {}
             <form onSubmit={handleSubmit} className="space-y-5">
-              {}
               <div className="bg-white/90 backdrop-blur-xl border border-white/40 px-4 py-4 rounded-lg">
                 <h2 className="text-sm font-semibold text-slate-900 mb-3">
                   Select registration type
@@ -390,10 +383,7 @@ const RegistrationPage = () => {
                                     type === 'AOA_CERTIFIED_COURSE'
                                       ? ''
                                       : prev.selectedWorkshop,
-                                  accompanyingPersons:
-                                    type === 'AOA_CERTIFIED_COURSE'
-                                      ? 0
-                                      : prev.accompanyingPersons,
+                                  // accompanyingPersons remains unchanged (can be >0 now)
                                 }));
                                 setError('');
                               }
@@ -479,7 +469,6 @@ const RegistrationPage = () => {
                 </div>
               </div>
 
-              {}
               {isWorkshopType && (
                 <div className="bg-white/90 backdrop-blur-xl border border-white/40 px-4 py-4 rounded-lg">
                   <h2 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
@@ -521,7 +510,6 @@ const RegistrationPage = () => {
                 </div>
               )}
 
-              {}
               <div className="bg-white/90 backdrop-blur-xl border border-white/40 px-4 py-4 rounded-lg">
                 <h2 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
                   <UsersIcon className="w-4 h-4 text-[#9c3253]" />
@@ -531,9 +519,7 @@ const RegistrationPage = () => {
                   <div>
                     <p className="font-medium text-slate-900">Add accompanying person(s)</p>
                     <p className="text-[11px] text-[#7cb342]">
-                      {isAOACourse
-                        ? 'Not applicable for AOA Certified Course only'
-                        : '₹7,000 per person'}
+                      ₹7,000 per person
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -548,7 +534,7 @@ const RegistrationPage = () => {
                           ),
                         }))
                       }
-                      disabled={formData.accompanyingPersons === 0 || isAOACourse}
+                      disabled={formData.accompanyingPersons === 0}
                       className="inline-flex h-8 w-8 items-center justify-center rounded border border-slate-200 bg-white text-slate-600 text-sm disabled:opacity-40 hover:bg-[#9c3253]/5"
                     >
                       <Minus className="w-3 h-3" />
@@ -564,21 +550,19 @@ const RegistrationPage = () => {
                           accompanyingPersons: prev.accompanyingPersons + 1,
                         }))
                       }
-                      disabled={isAOACourse}
-                      className="inline-flex h-8 w-8 items-center justify-center rounded border border-slate-200 bg-white text-slate-600 text-sm disabled:opacity-40 hover:bg-[#9c3253]/5"
+                      className="inline-flex h-8 w-8 items-center justify-center rounded border border-slate-200 bg-white text-slate-600 text-sm hover:bg-[#9c3253]/5"
                     >
                       <Plus className="w-3 h-3" />
                     </button>
                   </div>
                 </div>
-                {!isAOACourse && formData.accompanyingPersons > 0 && (
+                {formData.accompanyingPersons > 0 && (
                   <p className="mt-2 text-xs text-[#ff8a1f] font-medium">
                     Extra amount: ₹{getAccompanyingPrice().toLocaleString()}
                   </p>
                 )}
               </div>
 
-              {}
               <button
                 type="submit"
                 disabled={submitting || !formData.registrationType}
@@ -596,7 +580,6 @@ const RegistrationPage = () => {
             </form>
           </section>
 
-          {}
           <aside className="space-y-4 lg:sticky lg:top-24">
             <div className="bg-white/90 backdrop-blur-xl border border-white/40 px-4 py-4 text-xs rounded-lg">
               <h2 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
@@ -633,7 +616,7 @@ const RegistrationPage = () => {
                         ].totalAmount.toLocaleString()}
                       </span>
                     </div>
-                    {!isAOACourse && formData.accompanyingPersons > 0 && (
+                    {formData.accompanyingPersons > 0 && (
                       <div className="flex justify-between text-[#ff8a1f]">
                         <span>Accompanying ({formData.accompanyingPersons})</span>
                         <span>+₹{getAccompanyingPrice().toLocaleString()}</span>
@@ -655,17 +638,6 @@ const RegistrationPage = () => {
                   Select a registration type to view summary.
                 </div>
               )}
-            </div>
-
-            <div className="bg-white/90 backdrop-blur-xl border border-white/40 px-4 py-4 text-xs rounded-lg">
-              <h2 className="text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-[#7cb342]" />
-                Meals included
-              </h2>
-              <p className="text-[11px] text-slate-600 leading-relaxed">
-                Registration does not include 3 lunches. It includes breakfast,
-                lunch, coffee, and one dinner on banquet day.
-              </p>
             </div>
           </aside>
         </div>

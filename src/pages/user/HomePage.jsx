@@ -5,10 +5,10 @@ import {
   Users,
   Clock,
   Stethoscope,
+  HeartPulse,
   Building2,
 } from 'lucide-react';
 import Header from '../../components/common/Header';
-import Footer from '../../components/common/Footer';
 import logo from '../../images/main-logo.png';
 
 const targetDate = new Date('2026-10-30T09:00:00+05:30');
@@ -69,7 +69,7 @@ const HomePage = () => {
             <div className="lg:col-span-2 space-y-5">
               <div className="inline-flex items-center gap-2 px-5 py-2 bg-[#1976d2] border border-sky-300 text-[18px] font-semibold">
                 <Users className="w-5 h-5" />
-                19th National Conference • AOA
+                19th Annual Conference • AOA
               </div>
 
               <p className="text-[13px] sm:text-[14px] tracking-[0.3em] uppercase text-sky-100">
@@ -150,7 +150,7 @@ const HomePage = () => {
                 Official venue
               </p>
               <p className="text-[18px] font-semibold">
-                1st Floor Auditorium, Shimoga Institute of Medical Sciences (SIMS), Shivamogga, Karnataka
+                Shimoga Institute of Medical Sciences (SIMS), Shivamogga, Karnataka
               </p>
             </div>
           </div>
@@ -163,54 +163,65 @@ const HomePage = () => {
 
       {}
       <section className="border-b border-slate-300 bg-white py-12 lg:py-14">
-        <div className="max-w-5xl mx-auto px-4 lg:px-6">
-          <div className="space-y-5">
+        <div className="max-w-6xl mx-auto px-4 lg:px-6 grid grid-cols-1 lg:grid-cols-3 gap-10">
+          <div className="lg:col-span-2 space-y-5">
             <h2 className="text-[26px] lg:text-[28px] font-bold text-slate-900 leading-snug">
-              Welcome to the 19th National Conference of Association of Obstetric
+              Welcome to the 19th Annual Conference of Association of Obstetric
               Anaesthesiologists
             </h2>
-            <div className="space-y-1 text-[18px] text-slate-800 leading-relaxed">
-              <p className="font-semibold uppercase tracking-[0.25em] text-slate-500">
-                Theme 2026 : Bridging the Urban–Rural Gap in Obstetric Anaesthesia
-              </p>
-            </div>
-            <div className="space-y-4 text-[18px] text-slate-800 leading-relaxed text-justify">
+            <div className="space-y-4 text-[18px] text-slate-800 leading-relaxed">
               <p>
-                It gives us great pleasure to welcome you to the 19th National Conference of Obstetric Anaesthesiologists, 
-                proudly hosted by the Department of Anaesthesiology, SIMS and the ISA City Chapter, Shivamogga. 
-                The conference will be held at the Shimoga Institute of Medical Sciences, located in the serene, 
-                culturally rich city and gateway of the Western Ghats, Shivamogga, Karnataka.
+                It gives great pleasure to welcome you to the 19th Annual Conference of Obstetric
+                Anaesthesiologists, hosted by the Department of Anaesthesiology, SIMS, and the ISA
+                City Chapter, Shivamogga.
               </p>
               <p>
-                It is concerning to our fraternity that despite the advances in the medical field, 
-                there exists a significant gap between urban and rural perioperative maternal care contributing 
-                to maternal deaths in India. This year's theme highlights the vital need to ensure equitable, 
-                evidence-based and safe obstetric anaesthesia services across diverse healthcare settings. 
-                This prestigious gathering brings together experts, practitioners, 
-                and learners in the field of obstetric anaesthesia to share knowledge, discuss advances, 
-                and explore innovations that continue to shape safe motherhood 
-                and perioperative care and address the challenges faced in both 
-                resource-rich and resource-limited environments. The conference promises a 
-                vibrant academic program featuring distinguished speakers, interactive sessions, 
-                hands-on workshops, and opportunities to engage with peers from across the region and beyond.
+                Despite advances, gaps persist between urban and rural perioperative maternal
+                care. The meeting focuses on equitable, evidence‑based, and safe obstetric
+                anaesthesia across all levels of healthcare.
               </p>
               <p>
-                Set amidst the lush landscapes of Karnataka, Shivamogga offers the perfect backdrop for academic exchange and rejuvenation.
+                AOACON 2026 brings together experts, practitioners, and learners to share
+                knowledge, discuss advances, and explore innovations that shape safe motherhood in
+                different practice settings.
               </p>
               <p>
-                We warmly invite you to join us in Shivamogga for an enriching scientific experience amidst a welcoming environment. 
-                Together, let us work towards narrowing the urban–rural gap and shaping safe motherhood everywhere.
+                Amidst the landscapes of Karnataka, Shivamogga offers a balance of academic
+                intensity and natural rejuvenation. Join the effort to narrow the urban–rural gap
+                and support safe motherhood everywhere.
               </p>
               <p className="font-semibold">
                 We look forward to your participation.
-                <span className="block mt-2 font-normal">
-                  Regards,<br/>
-The Organizing committee<br/>
-AOACON 2026<br/>
-Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and ISA City Chapter, Shivamogga<br/>
+                <span className="block mt-2 text-[15px] font-normal">
+                  Organising Committee, AOACON 2026
                 </span>
               </p>
             </div>
+          </div>
+
+          <div className="bg-[#7cb342] border border-slate-300 px-6 py-6 space-y-4 text-white">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 flex items-center justify-center bg-white border border-rose-300">
+                <HeartPulse className="w-6 h-6 text-rose-600" />
+              </div>
+              <div>
+                <p className="text-[12px] font-semibold tracking-[0.25em] uppercase text-rose-100">
+                  Theme 2026
+                </p>
+                <p className="text-[18px] font-semibold">
+                  Bridging the Urban–Rural Gap in Obstetric Anaesthesia
+                </p>
+              </div>
+            </div>
+            <p className="text-[15px] text-slate-100 leading-relaxed">
+              Emphasis on equitable access, critical care readiness, and context‑appropriate
+              protocols for every mother, everywhere.
+            </p>
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxvHBBYogt3GOpiDFNm90puXa7oo2DlPP2Qg&s"
+              alt="Theme"
+              className="w-full h-44 object-cover border border-rose-200"
+            />
           </div>
         </div>
       </section>
@@ -375,8 +386,6 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 };

@@ -373,7 +373,7 @@ const AdminDashboardPage = () => {
             </div>
             <div>
               <Award className="w-5 h-5 text-indigo-600 mx-auto mb-1" />
-              <p className="font-semibold text-slate-900">19th National AOA</p>
+              <p className="font-semibold text-slate-900">19th Annual AOA</p>
             </div>
           </div>
         </div>
