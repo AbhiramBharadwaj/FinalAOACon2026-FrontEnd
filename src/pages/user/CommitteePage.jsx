@@ -1,5 +1,26 @@
 import { Users, Calendar, MapPin, Star } from 'lucide-react';
 import Header from '../../components/common/Header';
+import ajithKumarImg from '../../images/OrganizingComittee/Ajith Kumar.png';
+import ashwiniImg from '../../images/OrganizingComittee/Ashwini.png';
+import avinashBenekappaImg from '../../images/OrganizingComittee/Avinash Benekappa.png';
+import champaImg from '../../images/OrganizingComittee/Champa.jpg';
+import dhananjaySarjiImg from '../../images/OrganizingComittee/Dhananjay Sarji.png';
+import ravindraGlImg from '../../images/OrganizingComittee/GL-Ravindra.jpg';
+import kumarAbImg from '../../images/OrganizingComittee/Kumar A B.png';
+import manasaSImg from '../../images/OrganizingComittee/Manasa S.png';
+import nagendraSImg from '../../images/OrganizingComittee/Nagendra S.png';
+import namrathaLImg from '../../images/OrganizingComittee/Namratha L.png';
+import praveenSImg from '../../images/OrganizingComittee/Praveen S.png';
+import rashmiSImg from '../../images/OrganizingComittee/Rashmi S.png';
+import shashankMImg from '../../images/OrganizingComittee/Shashank M.png';
+import shivkumarImg from '../../images/OrganizingComittee/Shivkumar.png';
+import shruthiHiremathImg from '../../images/OrganizingComittee/Shruthi Hiremath.png';
+import srihariSImg from '../../images/OrganizingComittee/Srihari S.png';
+import sushmaPattarImg from '../../images/OrganizingComittee/Sushma Pattar.png';
+import swathiHegdeImg from '../../images/OrganizingComittee/Swathi Hegde.png';
+import vandanaHebballiImg from '../../images/OrganizingComittee/Vandana Hebballi.png';
+import virupakshappaImg from '../../images/OrganizingComittee/Virupakshappa.jpg';
+import yashodhaVImg from '../../images/OrganizingComittee/Yashodha V.png';
 
 const PLACEHOLDER_IMAGE =
   'https://thumbs.dreamstime.com/b/profile-placeholder-image-gray-silhouette-no-photo-person-avatar-default-pic-used-web-design-173998594.jpg';
@@ -14,7 +35,7 @@ const committees = [
           {
             name: 'Dr. Virupakshappa V',
             designation: 'Dean & Director SIMS, Shivamogga',
-            image: PLACEHOLDER_IMAGE,
+            image: virupakshappaImg,
           },
         ],
       }
@@ -29,7 +50,7 @@ const committees = [
           {
             name: 'Dr. Nagendra S',
             designation: 'Medical Director SuIMS, Shivamogga',
-            image: PLACEHOLDER_IMAGE,
+            image: nagendraSImg,
           },
         ],
       },
@@ -39,7 +60,7 @@ const committees = [
           {
             name: ' Dr. Dhananjaya Sarji',
             designation: 'MLC, Shivamogga Medical Director, Sarji Group of Hospitals Shivamogga',
-            image: PLACEHOLDER_IMAGE,
+            image: dhananjaySarjiImg,
           },
         ],
       },
@@ -49,7 +70,7 @@ const committees = [
           {
             name: ' Dr. Ajith Kumar Shetty',
             designation: 'Head, Dept. of Anaesthesiology, Sahyadri Narayana Multispeciality Hospital Shivamogg',
-            image: PLACEHOLDER_IMAGE,
+            image: ajithKumarImg,
           },
         ],
       },
@@ -59,7 +80,7 @@ const committees = [
           {
             name: 'Dr. Avinash Benakappa',
             designation: 'CEO Nanjappa Healthcare Shivamogga',
-            image: PLACEHOLDER_IMAGE,
+            image: avinashBenekappaImg,
           },
         ],
       }
@@ -74,7 +95,7 @@ const committees = [
           {
             name: 'Dr Ravindra G L',
             designation: 'Chief Consultant, Janani Anaesthesia & Critical Care Services Shivamogga',
-            image: PLACEHOLDER_IMAGE,
+            image: ravindraGlImg,
           },
         ],
       },
@@ -84,7 +105,7 @@ const committees = [
           {
             name: 'Dr Champa B V',
             designation: 'Professor and Head Department of Anaesthesiology SIMS, Shivamogga',
-            image: PLACEHOLDER_IMAGE,
+            image: champaImg,
           },
         ],
       },
@@ -94,7 +115,7 @@ const committees = [
           {
             name: 'Dr Ashwini S',
             designation: 'Associate Professor Department of Anaesthesiology SIMS, Shivamogga',
-            image: PLACEHOLDER_IMAGE,
+            image: ashwiniImg,
           },
         ],
       },
@@ -109,12 +130,12 @@ const committees = [
           {
             name: 'Dr Ravindra G L',
             designation: 'Scientific Chairperson',
-            image: PLACEHOLDER_IMAGE,
+            image: ravindraGlImg,
           },
           {
             name: 'Dr Shivakumar M C',
             designation: 'Scientific Chairperson',
-            image: PLACEHOLDER_IMAGE,
+            image: shivkumarImg,
           },
         ],
       },
@@ -124,18 +145,18 @@ const committees = [
           {
             name: 'Dr Kumara A B',
             designation: 'Scientific Co-Chairperson',
-            image: PLACEHOLDER_IMAGE,
+            image: kumarAbImg,
           },
         ],
       },
       {
         role: 'Members',
         members: [
-          { name: 'Dr Swathi Hegde', designation: '', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Namratha L', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Swathi Hegde', designation: '', image: swathiHegdeImg },
+          { name: 'Dr Namratha L', designation: '', image: namrathaLImg },
           { name: 'Dr Pooja Shah', designation: '', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Shashank', designation: '', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Shreehari', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Shashank', designation: '', image: shashankMImg },
+          { name: 'Dr Shreehari', designation: '', image: srihariSImg },
           { name: 'Dr Soumya Rao', designation: '', image: PLACEHOLDER_IMAGE },
         ],
       },
@@ -147,7 +168,7 @@ const committees = [
       {
         role: 'Workshop Team Members',
         members: [
-          { name: 'Dr Yashoda V', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Yashoda V', designation: 'Workshop Coordinator', image: yashodhaVImg },
           { name: 'Dr Sandhya', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
             { name: 'Dr Vadiraj Kulkarni', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
           { name: 'Dr Vikram A C', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
@@ -187,8 +208,8 @@ const committees = [
       {
         role: 'Members',
         members: [
-          { name: 'Dr Shruthi Hiremath', designation: '', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Sushma Pattar', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Shruthi Hiremath', designation: '', image: shruthiHiremathImg },
+          { name: 'Dr Sushma Pattar', designation: '', image: sushmaPattarImg },
           { name: 'Dr Harish T S', designation: '', image: PLACEHOLDER_IMAGE },
           { name: 'Dr. Swetha Purohit', designation: '', image: PLACEHOLDER_IMAGE },
           { name: 'Dr Bindu T V', designation: '', image: PLACEHOLDER_IMAGE },
@@ -202,8 +223,8 @@ const committees = [
       {
         role: 'Members',
         members: [
-          { name: 'Dr Praveen S', designation: '', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Vandana Hebballi', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Praveen S', designation: '', image: praveenSImg },
+          { name: 'Dr Vandana Hebballi', designation: '', image: vandanaHebballiImg },
         ],
       },
     ],
@@ -214,8 +235,8 @@ const committees = [
       {
         role: 'Members',
         members: [
-          { name: 'Dr Rashmi', designation: '', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr. Manasa S', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Rashmi', designation: '', image: rashmiSImg },
+          { name: 'Dr. Manasa S', designation: '', image: manasaSImg },
         ],
       },
     ],
@@ -229,7 +250,7 @@ const committees = [
           { name: 'Dr Manjunath B N', designation: '', image: PLACEHOLDER_IMAGE },
           { name: 'Dr Sandeep Koti', designation: '', image: PLACEHOLDER_IMAGE },
           { name: 'Dr Karthik', designation: '', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Praveen S', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Praveen S', designation: '', image: praveenSImg },
         ],
       },
     ],
@@ -258,8 +279,8 @@ const committees = [
         members: [
           { name: 'Dr Shobha M M', designation: '', image: PLACEHOLDER_IMAGE },
           { name: 'Dr Shwetha Purohit', designation: '', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Vandana Hebballi', designation: '', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Manasa S', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Vandana Hebballi', designation: '', image: vandanaHebballiImg },
+          { name: 'Dr Manasa S', designation: '', image: manasaSImg },
         ],
       },
     ],
