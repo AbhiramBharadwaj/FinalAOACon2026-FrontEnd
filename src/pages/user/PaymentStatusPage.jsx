@@ -104,7 +104,6 @@ const PaymentStatusPage = () => {
     doc.setFontSize(10);
     doc.text('Event: AOA Shivamogga 2026', 20, 110);
     doc.text('Dates: October 30 - November 1, 2026', 20, 118);
-    doc.text('Venue: Hotel Royal Orchid, Shivamogga', 20, 126);
 
     let detailsY = 144;
     if (type === 'registration') {

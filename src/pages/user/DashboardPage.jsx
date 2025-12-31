@@ -15,7 +15,8 @@ import {
   MessageSquare,
   MapPin,
   Download,
-  Star
+  Star,
+  Plus,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
@@ -70,8 +71,27 @@ const DashboardPage = () => {
       CONFERENCE_ONLY: 'Conference Only',
       WORKSHOP_CONFERENCE: 'Workshop + Conference',
       COMBO: 'Combo Package',
+      AOA_CERTIFIED_COURSE: 'AOA Certified Course Only',
     };
     return texts[type] || type;
+  };
+
+  const getBookingPhaseText = (phase) => {
+    const texts = {
+      EARLY_BIRD: 'Early Bird',
+      REGULAR: 'Regular',
+      SPOT: 'Spot Booking',
+    };
+    return texts[phase] || phase;
+  };
+
+  const getBookingPhaseBadge = (phase) => {
+    const map = {
+      EARLY_BIRD: 'bg-[#9c3253]/10 text-[#9c3253] border-[#9c3253]/30',
+      REGULAR: 'bg-[#ff8a1f]/10 text-[#ff8a1f] border-[#ff8a1f]/30',
+      SPOT: 'bg-[#7cb342]/10 text-[#7cb342] border-[#7cb342]/30',
+    };
+    return map[phase] || 'bg-slate-50 text-slate-700 border-slate-200';
   };
 
   const getStatusBadge = (status) => {
@@ -88,29 +108,11 @@ const DashboardPage = () => {
         color: 'bg-red-500/20 text-red-400 border border-red-400/30',
         icon: Clock,
       },
-      CONFIRMED: {
-        color: 'bg-[#9c3253]/20 text-[#9c3253] border border-[#9c3253]/30',
-        icon: CheckCircle,
-      },
-      APPROVED: {
-        color: 'bg-[#7cb342]/20 text-[#7cb342] border border-[#7cb342]/30',
-        icon: CheckCircle,
-      },
-      REJECTED: {
-        color: 'bg-red-500/20 text-red-400 border border-red-400/30',
-        icon: Clock,
-      },
     };
-    const badge =
-      map[status] || {
-        color: 'bg-slate-500/20 text-slate-500 border border-slate-400/30',
-        icon: Clock,
-      };
+    const badge = map[status] || { color: 'bg-slate-500/20 text-slate-500 border border-slate-400/30', icon: Clock };
     const Icon = badge.icon;
     return (
-      <span
-        className={`inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-[10px] font-medium ${badge.color}`}
-      >
+      <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-[10px] font-medium ${badge.color}`}>
         <Icon className="w-3 h-3" />
         {status}
       </span>
@@ -164,9 +166,7 @@ const DashboardPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-cover bg-center bg-no-repeat relative flex items-center justify-center"
-        style={{
-          backgroundImage: "url('https://www.justmbbs.com/img/college/karnataka/shimoga-institute-of-medical-sciences-shimoga-banner.jpg')"
-        }}
+        style={{ backgroundImage: "url('https://www.justmbbs.com/img/college/karnataka/shimoga-institute-of-medical-sciences-shimoga-banner.jpg')" }}
       >
         <div className="absolute inset-0 bg-black/70" />
         <LoadingSpinner size="md" text="Loading dashboard..." />
@@ -175,13 +175,9 @@ const DashboardPage = () => {
   }
 
   return (
-    <div 
-      className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-      style={{
-        backgroundImage: "url('https://www.justmbbs.com/img/college/karnataka/shimoga-institute-of-medical-sciences-shimoga-banner.jpg')"
-      }}
+    <div className="min-h-screen bg-cover bg-center bg-no-repeat relative"
+      style={{ backgroundImage: "url('https://www.justmbbs.com/img/college/karnataka/shimoga-institute-of-medical-sciences-shimoga-banner.jpg')" }}
     >
-      {}
       <div className="absolute inset-0 bg-white/80 pt-20 sm:pt-24" />
       
       <Header />
@@ -213,7 +209,6 @@ const DashboardPage = () => {
 
         {}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {}
           <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-2xl px-4 py-4 sm:px-5 sm:py-5 flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#9c3253] to-[#ff8a1f] text-white">
               <User className="w-6 h-6" />
@@ -231,7 +226,6 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          {}
           <div className="lg:col-span-2 bg-white/90 backdrop-blur-xl border border-white/40 rounded-2xl px-4 py-4 sm:px-5 sm:py-5">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -247,24 +241,17 @@ const DashboardPage = () => {
               {steps.map((step, index) => {
                 const active = index <= getCurrentStep();
                 return (
-                  <div
-                    key={step.key}
-                    className="flex flex-1 flex-col items-center min-w-0"
-                  >
-                    <div
-                      className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-semibold transition-all ${
-                        active
-                          ? 'bg-[#9c3253] border-[#9c3253] text-white shadow-md' 
-                          : 'bg-slate-100 border-slate-200 text-slate-500'
-                      }`}
-                    >
+                  <div key={step.key} className="flex flex-1 flex-col items-center min-w-0">
+                    <div className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-semibold transition-all ${
+                      active
+                        ? 'bg-[#9c3253] border-[#9c3253] text-white shadow-md'
+                        : 'bg-slate-100 border-slate-200 text-slate-500'
+                    }`}>
                       {index + 1}
                     </div>
-                    <span
-                      className={`mt-2 text-[11px] text-center font-medium truncate ${
-                        active ? 'text-[#9c3253]' : 'text-slate-500'
-                      }`}
-                    >
+                    <span className={`mt-2 text-[11px] text-center font-medium truncate ${
+                      active ? 'text-[#9c3253]' : 'text-slate-500'
+                    }`}>
                       {window.innerWidth < 640 ? step.short : step.label}
                     </span>
                   </div>
@@ -313,7 +300,6 @@ const DashboardPage = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          {}
           <section className="lg:col-span-2 space-y-5">
             {}
             <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-2xl px-4 py-4 sm:px-5 sm:py-5">
@@ -340,19 +326,57 @@ const DashboardPage = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl bg-[#9c3253]/5 px-3 py-3 border border-[#9c3253]/20">
                     <div>
                       <p className="font-medium text-slate-900">
-                        {getRegistrationTypeText(
-                          stats.registration.registrationType
-                        )}
+                        {getRegistrationTypeText(stats.registration.registrationType)}
                       </p>
-                      <p className="text-[11px] text-slate-600/80 mt-0.5">
-                        Booking phase: {stats.registration.bookingPhase}
+                      {stats.registration.addAoaCourse && (
+                        <p className="text-[11px] text-purple-700 font-medium mt-1 flex items-center gap-1">
+                          <Plus className="w-3 h-3" />
+                          + AOA Certified Course
+                        </p>
+                      )}
+                      <p className="text-[11px] text-slate-600/80 mt-1">
+                        Booking phase: {getBookingPhaseText(stats.registration.bookingPhase)}
                       </p>
                     </div>
                     <div className="flex flex-col items-end gap-1">
                       {getStatusBadge(stats.registration.paymentStatus)}
-                      <p className="text-sm font-semibold text-[#9c3253]">
+                      <p className="text-sm font-bold text-[#9c3253]">
                         ₹{stats.registration.totalAmount?.toLocaleString()}
                       </p>
+                    </div>
+                  </div>
+
+                  {}
+                  <div className="bg-slate-50/70 rounded-xl p-3 space-y-2 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-slate-600">Conference Package</span>
+                      <span>₹{stats.registration.packageBase.toLocaleString()}</span>
+                    </div>
+                    {stats.registration.addAoaCourse && (
+                      <div className="flex justify-between text-purple-700">
+                        <span>AOA Course Add-on</span>
+                        <span>₹{stats.registration.aoaCourseBase.toLocaleString()}</span>
+                      </div>
+                    )}
+                    {stats.registration.accompanyingPersons > 0 && (
+                      <div className="flex justify-between text-orange-600">
+                        <span>Accompanying ({stats.registration.accompanyingPersons})</span>
+                        <span>₹{stats.registration.accompanyingBase.toLocaleString()}</span>
+                      </div>
+                    )}
+                    <div className="border-t border-slate-300 pt-2 mt-2">
+                      <div className="flex justify-between font-medium">
+                        <span>Total Base</span>
+                        <span>₹{stats.registration.totalBase.toLocaleString()}</span>
+                      </div>
+                    </div>
+                    <div className="flex justify-between text-green-700">
+                      <span>GST (18%)</span>
+                      <span>+₹{stats.registration.totalGST.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between text-amber-700">
+                      <span>Processing Fee (1.65%)</span>
+                      <span>+₹{stats.registration.processingFee.toLocaleString()}</span>
                     </div>
                   </div>
 
@@ -368,14 +392,30 @@ const DashboardPage = () => {
                     </div>
                   )}
 
+                  {}
                   {stats.registration.paymentStatus === 'PENDING' && (
+                  <div>
                     <button
                       onClick={() => navigate('/checkout')}
-                      className="mt-2 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#9c3253] text-white px-4 py-3 text-xs sm:text-sm font-semibold hover:bg-[#8a2b47] border border-[#9c3253]"
+                      className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#ff8a1f] text-white px-4 py-3 text-sm font-semibold hover:bg-orange-600 transition"
                     >
-                      Pay now
+                      <CreditCard className="w-4 h-4" />
+                      Complete Payment
                     </button>
+
+                      <button
+                    onClick={() => navigate('/registration')}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-[#9c3253] text-[#9c3253] px-4 py-2.5 text-xs sm:text-sm font-medium hover:bg-[#9c3253]/5 transition"
+                  >
+                    Edit Registration
+                  </button>
+
+                  </div>
+
                   )}
+
+                  {}
+                  
                 </div>
               ) : (
                 <div className="text-center py-10 rounded-xl bg-slate-50/50 border border-slate-200/50">
@@ -414,37 +454,22 @@ const DashboardPage = () => {
               {stats.accommodations.length > 0 ? (
                 <div className="space-y-3 text-xs sm:text-sm">
                   {stats.accommodations.slice(0, 3).map((booking) => (
-                    <div
-                      key={booking._id}
-                      className="rounded-xl bg-[#ff8a1f]/5 px-3 py-3 border border-[#ff8a1f]/20"
-                    >
+                    <div key={booking._id} className="rounded-xl bg-[#ff8a1f]/5 px-3 py-3 border border-[#ff8a1f]/20">
                       <div className="flex items-center justify-between mb-1.5">
                         <p className="font-medium text-slate-900 truncate">
-                          {booking.accommodationId?.name}
+                          {booking.accommodationId?.name || 'Hotel Booking'}
                         </p>
                         {getStatusBadge(booking.paymentStatus)}
                       </div>
                       <p className="text-[11px] text-slate-600/80 mb-1">
-                        {new Date(
-                          booking.checkInDate
-                        ).toLocaleDateString('en-IN')}{' '}
-                        –{' '}
-                        {new Date(
-                          booking.checkOutDate
-                        ).toLocaleDateString('en-IN')}
+                        Check-in: {new Date(booking.checkInDate).toLocaleDateString('en-IN')}
                       </p>
                       <div className="flex items-center justify-between text-[11px] text-slate-900">
-                        <span>
-                          {booking.numberOfGuests} guest
-                          {booking.numberOfGuests > 1 ? 's' : ''}
-                        </span>
+                        <span>{booking.numberOfGuests} guest{booking.numberOfGuests > 1 ? 's' : ''}</span>
                         <span className="font-semibold text-[#ff8a1f]">
                           ₹{booking.totalAmount?.toLocaleString()}
                         </span>
                       </div>
-                      <p className="mt-1 text-[10px] text-slate-500">
-                        #{booking.bookingNumber}
-                      </p>
                     </div>
                   ))}
                   {stats.accommodations.length > 3 && (
@@ -485,7 +510,7 @@ const DashboardPage = () => {
                       </p>
                       <p className="text-[11px] text-slate-600/80">
                         {stats.registration.paymentStatus} •{' '}
-                        {new Date().toLocaleDateString('en-IN')}
+                        {new Date(stats.registration.updatedAt).toLocaleDateString('en-IN')}
                       </p>
                     </div>
                   </div>
@@ -499,7 +524,7 @@ const DashboardPage = () => {
                       </p>
                       <p className="text-[11px] text-slate-600/80">
                         Booking created •{' '}
-                        {new Date().toLocaleDateString('en-IN')}
+                        {new Date(stats.accommodations[0].createdAt).toLocaleDateString('en-IN')}
                       </p>
                     </div>
                   </div>
@@ -513,31 +538,27 @@ const DashboardPage = () => {
                       </p>
                       <p className="text-[11px] text-slate-600/80">
                         {stats.abstract.status} •{' '}
-                        {new Date().toLocaleDateString('en-IN')}
+                        {new Date(stats.abstract.createdAt).toLocaleDateString('en-IN')}
                       </p>
                     </div>
                   </div>
                 )}
-                {!stats.registration &&
-                  !stats.accommodations[0] &&
-                  !stats.abstract && (
-                    <p className="text-[11px] text-slate-600/80 text-center py-4">
-                      No recent activity yet.
-                    </p>
-                  )}
+                {!stats.registration && !stats.accommodations.length && !stats.abstract && (
+                  <p className="text-[11px] text-slate-600/80 text-center py-4">
+                    No recent activity yet.
+                  </p>
+                )}
               </div>
             </div>
           </section>
 
           {}
           <section className="lg:col-span-1 space-y-5 lg:sticky lg:top-24">
-            {}
             <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-2xl px-4 py-4 sm:px-5 sm:py-5">
               <h3 className="text-sm font-semibold mb-3 flex items-center gap-2 text-slate-900">
                 <FileText className="w-4 h-4 text-[#7cb342]" />
                 Abstract
               </h3>
-
               {stats.abstract ? (
                 <div className="space-y-3 text-xs sm:text-sm">
                   <div className="flex items-center justify-between">
@@ -571,21 +592,17 @@ const DashboardPage = () => {
               )}
             </div>
 
-            {}
             <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-2xl px-4 py-4 sm:px-5 sm:py-5">
               <h3 className="text-sm font-semibold mb-3 flex items-center gap-2 text-slate-900">
                 <MessageSquare className="w-4 h-4 text-[#ff8a1f]" />
                 Feedback
               </h3>
-
               {stats.feedback ? (
                 <div className="text-center py-8 text-xs sm:text-sm">
                   <CheckCircle className="w-10 h-10 text-[#7cb342] mx-auto mb-3" />
                   <p className="font-semibold text-slate-900 mb-1">Feedback submitted</p>
                   <p className="text-[11px] text-slate-600">
-                    {new Date(stats.feedback.createdAt).toLocaleDateString(
-                      'en-IN'
-                    )}
+                    {new Date(stats.feedback.createdAt).toLocaleDateString('en-IN')}
                   </p>
                 </div>
               ) : (
@@ -604,7 +621,6 @@ const DashboardPage = () => {
               )}
             </div>
 
-            {}
             <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-2xl px-4 py-4 sm:px-5 sm:py-5">
               <h3 className="text-sm font-semibold mb-3 text-slate-900">Conference details</h3>
               <div className="space-y-3 text-xs sm:text-sm">
@@ -629,7 +645,6 @@ const DashboardPage = () => {
               </div>
             </div>
 
-            {}
             <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-2xl px-4 py-4 grid grid-cols-2 gap-3 text-center text-xs sm:text-sm">
               <div>
                 <p className="text-lg sm:text-xl font-semibold text-[#9c3253]">

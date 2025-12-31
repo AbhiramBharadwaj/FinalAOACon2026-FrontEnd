@@ -140,6 +140,7 @@ const CheckoutPage = () => {
       CONFERENCE_ONLY: 'Conference Only',
       WORKSHOP_CONFERENCE: 'Workshop + Conference',
       COMBO: 'Combo Package',
+      AOA_CERTIFIED_COURSE: 'AOA Certified Course Only',
     };
     return texts[type] || type;
   };
@@ -177,7 +178,6 @@ const CheckoutPage = () => {
         backgroundImage: "url('https://www.justmbbs.com/img/college/karnataka/shimoga-institute-of-medical-sciences-shimoga-banner.jpg')"
       }}
     >
-      {}
       <div className="absolute inset-0 bg-white/70 pt-20 sm:pt-24" />
         <Header />
         <div className="max-w-md mx-auto px-4 py-12 text-center">
@@ -204,12 +204,10 @@ const CheckoutPage = () => {
         backgroundImage: "url('https://www.justmbbs.com/img/college/karnataka/shimoga-institute-of-medical-sciences-shimoga-banner.jpg')"
       }}
     >
-      {}
       <div className="absolute inset-0 bg-white/70 pt-20 sm:pt-24" />
       <Header />
 
      <div className="relative z-10 container mx-auto px-4 lg:px-6 py-6 lg:py-10 space-y-6 pb-20 max-w-6xl">
-        {}
         <div className="flex items-center gap-3 bg-white border border-slate-200 px-4 py-3">
           <button
             onClick={() => navigate('/registration')}
@@ -235,9 +233,7 @@ const CheckoutPage = () => {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6">
-          {}
           <section className="lg:col-span-2 space-y-5">
-            {}
             <div className="bg-white border border-slate-200 px-4 py-4">
               <h2 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
                 <User className="w-4 h-4 text-[#9c3253]" />
@@ -279,7 +275,6 @@ const CheckoutPage = () => {
               </div>
             </div>
 
-            {}
             <div className="bg-white border border-slate-200 px-4 py-4">
               <h2 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
                 <CreditCard className="w-4 h-4 text-[#9c3253]" />
@@ -306,6 +301,13 @@ const CheckoutPage = () => {
                     {getRegistrationTypeText(registration.registrationType)}
                   </p>
                 </div>
+                {registration.addAoaCourse && (
+                  <div className="bg-purple-50 border border-purple-300 px-3 py-2 rounded">
+                    <p className="text-[11px] text-purple-700 font-medium">
+                      + AOA Certified Course Add-on
+                    </p>
+                  </div>
+                )}
                 {registration.lifetimeMembershipId && (
                   <div className="border border-[#ff8a1f]/20 bg-[#ff8a1f]/5 px-3 py-2 flex items-center gap-2 rounded">
                     <Award className="w-4 h-4 text-[#ff8a1f]" />
@@ -320,7 +322,6 @@ const CheckoutPage = () => {
               </div>
             </div>
 
-            {}
             <div className="bg-white border border-slate-200 px-4 py-4">
               <h3 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-[#7cb342]" />
@@ -355,10 +356,15 @@ const CheckoutPage = () => {
                     Lifetime AOA membership
                   </li>
                 )}
+                {registration.addAoaCourse && (
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                    Hands-on AOA Certified Course + Certificate
+                  </li>
+                )}
               </ul>
             </div>
 
-            {}
             <div className="bg-white border border-slate-200 px-4 py-4">
               <h3 className="text-sm font-semibold text-slate-900 mb-3">
                 Event details
@@ -389,47 +395,52 @@ const CheckoutPage = () => {
               </h3>
 
               {}
-              <div className="border border-[#9c3253]/20 bg-[#9c3253]/5 px-3 py-3 text-center mb-4">
-                <p className="text-xs text-slate-500 mb-1">Total amount</p>
-                <p className="text-lg font-semibold text-[#9c3253]">
+              <div className="border border-[#9c3253]/20 bg-[#9c3253]/5 px-3 py-3 text-center mb-4 rounded-lg">
+                <p className="text-xs text-slate-500 mb-1">Final Amount Payable</p>
+                <p className="text-lg font-bold text-[#9c3253]">
                   ₹{registration.totalAmount?.toLocaleString()}
                 </p>
-                <p className="text-[10px] text-[#ff8a1f] font-medium">Inclusive of 18% GST</p>
+                <p className="text-[10px] text-[#ff8a1f] font-medium mt-1">
+                  Incl. GST & Processing Fee
+                </p>
               </div>
 
               {}
-              <div className="space-y-2 mb-4 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-slate-600">Package (excl. GST)</span>
-                  <span className="font-medium text-slate-900">
-                    ₹{(registration.totalAmount - registration.gst)?.toLocaleString() || 'N/A'}
-                  </span>
+              <div className="space-y-2 mb-4">
+                <div className="flex justify-between text-xs">
+                  <span className="text-slate-600">Conference Package</span>
+                  <span className="font-medium">₹{registration.packageBase.toLocaleString()}</span>
                 </div>
 
-                {registration.basePrice > 0 && (
-                  <div className="flex justify-between text-[#9c3253] font-medium">
-                    <span>Conference fee</span>
-                    <span>₹{registration.basePrice.toLocaleString()}</span>
+                {registration.addAoaCourse && (
+                  <div className="flex justify-between text-xs text-purple-700 font-medium">
+                    <span>AOA Certified Course Add-on</span>
+                    <span>₹{registration.aoaCourseBase.toLocaleString()}</span>
                   </div>
                 )}
 
-                {registration.workshopPrice > 0 && (
-                  <div className="flex justify-between text-[#ff8a1f] font-medium">
-                    <span>Workshop fee</span>
-                    <span>₹{registration.workshopPrice.toLocaleString()}</span>
+                {registration.accompanyingPersons > 0 && (
+                  <div className="flex justify-between text-xs text-orange-600">
+                    <span>Accompanying ({registration.accompanyingPersons})</span>
+                    <span>₹{registration.accompanyingBase.toLocaleString()}</span>
                   </div>
                 )}
 
-                {registration.comboDiscount > 0 && (
-                  <div className="flex justify-between text-[#7cb342] font-medium">
-                    <span>Combo discount</span>
-                    <span>-₹{registration.comboDiscount.toLocaleString()}</span>
+                <div className="border-t border-slate-200 pt-2 mt-3">
+                  <div className="flex justify-between font-medium">
+                    <span>Total Base Amount</span>
+                    <span>₹{registration.totalBase.toLocaleString()}</span>
                   </div>
-                )}
+                </div>
 
-                <div className="flex justify-between pt-2 border-t border-slate-200">
-                  <span className="text-slate-600 font-medium">GST (18%)</span>
-                  <span className="font-bold text-[#9c3253]">₹{registration.gst?.toLocaleString()}</span>
+                <div className="flex justify-between text-green-700 text-xs">
+                  <span>GST (18%)</span>
+                  <span>+₹{registration.totalGST.toLocaleString()}</span>
+                </div>
+
+                <div className="flex justify-between text-amber-700 text-xs">
+                  <span>Processing Fee (1.65%)</span>
+                  <span>+₹{registration.processingFee.toLocaleString()}</span>
                 </div>
               </div>
 

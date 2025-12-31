@@ -1,3 +1,4 @@
+// RegistrationPage.jsx - FULL CODE WITH EDIT SUPPORT
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -14,6 +15,7 @@ import {
   XCircle,
   Plus,
   Minus,
+  Edit3,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
@@ -33,7 +35,9 @@ const RegistrationPage = () => {
     registrationType: '',
     selectedWorkshop: '',
     accompanyingPersons: 0,
+    addAoaCourse: false,
   });
+  const [existingRegistration, setExistingRegistration] = useState(null);
   const [pricing, setPricing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -46,21 +50,33 @@ const RegistrationPage = () => {
 
   useEffect(() => {
     if (user) {
-      fetchPricing();
+      fetchPricingAndRegistration();
     }
   }, [authLoading, user]);
 
-  const fetchPricing = async () => {
+  const fetchPricingAndRegistration = async () => {
     setLoading(true);
     setError('');
     try {
-      const response = await registrationAPI.getPricing();
-      setPricing(response.data);
+      const [pricingRes, regRes] = await Promise.all([
+        registrationAPI.getPricing(),
+        registrationAPI.getMyRegistration().catch(() => null),
+      ]);
+
+      setPricing(pricingRes.data);
+
+      if (regRes?.data) {
+        const reg = regRes.data;
+        setExistingRegistration(reg);
+        setFormData({
+          registrationType: reg.registrationType,
+          selectedWorkshop: reg.selectedWorkshop || '',
+          accompanyingPersons: reg.accompanyingPersons || 0,
+          addAoaCourse: reg.addAoaCourse || false,
+        });
+      }
     } catch (err) {
-      setError(
-        err?.response?.data?.message ||
-        'Failed to load pricing. Please try again later.'
-      );
+      setError('Failed to load data. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -69,7 +85,6 @@ const RegistrationPage = () => {
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     if (file.type !== 'application/pdf') {
       setError('Please upload a PDF file only');
       return;
@@ -84,6 +99,7 @@ const RegistrationPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
 
     if (!formData.registrationType) {
       setError('Please select a registration type');
@@ -99,28 +115,20 @@ const RegistrationPage = () => {
       return;
     }
 
-    if (
-      formData.registrationType === 'AOA_CERTIFIED_COURSE' &&
-      user.role === 'PGS'
-    ) {
-      setError('AOA Certified Course is only for AOA and Non-AOA members');
-      return;
-    }
-
-    if (user.role === 'PGS' && !collegeLetter) {
+    if (user.role === 'PGS' && !collegeLetter && !existingRegistration?.collegeLetter) {
       setError('College letter is required for PGS & Fellows');
       return;
     }
 
     if (
-      pricing?.pricing?.[formData.registrationType]?.totalAmount <= 0
+      pricing?.pricing?.[formData.registrationType]?.totalWithoutGST <= 0
     ) {
       setError('This package is not available in the current booking phase');
       return;
     }
 
     if (
-      formData.registrationType === 'AOA_CERTIFIED_COURSE' &&
+      (formData.registrationType === 'AOA_CERTIFIED_COURSE' || formData.addAoaCourse) &&
       pricing?.meta?.aoaCourseFull
     ) {
       setError('AOA Certified Course seats are full');
@@ -128,21 +136,12 @@ const RegistrationPage = () => {
     }
 
     setSubmitting(true);
-    setError('');
-
     try {
       const submitData = new FormData();
       submitData.append('registrationType', formData.registrationType);
-      if (
-        formData.registrationType === 'WORKSHOP_CONFERENCE' ||
-        formData.registrationType === 'COMBO'
-      ) {
-        submitData.append('selectedWorkshop', formData.selectedWorkshop);
-      }
-      submitData.append(
-        'accompanyingPersons',
-        String(formData.accompanyingPersons)
-      );
+      if (isWorkshopType) submitData.append('selectedWorkshop', formData.selectedWorkshop);
+      submitData.append('accompanyingPersons', String(formData.accompanyingPersons));
+      submitData.append('addAoaCourse', String(formData.addAoaCourse));
 
       if (user.role === 'PGS' && collegeLetter) {
         submitData.append('collegeLetter', collegeLetter);
@@ -152,71 +151,42 @@ const RegistrationPage = () => {
       setRegistration(response.data.registration);
       navigate('/checkout');
     } catch (err) {
-      setError(
-        err?.response?.data?.message || 'Registration failed. Please try again.'
-      );
+      setError(err?.response?.data?.message || 'Failed to save registration');
     } finally {
       setSubmitting(false);
     }
   };
 
-  const getBookingPhaseText = (phase) => {
-    const texts = {
-      EARLY_BIRD: 'Early Bird',
-      REGULAR: 'Regular',
-      SPOT: 'Spot Booking',
-    };
-    return texts[phase] || phase;
-  };
+  // Helper functions remain same
+  const getBookingPhaseText = (phase) => ({ EARLY_BIRD: 'Early Bird', REGULAR: 'Regular', SPOT: 'Spot Booking' }[phase] || phase);
+  const getRoleText = (role) => ({ AOA: 'AOA Member', NON_AOA: 'Non-AOA Member', PGS: 'PGS & Fellows' }[role] || role);
+  const getRegistrationTypeDisplay = (type) => ({
+    CONFERENCE_ONLY: 'Conference Only',
+    WORKSHOP_CONFERENCE: 'Workshop + Conference',
+    COMBO: 'Combo Package',
+    AOA_CERTIFIED_COURSE: 'AOA Certified Course Only',
+  }[type] || type);
 
-  const getRoleText = (role) => {
-    const texts = {
-      AOA: 'AOA Member',
-      NON_AOA: 'Non-AOA Member',
-      PGS: 'PGS & Fellows',
-    };
-    return texts[role] || role;
-  };
+  const isWorkshopType = ['WORKSHOP_CONFERENCE', 'COMBO'].includes(formData.registrationType);
+  const isConferenceOnly = formData.registrationType === 'CONFERENCE_ONLY';
+  const canAddAoaCourse = (user?.role === 'AOA' || user?.role === 'NON_AOA') && isConferenceOnly;
+  const aoaAddOn = pricing?.addOns?.aoaCourseAddOn;
 
-  const getRegistrationTypeDisplay = (type) => {
-    const display = {
-      CONFERENCE_ONLY: 'Conference Only',
-      WORKSHOP_CONFERENCE: 'Workshop + Conference',
-      COMBO: 'Combo Package',
-      AOA_CERTIFIED_COURSE: 'AOA Certified Course Only',
-    };
-    return display[type] || type;
-  };
-
-  const isWorkshopType =
-    formData.registrationType === 'WORKSHOP_CONFERENCE' ||
-    formData.registrationType === 'COMBO';
-
-  const isAOACourse = formData.registrationType === 'AOA_CERTIFIED_COURSE';
-
-  // Accompanying persons are now allowed for ALL categories (including AOA Certified Course)
-  const getAccompanyingPrice = () =>
-    formData.accompanyingPersons * 7000;
-
-  const getTotalAmount = () => {
-    if (
-      !formData.registrationType ||
-      !pricing?.pricing?.[formData.registrationType]
-    )
-      return 0;
-    const baseTotal =
-      pricing.pricing[formData.registrationType].totalAmount || 0;
-    return baseTotal + getAccompanyingPrice();
-  };
+  const packageBase = pricing?.pricing?.[formData.registrationType]?.totalWithoutGST || 0;
+  const accompanyingBase = formData.accompanyingPersons * 7000;
+  const aoaBase = formData.addAoaCourse ? (aoaAddOn?.priceWithoutGST || 0) : 0;
+  const totalBaseAmount = packageBase + accompanyingBase + aoaBase;
+  const totalGST = Math.round(totalBaseAmount * 0.18);
+  const subtotalWithGST = totalBaseAmount + totalGST;
+  const processingFee = Math.round(subtotalWithGST * 0.0165);
+  const finalAmount = subtotalWithGST + processingFee;
 
   const shouldHideAOACourse = user?.role === 'PGS';
 
   if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-cover bg-center bg-no-repeat relative flex items-center justify-center"
-        style={{
-          backgroundImage: "url('https://www.justmbbs.com/img/college/karnataka/shimoga-institute-of-medical-sciences-shimoga-banner.jpg')"
-        }}
+        style={{ backgroundImage: "url('https://www.justmbbs.com/img/college/karnataka/shimoga-institute-of-medical-sciences-shimoga-banner.jpg')" }}
       >
         <div className="absolute inset-0 bg-black/70" />
         <LoadingSpinner size="md" text="Loading registration..." />
@@ -230,16 +200,12 @@ const RegistrationPage = () => {
   }
 
   return (
-    <div 
-      className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-      style={{
-        backgroundImage: "url('https://www.justmbbs.com/img/college/karnataka/shimoga-institute-of-medical-sciences-shimoga-banner.jpg')"
-      }}
+    <div className="min-h-screen bg-cover bg-center bg-no-repeat relative"
+      style={{ backgroundImage: "url('https://www.justmbbs.com/img/college/karnataka/shimoga-institute-of-medical-sciences-shimoga-banner.jpg')" }}
     >
       <div className="absolute inset-0 bg-white/70 pt-20 sm:pt-24" />
-      
       <Header />
-      
+
       <div className="relative z-10 container mx-auto px-4 lg:px-6 py-6 lg:py-10 space-y-6 pb-20 max-w-6xl">
         <div className="bg-white/95 backdrop-blur-xl border border-white/40 px-4 py-4 rounded-lg">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -248,10 +214,12 @@ const RegistrationPage = () => {
                 AOACON 2026 • Shivamogga
               </p>
               <h1 className="text-lg font-semibold text-slate-900 mt-1">
-                Conference Registration
+                {existingRegistration ? 'Edit Registration' : 'Conference Registration'}
               </h1>
               <p className="text-xs text-slate-600 mt-1">
-                Register for the annual AOACON conference, workshops and AOA certified course.
+                {existingRegistration
+                  ? 'You can update your registration details below.'
+                  : 'Register for the annual AOACON conference, workshops and AOA certified course.'}
               </p>
             </div>
             <div className="flex flex-col items-start sm:items-end gap-1 text-xs">
@@ -262,9 +230,7 @@ const RegistrationPage = () => {
               {pricing && (
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ff8a1f]/10 text-[#ff8a1f] border border-[#ff8a1f]/30">
                   <Clock className="w-3.5 h-3.5" />
-                  <span className="font-medium">
-                    {getBookingPhaseText(pricing.bookingPhase)}
-                  </span>
+                  <span className="font-medium">{getBookingPhaseText(pricing.bookingPhase)}</span>
                 </div>
               )}
             </div>
@@ -278,8 +244,31 @@ const RegistrationPage = () => {
           </div>
         )}
 
+        {}
+        {existingRegistration && (
+          <div className="bg-gradient-to-r from-[#9c3253]/10 to-[#ff8a1f]/10 border border-[#9c3253]/30 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Edit3 className="w-5 h-5 text-[#9c3253]" />
+                <div>
+                  <p className="font-medium text-slate-900">Current Registration</p>
+                  <p className="text-xs text-slate-600">
+                    {getRegistrationTypeDisplay(existingRegistration.registrationType)}
+                    {existingRegistration.addAoaCourse && ' + AOA Course'}
+                    {' • '} #{existingRegistration.registrationNumber}
+                  </p>
+                </div>
+              </div>
+              <span className="text-sm font-bold text-[#9c3253]">
+                ₹{existingRegistration.totalAmount.toLocaleString()}
+              </span>
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6">
           <section className="lg:col-span-2 space-y-5">
+            {}
             <div className="bg-white/90 backdrop-blur-xl border border-white/40 px-4 py-4 rounded-lg">
               <h2 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
                 <User className="w-4 h-4 text-[#9c3253]" />
@@ -319,6 +308,7 @@ const RegistrationPage = () => {
               </div>
             </div>
 
+            {}
             {user?.role === 'PGS' && (
               <div className="bg-white/90 backdrop-blur-xl border border-white/40 px-4 py-4 rounded-lg">
                 <h2 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
@@ -327,18 +317,16 @@ const RegistrationPage = () => {
                   <span className="text-[11px] font-normal text-slate-500">(required for PGS)</span>
                 </h2>
                 <div className="border border-dashed border-[#7cb342]/30 bg-[#7cb342]/5 px-4 py-6 text-center rounded">
+                  {existingRegistration?.collegeLetter ? (
+                    <p className="text-sm text-[#7cb342] font-medium mb-3">Letter already uploaded</p>
+                  ) : null}
                   <FileText className="w-8 h-8 text-[#7cb342] mx-auto mb-2" />
                   <p className="text-xs text-slate-700 mb-2">
                     Upload signed letter from your institution (PDF, max 5MB).
                   </p>
                   <label className="inline-flex items-center px-4 py-2 rounded border border-[#9c3253] text-[#9c3253] text-xs font-medium bg-[#9c3253]/5 hover:bg-[#9c3253]/10 cursor-pointer transition-colors">
-                    Choose PDF file
-                    <input
-                      type="file"
-                      accept=".pdf"
-                      onChange={handleFileChange}
-                      className="sr-only"
-                    />
+                    {collegeLetter ? 'Change PDF' : 'Choose PDF file'}
+                    <input type="file" accept=".pdf" onChange={handleFileChange} className="sr-only" />
                   </label>
                   {collegeLetter && (
                     <p className="mt-2 text-xs text-[#7cb342] truncate">
@@ -349,7 +337,9 @@ const RegistrationPage = () => {
               </div>
             )}
 
+            {}
             <form onSubmit={handleSubmit} className="space-y-5">
+              {}
               <div className="bg-white/90 backdrop-blur-xl border border-white/40 px-4 py-4 rounded-lg">
                 <h2 className="text-sm font-semibold text-slate-900 mb-3">
                   Select registration type
@@ -357,11 +347,9 @@ const RegistrationPage = () => {
                 <div className="space-y-3">
                   {pricing ? (
                     Object.entries(pricing.pricing)
-                      .filter(([type]) =>
-                        shouldHideAOACourse ? type !== 'AOA_CERTIFIED_COURSE' : true
-                      )
+                      .filter(([type]) => shouldHideAOACourse ? type !== 'AOA_CERTIFIED_COURSE' : true)
                       .map(([type, priceData]) => {
-                        const isAvailable = priceData.totalAmount > 0;
+                        const isAvailable = priceData.totalWithoutGST > 0;
                         const isSelected = formData.registrationType === type;
 
                         return (
@@ -376,14 +364,11 @@ const RegistrationPage = () => {
                             }`}
                             onClick={() => {
                               if (isAvailable) {
-                                setFormData((prev) => ({
+                                setFormData(prev => ({
                                   ...prev,
                                   registrationType: type,
-                                  selectedWorkshop:
-                                    type === 'AOA_CERTIFIED_COURSE'
-                                      ? ''
-                                      : prev.selectedWorkshop,
-                                  // accompanyingPersons remains unchanged (can be >0 now)
+                                  selectedWorkshop: type === 'AOA_CERTIFIED_COURSE' ? '' : prev.selectedWorkshop,
+                                  addAoaCourse: type === 'CONFERENCE_ONLY' ? prev.addAoaCourse : false,
                                 }));
                                 setError('');
                               }
@@ -397,15 +382,7 @@ const RegistrationPage = () => {
                                   value={type}
                                   checked={isSelected}
                                   disabled={!isAvailable}
-                                  onChange={(e) => {
-                                    if (isAvailable) {
-                                      setFormData((prev) => ({
-                                        ...prev,
-                                        registrationType: e.target.value,
-                                      }));
-                                      setError('');
-                                    }
-                                  }}
+                                  onChange={() => {}}
                                   className="mt-0.5 h-4 w-4 text-[#9c3253] border-slate-300"
                                 />
                                 <div>
@@ -413,14 +390,10 @@ const RegistrationPage = () => {
                                     {getRegistrationTypeDisplay(type)}
                                   </p>
                                   <p className="text-[11px] text-slate-600 mt-0.5">
-                                    {type === 'CONFERENCE_ONLY' &&
-                                      'All conference sessions, materials and certificate.'}
-                                    {type === 'WORKSHOP_CONFERENCE' &&
-                                      'Workshop access plus all conference sessions.'}
-                                    {type === 'COMBO' &&
-                                      'Conference, workshop and combo benefits.'}
-                                    {type === 'AOA_CERTIFIED_COURSE' &&
-                                      'Standalone AOA Certified Course only (limited 40 seats).'}
+                                    {type === 'CONFERENCE_ONLY' && 'All conference sessions, materials and certificate.'}
+                                    {type === 'WORKSHOP_CONFERENCE' && 'Workshop access plus all conference sessions.'}
+                                    {type === 'COMBO' && 'Conference, workshop and combo benefits.'}
+                                    {type === 'AOA_CERTIFIED_COURSE' && 'Standalone AOA Certified Course only (limited 40 seats).'}
                                   </p>
                                   {type === 'AOA_CERTIFIED_COURSE' && (
                                     <p className="mt-1 text-[11px] text-[#7cb342] flex items-center gap-1">
@@ -440,10 +413,10 @@ const RegistrationPage = () => {
                                 {isAvailable ? (
                                   <>
                                     <p className="text-sm font-semibold text-[#9c3253]">
-                                      ₹{priceData.totalAmount.toLocaleString()}
+                                      ₹{priceData.totalWithoutGST.toLocaleString()}
                                     </p>
                                     <p className="text-[11px] text-[#ff8a1f]">
-                                      Incl. 18% GST
+                                      + ₹{priceData.gst.toLocaleString()} GST
                                     </p>
                                   </>
                                 ) : (
@@ -456,18 +429,39 @@ const RegistrationPage = () => {
                       })
                   ) : (
                     <div className="rounded border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-xs text-slate-600">
-                      Pricing is not available.{' '}
-                      <button
-                        type="button"
-                        onClick={fetchPricing}
-                        className="text-[#9c3253] font-medium underline underline-offset-2"
-                      >
-                        Retry
-                      </button>
+                      Pricing loading...
                     </div>
                   )}
                 </div>
               </div>
+
+              {}
+              {canAddAoaCourse && aoaAddOn && (
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-400 rounded-lg p-4">
+                  <label className="flex items-center gap-4 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.addAoaCourse}
+                      onChange={(e) => setFormData(prev => ({ ...prev, addAoaCourse: e.target.checked }))}
+                      disabled={pricing?.meta?.aoaCourseFull}
+                      className="w-5 h-5 text-purple-600 rounded"
+                    />
+                    <div className="flex-1">
+                      <p className="font-medium text-purple-900">
+                        Add AOA Certified Course to your Conference registration
+                      </p>
+                      <p className="text-xs text-purple-700 mt-1">
+                        ₹{aoaAddOn.priceWithoutGST.toLocaleString()} + ₹{aoaAddOn.gst.toLocaleString()} GST
+                        {' • '}
+                        Only {40 - (pricing.meta.aoaCourseCount || 0)} seats left
+                      </p>
+                      {pricing?.meta?.aoaCourseFull && (
+                        <p className="text-xs text-red-600 mt-1">Seats full</p>
+                      )}
+                    </div>
+                  </label>
+                </div>
+              )}
 
               {isWorkshopType && (
                 <div className="bg-white/90 backdrop-blur-xl border border-white/40 px-4 py-4 rounded-lg">
@@ -484,12 +478,7 @@ const RegistrationPage = () => {
                             ? 'border-[#7cb342] bg-[#7cb342]/5'
                             : 'border-slate-200 bg-white hover:border-[#ff8a1f] hover:bg-[#ff8a1f]/5'
                         }`}
-                        onClick={() =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            selectedWorkshop: workshop.id,
-                          }))
-                        }
+                        onClick={() => setFormData(prev => ({ ...prev, selectedWorkshop: workshop.id }))}
                       >
                         <div className="flex items-start gap-2">
                           <input
@@ -510,6 +499,7 @@ const RegistrationPage = () => {
                 </div>
               )}
 
+              {}
               <div className="bg-white/90 backdrop-blur-xl border border-white/40 px-4 py-4 rounded-lg">
                 <h2 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
                   <UsersIcon className="w-4 h-4 text-[#9c3253]" />
@@ -518,22 +508,15 @@ const RegistrationPage = () => {
                 <div className="flex items-center justify-between border border-slate-200 bg-[#ff8a1f]/5 px-3 py-3 text-xs rounded">
                   <div>
                     <p className="font-medium text-slate-900">Add accompanying person(s)</p>
-                    <p className="text-[11px] text-[#7cb342]">
-                      ₹7,000 per person
-                    </p>
+                    <p className="text-[11px] text-[#7cb342]">₹7,000 per person</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
-                      onClick={() =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          accompanyingPersons: Math.max(
-                            0,
-                            prev.accompanyingPersons - 1
-                          ),
-                        }))
-                      }
+                      onClick={() => setFormData(prev => ({
+                        ...prev,
+                        accompanyingPersons: Math.max(0, prev.accompanyingPersons - 1),
+                      }))}
                       disabled={formData.accompanyingPersons === 0}
                       className="inline-flex h-8 w-8 items-center justify-center rounded border border-slate-200 bg-white text-slate-600 text-sm disabled:opacity-40 hover:bg-[#9c3253]/5"
                     >
@@ -544,12 +527,10 @@ const RegistrationPage = () => {
                     </span>
                     <button
                       type="button"
-                      onClick={() =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          accompanyingPersons: prev.accompanyingPersons + 1,
-                        }))
-                      }
+                      onClick={() => setFormData(prev => ({
+                        ...prev,
+                        accompanyingPersons: prev.accompanyingPersons + 1,
+                      }))}
                       className="inline-flex h-8 w-8 items-center justify-center rounded border border-slate-200 bg-white text-slate-600 text-sm hover:bg-[#9c3253]/5"
                     >
                       <Plus className="w-3 h-3" />
@@ -558,11 +539,12 @@ const RegistrationPage = () => {
                 </div>
                 {formData.accompanyingPersons > 0 && (
                   <p className="mt-2 text-xs text-[#ff8a1f] font-medium">
-                    Extra amount: ₹{getAccompanyingPrice().toLocaleString()}
+                    Extra amount: ₹{accompanyingBase.toLocaleString()}
                   </p>
                 )}
               </div>
 
+              {}
               <button
                 type="submit"
                 disabled={submitting || !formData.registrationType}
@@ -570,16 +552,16 @@ const RegistrationPage = () => {
               >
                 {submitting ? (
                   <LoadingSpinner size="sm" />
+                ) : existingRegistration ? (
+                  <>Update Registration <Edit3 className="w-4 h-4" /></>
                 ) : (
-                  <>
-                    Proceed to payment
-                    <ArrowRight className="w-4 h-4" />
-                  </>
+                  <>Proceed to payment <ArrowRight className="w-4 h-4" /></>
                 )}
               </button>
             </form>
           </section>
 
+          {}
           <aside className="space-y-4 lg:sticky lg:top-24">
             <div className="bg-white/90 backdrop-blur-xl border border-white/40 px-4 py-4 text-xs rounded-lg">
               <h2 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
@@ -587,50 +569,76 @@ const RegistrationPage = () => {
                 Order summary
               </h2>
 
-              {formData.registrationType &&
-              pricing?.pricing?.[formData.registrationType] ? (
+              {formData.registrationType && totalBaseAmount > 0 ? (
                 <>
                   <div className="border border-[#ff8a1f]/20 bg-[#ff8a1f]/5 px-3 py-3 mb-3 rounded">
                     <p className="text-[11px] text-slate-500 mb-1">Selected package</p>
                     <p className="font-medium text-slate-900">
                       {getRegistrationTypeDisplay(formData.registrationType)}
                     </p>
+                    {formData.addAoaCourse && (
+                      <p className="mt-1 text-[11px] text-purple-700 font-medium">+ AOA Certified Course</p>
+                    )}
                     {isWorkshopType && formData.selectedWorkshop && (
                       <p className="mt-1 inline-flex items-center rounded-full bg-[#7cb342]/10 px-2 py-0.5 text-[10px] text-[#7cb342] border border-[#7cb342]/30">
-                        {
-                          WORKSHOPS.find(
-                            (w) => w.id === formData.selectedWorkshop
-                          )?.name
-                        }
+                        {WORKSHOPS.find(w => w.id === formData.selectedWorkshop)?.name}
                       </p>
                     )}
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-slate-600">Package (incl. GST)</span>
-                      <span className="font-medium text-[#9c3253]">
-                        ₹
-                        {pricing.pricing[
-                          formData.registrationType
-                        ].totalAmount.toLocaleString()}
-                      </span>
+                      <span className="text-slate-600">Package</span>
+                      <span>₹{packageBase.toLocaleString()}</span>
                     </div>
+                    {formData.addAoaCourse && (
+                      <div className="flex justify-between text-purple-700">
+                        <span>AOA Course Add-on</span>
+                        <span>₹{aoaBase.toLocaleString()}</span>
+                      </div>
+                    )}
                     {formData.accompanyingPersons > 0 && (
                       <div className="flex justify-between text-[#ff8a1f]">
                         <span>Accompanying ({formData.accompanyingPersons})</span>
-                        <span>+₹{getAccompanyingPrice().toLocaleString()}</span>
+                        <span>₹{accompanyingBase.toLocaleString()}</span>
                       </div>
                     )}
+
+                    <div className="border-t border-slate-200 pt-2 mt-3">
+                      <div className="flex justify-between font-medium">
+                        <span>Total Base Amount</span>
+                        <span>₹{totalBaseAmount.toLocaleString()}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between text-green-700">
+                      <span>GST (18%)</span>
+                      <span>+₹{totalGST.toLocaleString()}</span>
+                    </div>
+
+                    <div className="border-t border-slate-200 pt-2 mt-3">
+                      <div className="flex justify-between font-medium">
+                        <span>Subtotal (incl. GST)</span>
+                        <span>₹{subtotalWithGST.toLocaleString()}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between text-amber-700">
+                      <span>Processing Fee (1.65%)</span>
+                      <span>+₹{processingFee.toLocaleString()}</span>
+                    </div>
                   </div>
 
-                  <div className="mt-4 border-t border-slate-200 pt-3">
+                  <div className="mt-4 border-t-2 border-[#9c3253] pt-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-semibold text-slate-900">Total payable</span>
-                      <span className="text-lg font-semibold text-[#9c3253]">
-                        ₹{getTotalAmount().toLocaleString()}
+                      <span className="text-sm font-bold text-slate-900">Final Amount</span>
+                      <span className="text-lg font-bold text-[#9c3253]">
+                        ₹{finalAmount.toLocaleString()}
                       </span>
                     </div>
+                    <p className="text-[10px] text-slate-500 text-right mt-1">
+                      Payable via Razorpay
+                    </p>
                   </div>
                 </>
               ) : (
