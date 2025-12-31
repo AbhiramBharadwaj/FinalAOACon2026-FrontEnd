@@ -87,7 +87,7 @@ const committees = [
     ],
   },
     {
-    sectionTitle: 'Core Organizing Team',
+    sectionTitle: '',
     roles: [
       {
         role: 'Organizing Chairperson',
@@ -347,40 +347,61 @@ const CommitteePage = () => {
         </div>
 
         {}
-    <div className="space-y-10 lg:space-y-12">
-  {committees.map((section) => (
-    <section key={section.sectionTitle} className="px-2 sm:px-4">
-      <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-[#0b5f73] text-center mb-8">
-        - {section.sectionTitle} -
-      </h2>
+        <div className="space-y-10 lg:space-y-12">
+          {committees.map((section, sectionIndex) => {
+            const showSectionTitle =
+              section.sectionTitle === 'Chief Patron' || section.sectionTitle === 'Patrons';
+            const showRoleTitle = !showSectionTitle;
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6 sm:gap-8 justify-center mx-auto max-w-7xl">
-        {section.roles.flatMap((roleBlock) => roleBlock.members).map((m, index) => (
-          <div
-            key={`${section.sectionTitle}-${m.name}-${index}`}
-            className="bg-white rounded-[18px] border border-slate-200 shadow-md px-6 py-6 text-center flex flex-col justify-between"
-          >
-            <div className="mx-auto w-28 h-28 rounded-full border-[2px] border-dotted border-[#8d3c6d] p-1">
-              <img
-                src={m.image}
-                alt={m.name}
-                className="w-full h-full rounded-full object-cover"
-                loading="lazy"
-              />
-            </div>
+            return (
+              <section key={section.sectionTitle} className="px-2 sm:px-4">
+                {showSectionTitle && (
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-[#0b5f73] text-center mb-8">
+                    - {section.sectionTitle} -
+                  </h2>
+                )}
 
-            <p className="mt-4 text-sm sm:text-lg font-semibold text-[#e11d74]">
-              {m.name}
-            </p>
-            <p className="text-xs sm:text-base font-semibold text-[#3a3a8a]">
-              {m.designation}
-            </p>
-          </div>
-        ))}
-      </div>
-    </section>
-  ))}
-</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6 sm:gap-8 justify-center mx-auto max-w-7xl">
+                  {section.roles.flatMap((roleBlock) =>
+                    roleBlock.members.map((member, index) => (
+                      <div
+                        key={`${section.sectionTitle}-${member.name}-${index}`}
+                        className="text-center"
+                      >
+                        {showRoleTitle && (
+                          <p className="text-base sm:text-lg font-semibold text-[#0b5f73] mb-4 uppercase tracking-wide">
+                            {roleBlock.role}
+                          </p>
+                        )}
+                        <div className="bg-white rounded-[18px] border border-slate-200 shadow-md px-6 py-6 text-center flex flex-col justify-between">
+                          <div className="mx-auto w-28 h-28 rounded-full border-[2px] border-dotted border-[#8d3c6d] p-1">
+                            <img
+                              src={member.image}
+                              alt={member.name}
+                              className="w-full h-full rounded-full object-cover"
+                              loading="lazy"
+                            />
+                          </div>
+
+                          <p className="mt-4 text-sm sm:text-lg font-semibold text-[#e11d74]">
+                            {member.name}
+                          </p>
+                          <p className="text-xs sm:text-base font-semibold text-[#3a3a8a]">
+                            {member.designation}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {sectionIndex === 1 && (
+                  <div className="h-10 sm:h-14 lg:h-16" aria-hidden="true" />
+                )}
+              </section>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
