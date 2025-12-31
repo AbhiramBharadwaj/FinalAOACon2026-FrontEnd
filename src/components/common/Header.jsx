@@ -35,8 +35,8 @@ const MobileDrawer = ({ open, onClose }) => {
     { label: 'Venue', path: '/venue', icon: MapPin },
     { label: 'Accommodation', path: '/accommodation', icon: Hotel },
     { label: 'AOA Office Bearers', path: '/office-bearers', icon: UserSquareIcon },
+    { label: 'Program Schedule (Coming Soon)', icon: Calendar, disabled: true },
     { label: 'Abstract', path: '/abstract/rules', icon: FileText },
-    { label: 'Program Schedule', path: '/conference-days', icon: Calendar },
     { label: 'Registration Details', path: '/register-details', icon: FileText },
     { label: 'Downloads', path: '/download', icon: Download },
     { label: 'Contact', path: '/contact', icon: Phone },
@@ -87,10 +87,17 @@ const MobileDrawer = ({ open, onClose }) => {
                 <button
                   key={item.label}
                   onClick={() => {
-                    navigate(item.path);
-                    onClose();
+                    if (!item.disabled && item.path) {
+                      navigate(item.path);
+                      onClose();
+                    }
                   }}
-                  className="flex items-center gap-3 w-full px-3 py-2 rounded-2xl text-left text-sm bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-[#005aa9]/40 hover:text-[#005aa9] transition-all"
+                  className={`flex items-center gap-3 w-full px-3 py-2 rounded-2xl text-left text-sm border transition-all ${
+                    item.disabled
+                      ? 'bg-slate-50 text-slate-400 border-slate-100 cursor-not-allowed'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-[#005aa9]/40 hover:text-[#005aa9]'
+                  }`}
+                  disabled={item.disabled}
                 >
                   <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-slate-50 border border-slate-200 text-slate-500">
                     <Icon className="w-4 h-4" />
@@ -146,20 +153,19 @@ const Header = () => {
 
   const navItems = [
     {
-      label: 'Conference',
+      label: 'Committee',
       icon: Users,
       items: [
         { label: 'AOA Office Bearers', path: '/office-bearers', icon: UserSquareIcon },
-        { label: 'Committee', path: '/committee', icon: Users },
-        { label: 'Program Schedule', path: '/conference-days', icon: Calendar },
+        { label: 'Organizing Committee', path: '/committee', icon: Users },
       ],
     },
     {
       label: 'Attendee',
       icon: Hotel,
       items: [
-        { label: 'Venue', path: '/venue', icon: MapPin },
         { label: 'Accommodation', path: '/accommodation', icon: Hotel },
+        { label: 'Program Schedule', path: '/conference-days', icon: Calendar },
         { label: 'Abstract', path: '/abstract/rules', icon: FileText },
         { label: 'Contact', path: '/contact', icon: User },
       ],

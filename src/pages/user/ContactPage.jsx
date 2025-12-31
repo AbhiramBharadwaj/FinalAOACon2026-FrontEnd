@@ -71,47 +71,14 @@ const ContactPage = () => {
 
             {}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-800">
-              <div className="rounded-xl bg-white/90 border border-emerald-100 px-3 py-3 space-y-2">
-                <div>
-                  <p className="font-semibold text-slate-900">Dr. Virupakshappa V</p>
-                  <p className="text-[12px] text-slate-600">(Chief Patron)</p>
-                  <p className="flex items-center gap-1 mt-0.5">
-                    <Phone className="w-3.5 h-3.5 text-slate-500" />
-                    ()
-                  </p>
-                </div>
-                <div>
-                  <p className="font-semibold text-slate-900">Dr. Ravindra GL</p>
-                  <p className="text-[12px] text-slate-600">(Organizing Chairperson)</p>
-                  <p className="flex items-center gap-1 mt-0.5">
-                    <Phone className="w-3.5 h-3.5 text-slate-500" />
-                    9449806508
-                  </p>
-                </div>
+              <div className="rounded-xl bg-white/90 border border-emerald-100 px-3 py-3">
+                <p className="font-semibold text-slate-900">Dr. Champa BV</p>
+                <p className="text-[12px] text-slate-600">(Organizing Secretary)</p>
+                <p className="flex items-center gap-1 mt-0.5">
+                  <Phone className="w-3.5 h-3.5 text-slate-500" />
+                  9740073702
+                </p>
               </div>
-
-              <div className="rounded-xl bg-white/90 border border-emerald-100 px-3 py-3 space-y-2">
-                <div>
-                  <p className="font-semibold text-slate-900">Dr. Champa BV</p>
-                  <p className="text-[12px] text-slate-600">(Organizing Secretary)</p>
-                  <p className="flex items-center gap-1 mt-0.5">
-                    <Phone className="w-3.5 h-3.5 text-slate-500" />
-                    9740073702
-                  </p>
-                </div>
-                <div>
-                  <p className="font-semibold text-slate-900">Dr. Shivkumar M C</p>
-                  <p className="text-[12px] text-slate-600">(Scientific Chairperson)</p>
-                  <p className="flex items-center gap-1 mt-0.5">
-                    <Phone className="w-3.5 h-3.5 text-slate-500" />
-                    -
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {}
-            <div className="grid grid-cols-1 sm:grid-cols-[1.4fr_1fr] gap-3 text-sm text-slate-800">
               <div className="rounded-xl bg-white/90 border border-emerald-100 px-3 py-3">
                 <p className="font-semibold text-slate-900">Dr. Ashwini S</p>
                 <p className="text-[12px] text-slate-600">(Treasurer)</p>

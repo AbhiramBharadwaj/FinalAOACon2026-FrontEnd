@@ -150,7 +150,7 @@ const committees = [
         ],
       },
       {
-        role: 'Members',
+        role: '',
         members: [
           { name: 'Dr Swathi Hegde', designation: '', image: swathiHegdeImg },
           { name: 'Dr Namratha L', designation: '', image: namrathaLImg },
@@ -166,7 +166,7 @@ const committees = [
     sectionTitle: 'Workshops & Courses',
     roles: [
       {
-        role: 'Workshop Team Members',
+        role: '',
         members: [
           { name: 'Dr Yashoda V', designation: 'Workshop Coordinator', image: yashodhaVImg },
           { name: 'Dr Sandhya', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
@@ -206,7 +206,7 @@ const committees = [
     sectionTitle: 'Reception & Registration Team',
     roles: [
       {
-        role: 'Members',
+        role: '',
         members: [
           { name: 'Dr Shruthi Hiremath', designation: '', image: shruthiHiremathImg },
           { name: 'Dr Sushma Pattar', designation: '', image: sushmaPattarImg },
@@ -221,7 +221,7 @@ const committees = [
     sectionTitle: 'Venue Detailing And Hall Coordination',
     roles: [
       {
-        role: 'Members',
+        role: '',
         members: [
           { name: 'Dr Praveen S', designation: '', image: praveenSImg },
           { name: 'Dr Vandana Hebballi', designation: '', image: vandanaHebballiImg },
@@ -233,7 +233,7 @@ const committees = [
     sectionTitle: 'Memento & Awards Team',
     roles: [
       {
-        role: 'Members',
+        role: '',
         members: [
           { name: 'Dr Rashmi', designation: '', image: rashmiSImg },
           { name: 'Dr. Manasa S', designation: '', image: manasaSImg },
@@ -245,7 +245,7 @@ const committees = [
     sectionTitle: 'Travel & Accommodation Team',
     roles: [
       {
-        role: 'Members',
+        role: '',
         members: [
           { name: 'Dr Manjunath B N', designation: '', image: PLACEHOLDER_IMAGE },
           { name: 'Dr Sandeep Koti', designation: '', image: PLACEHOLDER_IMAGE },
@@ -261,7 +261,7 @@ const committees = [
     sectionTitle: 'Hospitality Team',
     roles: [
       {
-        role: 'Members',
+        role: '',
         members: [
           { name: 'Dr Basavaraj', designation: '', image: PLACEHOLDER_IMAGE },
           { name: 'Dr Praveen B J', designation: '', image: PLACEHOLDER_IMAGE },
@@ -275,7 +275,7 @@ const committees = [
     sectionTitle: 'Cultural Team',
     roles: [
       {
-        role: 'Members',
+        role: '',
         members: [
           { name: 'Dr Shobha M M', designation: '', image: PLACEHOLDER_IMAGE },
           { name: 'Dr Shwetha Purohit', designation: '', image: PLACEHOLDER_IMAGE },
@@ -350,8 +350,9 @@ const CommitteePage = () => {
         <div className="space-y-10 lg:space-y-12">
           {committees.map((section, sectionIndex) => {
             const showSectionTitle =
-              section.sectionTitle === 'Chief Patron' || section.sectionTitle === 'Patrons';
-            const showRoleTitle = !showSectionTitle;
+              Boolean(section.sectionTitle) && section.sectionTitle !== 'Core Organizing Team';
+            const showRoleTitle =
+              section.sectionTitle !== 'Chief Patron' && section.sectionTitle !== 'Patrons';
 
             return (
               <section key={section.sectionTitle} className="px-2 sm:px-4">

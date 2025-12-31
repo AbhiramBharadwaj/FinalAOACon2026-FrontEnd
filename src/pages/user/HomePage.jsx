@@ -175,7 +175,7 @@ const HomePage = () => {
             </h2>
             <div className="space-y-1 text-[18px] text-slate-800 leading-relaxed">
               <p className="font-semibold uppercase tracking-[0.25em] text-slate-500">
-                Theme 2026 : Bridging the Urban–Rural Gap in Obstetric Anaesthesia
+                Theme 2026 : Safe Motherhood everywhere: Bridging the Urban – Rural Gap in Obstetric Anaesthesia
               </p>
             </div>
             <div className="space-y-4 text-[18px] text-slate-800 leading-relaxed text-justify">
