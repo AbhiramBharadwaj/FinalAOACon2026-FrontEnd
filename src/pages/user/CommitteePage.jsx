@@ -6,6 +6,66 @@ const PLACEHOLDER_IMAGE =
 
 const committees = [
   {
+    sectionTitle: 'Chief Patron',
+    roles: [
+      {
+        role: 'Dean & Director SIMS, Shivamogg',
+        members: [
+          {
+            name: 'Dr. Virupakshappa V',
+            designation: 'Dean & Director SIMS, Shivamogga',
+            image: PLACEHOLDER_IMAGE,
+          },
+        ],
+      }
+    ],
+  },
+   {
+    sectionTitle: 'Patrons',
+    roles: [
+      {
+        role: 'Medical Director SuIMS, Shivamogga',
+        members: [
+          {
+            name: 'Dr. Nagendra S',
+            designation: 'Medical Director SuIMS, Shivamogga',
+            image: PLACEHOLDER_IMAGE,
+          },
+        ],
+      },
+        {
+        role: 'MLC, Shivamogga Medical Director, Sarji Group of Hospitals Shivamogga',
+        members: [
+          {
+            name: ' Dr. Dhananjaya Sarji',
+            designation: 'MLC, Shivamogga Medical Director, Sarji Group of Hospitals Shivamogga',
+            image: PLACEHOLDER_IMAGE,
+          },
+        ],
+      },
+        {
+        role: 'Head, Dept. of Anaesthesiology, Sahyadri Narayana Multispeciality Hospital Shivamogg',
+        members: [
+          {
+            name: ' Dr. Ajith Kumar Shetty',
+            designation: 'Head, Dept. of Anaesthesiology, Sahyadri Narayana Multispeciality Hospital Shivamogg',
+            image: PLACEHOLDER_IMAGE,
+          },
+        ],
+      },
+        {
+        role: 'CEO Nanjappa Healthcare Shivamogga',
+        members: [
+          {
+            name: 'Dr. Avinash Benakappa',
+            designation: 'CEO Nanjappa Healthcare Shivamogga',
+            image: PLACEHOLDER_IMAGE,
+          },
+        ],
+      }
+    ],
+  },
+    {
     sectionTitle: 'Core Organizing Team',
     roles: [
       {
@@ -13,7 +73,7 @@ const committees = [
         members: [
           {
             name: 'Dr Ravindra G L',
-            designation: 'Organizing Chairperson',
+            designation: 'Chief Consultant, Janani Anaesthesia & Critical Care Services Shivamogga',
             image: PLACEHOLDER_IMAGE,
           },
         ],
@@ -23,7 +83,7 @@ const committees = [
         members: [
           {
             name: 'Dr Champa B V',
-            designation: 'Organizing Secretary',
+            designation: 'Professor and Head Department of Anaesthesiology SIMS, Shivamogga',
             image: PLACEHOLDER_IMAGE,
           },
         ],
@@ -33,7 +93,7 @@ const committees = [
         members: [
           {
             name: 'Dr Ashwini S',
-            designation: 'Treasurer',
+            designation: 'Associate Professor Department of Anaesthesiology SIMS, Shivamogga',
             image: PLACEHOLDER_IMAGE,
           },
         ],
@@ -71,14 +131,54 @@ const committees = [
       {
         role: 'Members',
         members: [
-          { name: 'Dr Namratha L', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Pooja Shah', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Swathi Hegde', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Shashank', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Shreehari', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Soumya Rao', designation: 'Member', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Swathi Hegde', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Namratha L', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Pooja Shah', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Shashank', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Shreehari', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Soumya Rao', designation: '', image: PLACEHOLDER_IMAGE },
         ],
       },
+    ],
+  },
+    {
+    sectionTitle: 'Workshops & Courses',
+    roles: [
+      {
+        role: 'Workshop Team Members',
+        members: [
+          { name: 'Dr Yashoda V', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Sandhya', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
+            { name: 'Dr Vadiraj Kulkarni', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Vikram A C', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Bharath', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Praveen Kumar K R', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
+        
+        ],
+      },
+      // {
+      //   role: 'AOA Obstetric Critical Care Certification Course (2 days)',
+      //   members: [
+      //     { name: 'Dr Yashoda V', designation: 'Course Lead', image: PLACEHOLDER_IMAGE },
+      //     { name: 'Dr Rashmi', designation: 'Course Faculty', image: PLACEHOLDER_IMAGE },
+      //   ],
+      // },
+      // {
+      //   role: 'Labour Analgesia (1 day)',
+      //   members: [{ name: 'Dr Bharath', designation: 'Course Lead', image: PLACEHOLDER_IMAGE }],
+      // },
+      // {
+      //   role: 'Critical Incidents in Obstetric Anaesthesia (1 day)',
+      //   members: [{ name: 'Dr Sandhya', designation: 'Course Lead', image: PLACEHOLDER_IMAGE }],
+      // },
+      // {
+      //   role: 'POCUS in Obstetric Anaesthesia (1 day)',
+      //   members: [{ name: 'Dr Praveen Kumar', designation: 'Course Lead', image: PLACEHOLDER_IMAGE }],
+      // },
+      // {
+      //   role: 'Maternal Collapse & Resuscitation / Obstetric RA Blocks (1 day)',
+      //   members: [{ name: 'Dr Vikram', designation: 'Course Lead', image: PLACEHOLDER_IMAGE }],
+      // },
     ],
   },
   {
@@ -87,12 +187,35 @@ const committees = [
       {
         role: 'Members',
         members: [
-          { name: 'Dr Shruthi Hiremath', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Vikram', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Manasa S', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Sushma Pattar', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Kavya', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Bindu (NH)', designation: 'Member', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Shruthi Hiremath', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Sushma Pattar', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Harish T S', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr. Swetha Purohit', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Bindu T V', designation: '', image: PLACEHOLDER_IMAGE },
+        ],
+      },
+    ],
+  },
+   {
+    sectionTitle: 'Venue Detailing And Hall Coordination',
+    roles: [
+      {
+        role: 'Members',
+        members: [
+          { name: 'Dr Praveen S', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Vandana Hebballi', designation: '', image: PLACEHOLDER_IMAGE },
+        ],
+      },
+    ],
+  },
+   {
+    sectionTitle: 'Memento & Awards Team',
+    roles: [
+      {
+        role: 'Members',
+        members: [
+          { name: 'Dr Rashmi', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr. Manasa S', designation: '', image: PLACEHOLDER_IMAGE },
         ],
       },
     ],
@@ -103,75 +226,26 @@ const committees = [
       {
         role: 'Members',
         members: [
-          { name: 'Dr Manjunath B N', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Sandeep Koti', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Karthik', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Praveen S', designation: 'Member', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Manjunath B N', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Sandeep Koti', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Karthik', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Praveen S', designation: '', image: PLACEHOLDER_IMAGE },
         ],
       },
     ],
   },
+ 
+
   {
-    sectionTitle: 'Venue Detailing Team',
+    sectionTitle: 'Hospitality Team',
     roles: [
       {
         role: 'Members',
         members: [
-          { name: 'Dr Praveen S', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Vandana Hebballi', designation: 'Member', image: PLACEHOLDER_IMAGE },
-        ],
-      },
-    ],
-  },
-  {
-    sectionTitle: 'Workshops & Courses',
-    roles: [
-      {
-        role: 'Workshop Team Members',
-        members: [
-          { name: 'Dr Yashoda V', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Sandhya', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Vikram', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Bharath', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Praveen Kumar', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Vadiraj Kulkarni', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
-        ],
-      },
-      {
-        role: 'AOA Obstetric Critical Care Certification Course (2 days)',
-        members: [
-          { name: 'Dr Yashoda V', designation: 'Course Lead', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Rashmi', designation: 'Course Faculty', image: PLACEHOLDER_IMAGE },
-        ],
-      },
-      {
-        role: 'Labour Analgesia (1 day)',
-        members: [{ name: 'Dr Bharath', designation: 'Course Lead', image: PLACEHOLDER_IMAGE }],
-      },
-      {
-        role: 'Critical Incidents in Obstetric Anaesthesia (1 day)',
-        members: [{ name: 'Dr Sandhya', designation: 'Course Lead', image: PLACEHOLDER_IMAGE }],
-      },
-      {
-        role: 'POCUS in Obstetric Anaesthesia (1 day)',
-        members: [{ name: 'Dr Praveen Kumar', designation: 'Course Lead', image: PLACEHOLDER_IMAGE }],
-      },
-      {
-        role: 'Maternal Collapse & Resuscitation / Obstetric RA Blocks (1 day)',
-        members: [{ name: 'Dr Vikram', designation: 'Course Lead', image: PLACEHOLDER_IMAGE }],
-      },
-    ],
-  },
-  {
-    sectionTitle: 'Food & Banquet Team',
-    roles: [
-      {
-        role: 'Members',
-        members: [
-          { name: 'Dr Basavaraj', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Praveen B J', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Kiran M', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Hemanth K J', designation: 'Member', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Basavaraj', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Praveen B J', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Kiran M', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Hemanth K J', designation: '', image: PLACEHOLDER_IMAGE },
         ],
       },
     ],
@@ -182,27 +256,15 @@ const committees = [
       {
         role: 'Members',
         members: [
-          { name: 'Dr Shobha M M', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Shwetha Purohit', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Vandana Hebballi', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Manasa S', designation: 'Member', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Shobha M M', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Shwetha Purohit', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Vandana Hebballi', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Manasa S', designation: '', image: PLACEHOLDER_IMAGE },
         ],
       },
     ],
   },
-  {
-    sectionTitle: 'Memento & Kits Team',
-    roles: [
-      {
-        role: 'Members',
-        members: [
-          { name: 'Dr Rashmi', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Bindu', designation: 'Member', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Sowmya Rao', designation: 'Member', image: PLACEHOLDER_IMAGE },
-        ],
-      },
-    ],
-  },
+ 
 ];
 
 const CommitteePage = () => {
@@ -264,43 +326,40 @@ const CommitteePage = () => {
         </div>
 
         {}
-        <div className="space-y-10 lg:space-y-12">
-          {committees.map((section) => (
-            <section
-              key={section.sectionTitle}
-              className="px-2 sm:px-4"
-            >
-              <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-[#0b5f73] text-center mb-8">
-                - {section.sectionTitle} -
-              </h2>
+    <div className="space-y-10 lg:space-y-12">
+  {committees.map((section) => (
+    <section key={section.sectionTitle} className="px-2 sm:px-4">
+      <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-[#0b5f73] text-center mb-8">
+        - {section.sectionTitle} -
+      </h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-                {section.roles.flatMap((roleBlock) => roleBlock.members).map((m, index) => (
-                  <div
-                    key={`${section.sectionTitle}-${m.name}-${index}`}
-                    className="bg-white rounded-[18px] border border-slate-200 shadow-md px-6 py-6 text-center"
-                  >
-                    <div className="mx-auto w-28 h-28 rounded-full border-[2px] border-dotted border-[#8d3c6d] p-1">
-                      <img
-                        src={m.image}
-                        alt={m.name}
-                        className="w-full h-full rounded-full object-cover"
-                        loading="lazy"
-                      />
-                    </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6 sm:gap-8 justify-center mx-auto max-w-7xl">
+        {section.roles.flatMap((roleBlock) => roleBlock.members).map((m, index) => (
+          <div
+            key={`${section.sectionTitle}-${m.name}-${index}`}
+            className="bg-white rounded-[18px] border border-slate-200 shadow-md px-6 py-6 text-center flex flex-col justify-between"
+          >
+            <div className="mx-auto w-28 h-28 rounded-full border-[2px] border-dotted border-[#8d3c6d] p-1">
+              <img
+                src={m.image}
+                alt={m.name}
+                className="w-full h-full rounded-full object-cover"
+                loading="lazy"
+              />
+            </div>
 
-                    <p className="mt-4 text-sm sm:text-lg font-semibold text-[#e11d74]">
-                      {m.name}
-                    </p>
-                    <p className="text-xs sm:text-base font-semibold text-[#3a3a8a]">
-                      {m.designation}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
+            <p className="mt-4 text-sm sm:text-lg font-semibold text-[#e11d74]">
+              {m.name}
+            </p>
+            <p className="text-xs sm:text-base font-semibold text-[#3a3a8a]">
+              {m.designation}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+  ))}
+</div>
       </div>
     </div>
   );
