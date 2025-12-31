@@ -23,11 +23,6 @@ const feeRows = [
 ];
 
 const renderCell = (value) => value ?? '—';
-const renderCourseNote = (value) =>
-  value ? (
-    <span className="block text-[10px] text-slate-500 mt-1">+ GST on course</span>
-  ) : null;
-
 const cellBaseClass =
   'border border-slate-300 px-3 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#005aa9] focus-visible:outline-offset-[-2px]';
 
@@ -93,7 +88,7 @@ const RegistrationFeesSection = () => {
                       <th className="border border-slate-200 px-3 py-2" scope="col">
                         <span className="block">Conf + AOA Certified Course</span>
                         <span className="block text-[10px] text-slate-700 font-medium mt-1">
-                          ₹5000 + GST • Limited to 40 • Not for PGs
+                          ₹5000 • Limited to 40 • Not for PGs
                         </span>
                       </th>
                       <th className="border border-slate-200 px-3 py-2" scope="col">
@@ -127,7 +122,6 @@ const RegistrationFeesSection = () => {
                         </td>
                         <td className={cellBaseClass} tabIndex={0} aria-label={`${row.label} ${activeTab} conference plus AOA certified course fee`}>
                           {renderCell(row[activeTab].course)}
-                          {renderCourseNote(row[activeTab].course)}
                         </td>
                         <td className={`${cellBaseClass} font-semibold`} tabIndex={0} aria-label={`${row.label} ${activeTab} combo offer fee`}>
                           {renderCell(row[activeTab].combo)}
@@ -147,7 +141,7 @@ const RegistrationFeesSection = () => {
 
           <div className="rounded-xl overflow-hidden border border-slate-200 bg-white mt-6">
             <div className="bg-[#ff8a1f] text-slate-900 font-semibold px-4 py-3">
-              AOA Certified Course only – ₹5000 + GST (limited 40)
+              AOA Certified Course only – ₹5000 (limited 40)
             </div>
             <div className="w-full overflow-x-auto">
               <table className="w-full text-sm border-collapse min-w-[420px]">
@@ -175,9 +169,6 @@ const RegistrationFeesSection = () => {
                       </th>
                       <td className={cellBaseClass} tabIndex={0} aria-label={`${label} AOA certified course only fee`}>
                         {label === 'PGs & Fellows' ? 'Not available' : '5000'}
-                        {label === 'PGs & Fellows' ? null : (
-                          <span className="block text-[10px] text-slate-500 mt-1">+ GST</span>
-                        )}
                       </td>
                     </tr>
                   ))}

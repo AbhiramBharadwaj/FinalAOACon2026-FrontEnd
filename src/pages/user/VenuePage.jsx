@@ -91,6 +91,19 @@ const VenuePage = () => {
                 coordination will be handled through the conference secretariat located in the OT
                 complex at SIMS.
               </p>
+              <div className="pt-2">
+                <p className="font-semibold">Dr. Champa BV</p>
+                <p>(Organizing Secretary)</p>
+                <p>9740073702</p>
+                <p>
+                  <a
+                    href="mailto:regaoacon2026@gmail.com"
+                    className="underline underline-offset-4"
+                  >
+                    regaoacon2026@gmail.com
+                  </a>
+                </p>
+              </div>
             </div>
           </div>
         </section>
