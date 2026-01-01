@@ -1,6 +1,10 @@
 import { Download, FileText, MapPin, Calendar, Users } from 'lucide-react';
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
+import virupakshappaImg from '../../images/OrganizingComittee/Virupakshappa.jpg';
+import ravindraImg from '../../images/OrganizingComittee/GL-Ravindra.jpg';
+import champaImg from '../../images/OrganizingComittee/Champa.jpg';
+import ashwiniImg from '../../images/OrganizingComittee/Ashwini.png';
 
 const BrochurePage = () => {
   return (
