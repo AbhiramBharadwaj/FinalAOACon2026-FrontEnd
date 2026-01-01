@@ -2,6 +2,7 @@
 import axios from 'axios';
 
 const API_URL = 'https://finalaoa2026-backend.onrender.com/api';
+export const API_BASE_URL = API_URL.replace(/\/api$/, '');
 const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -87,6 +88,10 @@ export const feedbackAPI = {
 export const adminAPI = {
   getDashboard: () => api.get('/admin/dashboard'),
   getRegistrations: (params) => api.get('/admin/registrations', { params }),
+  deleteRegistration: (id) => api.delete(`/admin/registrations/${id}`),
+  getUsers: () => api.get('/admin/users'),
+  deleteUser: (id) => api.delete(`/admin/users/${id}`),
+  bulkDeleteUsers: (ids) => api.post('/admin/users/bulk-delete', { ids }),
   getPayments: (params) => api.get('/admin/payments', { params }),
   createAccommodation: (data) => api.post('/admin/accommodations', data),
   updateAccommodation: (id, data) => api.put(`/admin/accommodations/${id}`, data),

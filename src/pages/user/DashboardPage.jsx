@@ -25,6 +25,7 @@ import {
   accommodationAPI,
   abstractAPI,
   feedbackAPI,
+  API_BASE_URL,
 } from '../../utils/api';
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
@@ -126,6 +127,10 @@ const DashboardPage = () => {
     if (!stepperProgress.abstractUpload) return 3;
     return 4;
   };
+
+  const abstractFileUrl = stats.abstract?.filePath
+    ? `${API_BASE_URL}/${stats.abstract.filePath}`
+    : null;
 
   useEffect(() => {
     fetchDashboardData();
@@ -570,11 +575,21 @@ const DashboardPage = () => {
                     #{stats.abstract.submissionNumber}
                   </p>
                   <button
-                    onClick={() => navigate('/abstract')}
+                    onClick={() => navigate('/abstract/upload')}
                     className="mt-2 w-full rounded-xl bg-[#7cb342] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#68c239]"
                   >
                     View abstract
                   </button>
+                  {abstractFileUrl && (
+                    <a
+                      href={abstractFileUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block w-full text-center rounded-xl border border-[#7cb342]/40 text-[#7cb342] px-4 py-2 text-xs sm:text-sm font-semibold hover:bg-[#7cb342]/10"
+                    >
+                      View uploaded file
+                    </a>
+                  )}
                 </div>
               ) : (
                 <div className="text-center py-8">
@@ -628,10 +643,7 @@ const DashboardPage = () => {
                   <Calendar className="w-4 h-4 text-[#9c3253]" />
                   <span>Oct 30 – Nov 1, 2026</span>
                 </div>
-                <div className="flex items-center gap-2 rounded-xl bg-[#ff8a1f]/5 px-3 py-2 border border-[#ff8a1f]/20">
-                  <MapPin className="w-4 h-4 text-[#ff8a1f]" />
-                  <span>Hotel Royal Orchid, Shivamogga</span>
-                </div>
+                
                 <div className="flex items-center gap-2 rounded-xl bg-[#7cb342]/5 px-3 py-2 border border-[#7cb342]/20">
                   <Users className="w-4 h-4 text-[#7cb342]" />
                   <span>5000+ delegates expected</span>

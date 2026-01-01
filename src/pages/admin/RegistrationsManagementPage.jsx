@@ -8,11 +8,14 @@ import {
   Clock,
   XCircle,
   QrCode,
+  Trash2,
   X,
   User,
   Mail,
   Phone,
   Award,
+  Home,
+  Stethoscope,
   CreditCard,
   FileText,
 } from 'lucide-react';
@@ -28,8 +31,11 @@ const RegistrationsManagementPage = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleteNotice, setDeleteNotice] = useState(null);
   const canvasRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -143,6 +149,51 @@ const RegistrationsManagementPage = () => {
     });
   };
 
+  const handleDeleteRegistration = (registration) => {
+    if (!registration?._id) return;
+    setDeleteTarget(registration);
+  };
+
+  const confirmDeleteRegistration = async () => {
+    const registration = deleteTarget;
+    if (!registration?._id) return;
+    try {
+      setDeletingId(registration._id);
+      const res = await adminAPI.deleteRegistration(registration._id);
+      setRegistrations((prev) => prev.filter((r) => r._id !== registration._id));
+      setFiltered((prev) => prev.filter((r) => r._id !== registration._id));
+      setSelectedIds((prev) => prev.filter((id) => id !== registration._id));
+      if (modalData?.registration?._id === registration._id) {
+        setShowModal(false);
+        setModalData(null);
+      }
+      await fetchRegistrations();
+      const paymentsDeleted =
+        res?.data?.paymentsDeleted ??
+        res?.data?.deletedPayments ??
+        res?.data?.payments ??
+        0;
+      const attendanceDeleted =
+        res?.data?.attendanceDeleted ??
+        res?.data?.deletedAttendance ??
+        res?.data?.attendance ??
+        0;
+      setDeleteNotice({
+        type: 'success',
+        message: `Registration deleted. Payments removed: ${paymentsDeleted}. Attendance removed: ${attendanceDeleted}.`,
+      });
+    } catch (err) {
+      console.error('Failed to delete registration:', err);
+      setDeleteNotice({
+        type: 'error',
+        message: 'Failed to delete registration. Please try again.',
+      });
+    } finally {
+      setDeletingId(null);
+      setDeleteTarget(null);
+    }
+  };
+
   const getStatusBadge = (status) => {
     const colors = {
       PAID: 'bg-emerald-100 text-emerald-700 border-emerald-200',
@@ -205,6 +256,23 @@ const RegistrationsManagementPage = () => {
 
       <div className="flex-1 overflow-auto p-4 sm:p-6">
         {}
+        {deleteNotice && (
+          <div
+            className={`mb-4 rounded-lg border px-3 py-2 text-xs flex items-center justify-between gap-3 ${
+              deleteNotice.type === 'success'
+                ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                : 'border-red-200 bg-red-50 text-red-700'
+            }`}
+          >
+            <span>{deleteNotice.message}</span>
+            <button
+              onClick={() => setDeleteNotice(null)}
+              className="text-[11px] font-medium hover:underline"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
         <div className="mb-4">
           <h1 className="text-lg sm:text-xl font-semibold text-slate-900 flex items-center gap-2">
             <Users className="w-5 h-5 text-[#005aa9]" />
@@ -314,6 +382,14 @@ const RegistrationsManagementPage = () => {
                         <Eye className="w-3 h-3" />
                         View
                       </button>
+                      <button
+                        onClick={() => handleDeleteRegistration(reg)}
+                        disabled={deletingId === reg._id}
+                        className="inline-flex items-center gap-1 px-2 py-1 text-[11px] rounded-lg border border-red-200 text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        {deletingId === reg._id ? 'Deleting' : 'Delete'}
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -399,6 +475,14 @@ const RegistrationsManagementPage = () => {
                   <Eye className="w-3 h-3" />
                   Details
                 </button>
+                <button
+                  onClick={() => handleDeleteRegistration(reg)}
+                  disabled={deletingId === reg._id}
+                  className="flex-1 inline-flex items-center justify-center gap-1 px-2 py-1 text-[11px] rounded-lg border border-red-200 text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <Trash2 className="w-3 h-3" />
+                  {deletingId === reg._id ? 'Deleting' : 'Delete'}
+                </button>
               </div>
             </div>
           ))}
@@ -466,8 +550,14 @@ const RegistrationsManagementPage = () => {
                   <p className="text-[11px] text-slate-600">
                     {modalData.registration.userId?.phone || 'N/A'}
                   </p>
+                  <p className="text-[11px] text-slate-600">
+                    {modalData.registration.userId?.gender || 'N/A'}
+                  </p>
                   <p className="text-[11px] text-slate-600 capitalize">
                     {modalData.registration.userId?.role}
+                  </p>
+                  <p className="text-[11px] text-slate-600">
+                    {modalData.registration.userId?.membershipId || 'N/A'}
                   </p>
                 </div>
                 <div className="space-y-1">
@@ -502,7 +592,81 @@ const RegistrationsManagementPage = () => {
                     </button>
                   )}
                 </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] font-semibold text-slate-500 flex items-center gap-1">
+                    <Home className="w-3 h-3" />
+                    Location
+                  </p>
+                  <p className="text-[11px] text-slate-600">
+                    {modalData.registration.userId?.address || 'N/A'}
+                  </p>
+                  <p className="text-[11px] text-slate-600">
+                    {modalData.registration.userId?.city || 'N/A'},{' '}
+                    {modalData.registration.userId?.state || 'N/A'}
+                  </p>
+                  <p className="text-[11px] text-slate-600">
+                    {modalData.registration.userId?.pincode || 'N/A'},{' '}
+                    {modalData.registration.userId?.country || 'N/A'}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] font-semibold text-slate-500 flex items-center gap-1">
+                    <Stethoscope className="w-3 h-3" />
+                    Professional
+                  </p>
+                  <p className="text-[11px] text-slate-600">
+                    {modalData.registration.userId?.instituteHospital || 'N/A'}
+                  </p>
+                  <p className="text-[11px] text-slate-600">
+                    {modalData.registration.userId?.designation || 'N/A'}
+                  </p>
+                  <p className="text-[11px] text-slate-600">
+                    {modalData.registration.userId?.medicalCouncilName || 'N/A'}
+                  </p>
+                  <p className="text-[11px] text-slate-600">
+                    {modalData.registration.userId?.medicalCouncilNumber || 'N/A'}
+                  </p>
+                </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full border border-slate-200 shadow-lg">
+            <div className="px-4 py-3 border-b border-slate-200">
+              <h2 className="text-sm sm:text-base font-semibold text-slate-900">
+                Delete registration
+              </h2>
+            </div>
+            <div className="px-4 py-4 text-xs text-slate-600 space-y-2">
+              <p>
+                Are you sure you want to delete{' '}
+                <span className="font-semibold text-slate-900">
+                  {deleteTarget.registrationNumber}
+                </span>
+                ?
+              </p>
+              <p className="text-[11px] text-slate-500">
+                This will remove related payments and attendance records.
+              </p>
+            </div>
+            <div className="px-4 py-3 border-t border-slate-200 flex justify-end gap-2">
+              <button
+                onClick={() => setDeleteTarget(null)}
+                className="px-3 py-1.5 text-[11px] rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeleteRegistration}
+                disabled={deletingId === deleteTarget._id}
+                className="px-3 py-1.5 text-[11px] rounded-lg border border-red-200 text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {deletingId === deleteTarget._id ? 'Deleting…' : 'Delete'}
+              </button>
             </div>
           </div>
         </div>

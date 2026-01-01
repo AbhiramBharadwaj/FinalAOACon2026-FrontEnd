@@ -374,10 +374,7 @@ const CheckoutPage = () => {
                   <Calendar className="w-4 h-4 text-[#9c3253]" />
                   <span>Oct 30 – Nov 1, 2026</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Hotel className="w-4 h-4 text-[#ff8a1f]" />
-                  <span>Hotel Royal Orchid, Shivamogga</span>
-                </div>
+                
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-[#7cb342]" />
                   <span>5000+ delegates expected</span>

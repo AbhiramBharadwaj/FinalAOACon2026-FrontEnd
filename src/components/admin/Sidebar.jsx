@@ -4,6 +4,7 @@ import logo from '../../images/logo.png'
 import {
   Home,
   Users,
+  User,
   CreditCard,
   Building2,
   FileText,
@@ -26,6 +27,7 @@ const Sidebar = () => {
   const menuItems = [
     { icon: Home, label: 'Dashboard', path: '/admin/dashboard' },
     { icon: Users, label: 'Registrations', path: '/admin/registrations' },
+    { icon: User, label: 'Users', path: '/admin/users' },
     { icon: CreditCard, label: 'Payments', path: '/admin/payments' },
     { icon: Building2, label: 'Accommodations', path: '/admin/accommodations' },
     { icon: FileText, label: 'Abstracts', path: '/admin/abstracts' },

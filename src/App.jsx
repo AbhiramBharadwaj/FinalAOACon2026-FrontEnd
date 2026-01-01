@@ -24,6 +24,7 @@ import BrochurePage from './pages/user/BrochurePage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import RegistrationsManagementPage from './pages/admin/RegistrationsManagementPage';
+import UsersManagementPage from './pages/admin/UsersManagementPage';
 import AccommodationManagementPage from './pages/admin/AccommodationManagementPage';
 import PaymentsManagementPage from './pages/admin/PaymentsManagementPage';
 import AbstractReviewPage from './pages/admin/AbstractReviewPage';
@@ -213,6 +214,11 @@ function App() {
               <Route path="/admin/registrations" element={
                 <AdminRoute>
                   <RegistrationsManagementPage />
+                </AdminRoute>
+              } />
+              <Route path="/admin/users" element={
+                <AdminRoute>
+                  <UsersManagementPage />
                 </AdminRoute>
               } />
               <Route path="/admin/scanner" element={

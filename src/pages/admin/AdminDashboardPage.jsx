@@ -214,14 +214,21 @@ const AdminDashboardPage = () => {
               </div>
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {dashboardData.recentPayments.slice(0, 5).map((payment, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 bg-slate-50 rounded text-xs">
+                  <div
+                    key={payment._id || payment.razorpayPaymentId || index}
+                    className="flex items-center justify-between p-2 bg-slate-50 rounded text-xs"
+                  >
                     <div className="flex items-center gap-2 truncate flex-1">
                       <div className="w-7 h-7 bg-emerald-50 rounded-full flex items-center justify-center">
                         <Users className="w-3 h-3 text-emerald-600" />
                       </div>
                       <div className="truncate">
-                        <p className="font-medium text-slate-900">{payment.userId.name}</p>
-                        <p className="text-slate-500 truncate">{payment.userId.email}</p>
+                        <p className="font-medium text-slate-900">
+                          {payment.userId?.name || 'Unknown user'}
+                        </p>
+                        <p className="text-slate-500 truncate">
+                          {payment.userId?.email || 'N/A'}
+                        </p>
                       </div>
                     </div>
                     <div className="text-right min-w-[70px]">
