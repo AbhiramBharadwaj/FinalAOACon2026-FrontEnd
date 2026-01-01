@@ -21,6 +21,7 @@ import {
   Map,
   HomeIcon,
   UserSquareIcon,
+  Image,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -40,6 +41,7 @@ const MobileDrawer = ({ open, onClose }) => {
     { label: 'Registration Details', path: '/register-details', icon: FileText },
     { label: 'Downloads', path: '/download', icon: Download },
     { label: 'Contact', path: '/contact', icon: Phone },
+    { label: 'Gallery', path: '/gallery', icon: Image },
   ];
 
   const handleLogout = () => {
@@ -168,6 +170,7 @@ const Header = () => {
         { label: 'Program Schedule', path: '/conference-days', icon: Calendar },
         { label: 'Abstract', path: '/abstract/rules', icon: FileText },
         { label: 'Contact', path: '/contact', icon: User },
+        { label: 'Gallery', path: '/gallery', icon: Image },
       ],
     },
   ];

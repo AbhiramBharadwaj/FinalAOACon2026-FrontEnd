@@ -12,6 +12,7 @@ import {
   Download,
   Phone,
   LogOut,
+  Image,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -45,6 +46,7 @@ const MobileNav = () => {
     { label: 'Abstract', path: '/abstract', icon: FileText },
     { label: 'Downloads', path: '/downloads', icon: Download },
     { label: 'Contact', path: '/contact', icon: Phone },
+    { label: 'Gallery', path: '/gallery', icon: Image },
   ];
 
   const isActive = (path) =>

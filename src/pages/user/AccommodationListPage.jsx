@@ -10,12 +10,15 @@ import {
   ArrowRight,
   Filter,
   Search,
-  ArrowLeft
+  ArrowLeft,
+  Hotel
 } from 'lucide-react';
 import { accommodationAPI } from '../../utils/api';
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+
+const SHOW_ACCOMMODATION_COMING_SOON = true;
 
 const AccommodationListPage = () => {
   const [accommodations, setAccommodations] = useState([]);
@@ -27,6 +30,10 @@ const AccommodationListPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (SHOW_ACCOMMODATION_COMING_SOON) {
+      setLoading(false);
+      return;
+    }
     fetchAccommodations();
   }, []);
 
@@ -83,6 +90,38 @@ const AccommodationListPage = () => {
       >
         <div className="absolute inset-0 bg-black/70" />
         <LoadingSpinner size="md" text="Loading hotels..." />
+      </div>
+    );
+  }
+
+  if (SHOW_ACCOMMODATION_COMING_SOON) {
+    return (
+      <div
+        className="min-h-screen bg-cover bg-center bg-no-repeat relative"
+        style={{
+          backgroundImage:
+            "url('https://www.justmbbs.com/img/college/karnataka/shimoga-institute-of-medical-sciences-shimoga-banner.jpg')",
+        }}
+      >
+        <div className="absolute inset-0 bg-white/80 pt-20 sm:pt-24" />
+
+        <Header />
+
+        <div className="relative z-10 max-w-4xl mx-auto px-3 sm:px-4 lg:px-6 py-10 lg:py-16 pb-24">
+          <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-2xl p-6 lg:p-10 text-center shadow-sm">
+            <div className="mx-auto w-14 h-14 rounded-2xl bg-[#9c3253]/10 border border-[#9c3253]/20 flex items-center justify-center">
+              <Hotel className="w-7 h-7 text-[#9c3253]" />
+            </div>
+            <h1 className="mt-4 text-2xl lg:text-3xl font-semibold text-slate-900">
+              Accommodation
+            </h1>
+            <p className="mt-2 text-sm lg:text-base text-slate-600">
+              Coming soon. Hotel options will be available here shortly.
+            </p>
+          </div>
+        </div>
+
+        <MobileNav />
       </div>
     );
   }

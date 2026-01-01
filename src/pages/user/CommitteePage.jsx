@@ -10,6 +10,7 @@ import kumarAbImg from '../../images/OrganizingComittee/Kumar A B.png';
 import manasaSImg from '../../images/OrganizingComittee/Manasa S.png';
 import nagendraSImg from '../../images/OrganizingComittee/Nagendra S.png';
 import namrathaLImg from '../../images/OrganizingComittee/Namratha L.png';
+import karthikImg from '../../images/OrganizingComittee/Karthik.png';
 import praveenSImg from '../../images/OrganizingComittee/Praveen S.png';
 import rashmiSImg from '../../images/OrganizingComittee/Rashmi S.png';
 import shashankMImg from '../../images/OrganizingComittee/Shashank M.png';
@@ -209,6 +210,7 @@ const committees = [
         role: '',
         members: [
           { name: 'Dr Shruthi Hiremath', designation: '', image: shruthiHiremathImg },
+          { name: 'Dr Karthik', designation: '', image: karthikImg },
           { name: 'Dr Sushma Pattar', designation: '', image: sushmaPattarImg },
           { name: 'Dr Harish T S', designation: '', image: PLACEHOLDER_IMAGE },
           { name: 'Dr. Swetha Purohit', designation: '', image: PLACEHOLDER_IMAGE },

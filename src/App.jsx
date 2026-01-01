@@ -18,6 +18,7 @@ import RegistrationFeesPage from './pages/user/RegistrationFeesPage';
 import CommitteePage from './pages/user/CommitteePage';
 import VenuePage from './pages/user/VenuePage';
 import ContactPage from './pages/user/ContactPage';
+import GalleryPage from './pages/user/GalleryPage';
 import HomePage from './pages/user/HomePage';
 import BrochurePage from './pages/user/BrochurePage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
@@ -126,6 +127,9 @@ function App() {
               
               <Route path="/contact" element={
                   <ContactPage />
+              } />
+              <Route path="/gallery" element={
+                  <GalleryPage />
               } />
                <Route path="/office-bearers" element={
                   <OfficeBearersPage />
