@@ -25,24 +25,46 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
+const NAV_ITEMS = [
+  {
+    label: 'Committee',
+    icon: Users,
+    items: [
+      { label: 'AOA Office Bearers', path: '/office-bearers', icon: UserSquareIcon },
+      { label: 'Organizing Committee', path: '/committee', icon: Users },
+    ],
+  },
+  {
+    label: 'Attendee',
+    icon: Hotel,
+    items: [
+      { label: 'Accommodation', path: '/accommodation', icon: Hotel },
+      { label: 'Program Schedule', path: '/conference-days', icon: Calendar },
+      { label: 'Abstract', path: '/abstract/rules', icon: FileText },
+      { label: 'Contact', path: '/contact', icon: User },
+      { label: 'Gallery', path: '/gallery', icon: Image },
+    ],
+  },
+];
+
+const PRIMARY_LINKS_TOP = [
+  { label: 'Home', path: '/', icon: Home },
+  { label: 'Venue', path: '/venue', icon: MapPin },
+];
+
+const PRIMARY_LINKS_BOTTOM = [
+  { label: 'Download', path: '/download', icon: Download },
+  { label: 'Registration', path: '/register-details', icon: User },
+  { label: 'Profile', path: '/dashboard', icon: User },
+];
+
 // MOBILE DRAWER (left side) – reusing your MobileNav logic but without bottom bar
 const MobileDrawer = ({ open, onClose }) => {
   const navigate = useNavigate();
   const { isAuthenticated, logout } = useAuth();
 
-  const drawerItems = [
-    { label: 'Home', path: '/', icon: Home },
-    { label: 'Committee', path: '/committee', icon: Users },
-    { label: 'Venue', path: '/venue', icon: MapPin },
-    { label: 'Accommodation', path: '/accommodation', icon: Hotel },
-    { label: 'AOA Office Bearers', path: '/office-bearers', icon: UserSquareIcon },
-    { label: 'Program Schedule (Coming Soon)', icon: Calendar, disabled: true },
-    { label: 'Abstract', path: '/abstract/rules', icon: FileText },
-    { label: 'Registration Details', path: '/register-details', icon: FileText },
-    { label: 'Downloads', path: '/download', icon: Download },
-    { label: 'Contact', path: '/contact', icon: Phone },
-    { label: 'Gallery', path: '/gallery', icon: Image },
-  ];
+  const topDrawerItems = PRIMARY_LINKS_TOP;
+  const bottomDrawerItems = PRIMARY_LINKS_BOTTOM;
 
   const handleLogout = () => {
     logout();
@@ -82,32 +104,88 @@ const MobileDrawer = ({ open, onClose }) => {
 
         {}
         <div className="flex-1 overflow-hidden">
-          <div className="h-full overflow-y-auto py-4 px-4 space-y-1.5">
-            {drawerItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.label}
-                  onClick={() => {
-                    if (!item.disabled && item.path) {
-                      navigate(item.path);
-                      onClose();
-                    }
-                  }}
-                  className={`flex items-center gap-3 w-full px-3 py-2 rounded-2xl text-left text-sm border transition-all ${
-                    item.disabled
-                      ? 'bg-slate-50 text-slate-400 border-slate-100 cursor-not-allowed'
-                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-[#005aa9]/40 hover:text-[#005aa9]'
-                  }`}
-                  disabled={item.disabled}
-                >
-                  <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-slate-50 border border-slate-200 text-slate-500">
-                    <Icon className="w-4 h-4" />
-                  </div>
-                  <span className="font-medium truncate">{item.label}</span>
-                </button>
-              );
-            })}
+          <div className="h-full overflow-y-auto py-4 px-4 space-y-4">
+            <div className="space-y-1.5">
+              {topDrawerItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.label}
+                    onClick={() => {
+                      if (!item.disabled && item.path) {
+                        navigate(item.path);
+                        onClose();
+                      }
+                    }}
+                    className={`flex items-center gap-3 w-full px-3 py-2 rounded-2xl text-left text-sm border transition-all ${
+                      item.disabled
+                        ? 'bg-slate-50 text-slate-400 border-slate-100 cursor-not-allowed'
+                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-[#005aa9]/40 hover:text-[#005aa9]'
+                    }`}
+                    disabled={item.disabled}
+                  >
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-slate-50 border border-slate-200 text-slate-500">
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <span className="font-medium truncate">{item.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {NAV_ITEMS.map((group) => (
+              <div key={group.label} className="space-y-1.5">
+                <div className="px-1 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                  {group.label}
+                </div>
+                {group.items.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <button
+                      key={item.label}
+                      onClick={() => {
+                        navigate(item.path);
+                        onClose();
+                      }}
+                      className="flex items-center gap-3 w-full px-3 py-2 rounded-2xl text-left text-sm border transition-all bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-[#005aa9]/40 hover:text-[#005aa9]"
+                    >
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-slate-50 border border-slate-200 text-slate-500">
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      <span className="font-medium truncate">{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+
+            <div className="space-y-1.5">
+              {bottomDrawerItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.label}
+                    onClick={() => {
+                      if (!item.disabled && item.path) {
+                        navigate(item.path);
+                        onClose();
+                      }
+                    }}
+                    className={`flex items-center gap-3 w-full px-3 py-2 rounded-2xl text-left text-sm border transition-all ${
+                      item.disabled
+                        ? 'bg-slate-50 text-slate-400 border-slate-100 cursor-not-allowed'
+                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-[#005aa9]/40 hover:text-[#005aa9]'
+                    }`}
+                    disabled={item.disabled}
+                  >
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-slate-50 border border-slate-200 text-slate-500">
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <span className="font-medium truncate">{item.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
@@ -153,28 +231,6 @@ const Header = () => {
     setShowProfileDropdown(false);
   };
 
-  const navItems = [
-    {
-      label: 'Committee',
-      icon: Users,
-      items: [
-        { label: 'AOA Office Bearers', path: '/office-bearers', icon: UserSquareIcon },
-        { label: 'Organizing Committee', path: '/committee', icon: Users },
-      ],
-    },
-    {
-      label: 'Attendee',
-      icon: Hotel,
-      items: [
-        { label: 'Accommodation', path: '/accommodation', icon: Hotel },
-        { label: 'Program Schedule', path: '/conference-days', icon: Calendar },
-        { label: 'Abstract', path: '/abstract/rules', icon: FileText },
-        { label: 'Contact', path: '/contact', icon: User },
-        { label: 'Gallery', path: '/gallery', icon: Image },
-      ],
-    },
-  ];
-
   const toggleDropdown = (index) => {
     setActiveDropdown(activeDropdown === index ? null : index);
   };
@@ -191,23 +247,25 @@ const Header = () => {
   return (
     <div className="bg-white">
       {}
-     <div className="w-full bg-white/95 backdrop-blur-md px-3 py-2 flex items-center justify-between gap-3 flex-wrap md:gap-6 md:px-8 relative z-50 border-b border-white/50">
-  <img
-    src={logo}
-    alt="Logo 1"
-    className="h-12 w-auto md:h-16 object-contain"
-  />
-  <img
-    src={mainLogo}
-    alt="Logo 2"
-    className="h-12 w-auto md:h-16 object-contain"
-  />
-  <img
-    src={simsLogo}
-    alt="Logo 3"
-    className="h-12 w-auto md:h-16 object-contain"
-  />
-</div>
+      <div className="w-full bg-white/95 backdrop-blur-md px-3 py-2 md:px-8 relative z-50 border-b border-white/50">
+        <div className="mx-auto w-full max-w-7xl grid grid-cols-3 items-center gap-2 md:gap-6">
+          <img
+            src={logo}
+            alt="Logo 1"
+            className="h-10 w-auto max-w-[32vw] justify-self-start object-contain md:h-16 md:max-w-none"
+          />
+          <img
+            src={mainLogo}
+            alt="Logo 2"
+            className="h-10 w-auto max-w-[32vw] justify-self-center object-contain md:h-16 md:max-w-none"
+          />
+          <img
+            src={simsLogo}
+            alt="Logo 3"
+            className="h-10 w-auto max-w-[32vw] justify-self-end object-contain md:h-16 md:max-w-none"
+          />
+        </div>
+      </div>
 
 
       <header className="bg-[#9c3253] border-b border-slate-200 shadow-sm sticky top-0 z-50">
@@ -254,7 +312,7 @@ const Header = () => {
                 <span>Venue</span>
               </Link>
 
-              {navItems.map((item, index) => (
+              {NAV_ITEMS.map((item, index) => (
                 <div key={item.label} className="relative">
                   <button
                     onClick={() => toggleDropdown(index)}
