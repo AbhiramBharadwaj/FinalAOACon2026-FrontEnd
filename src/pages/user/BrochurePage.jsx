@@ -66,49 +66,80 @@ const BrochurePage = () => {
         </section>
 
         {}
-        <section className="mb-6 rounded-2xl bg-white border border-slate-200 px-4 sm:px-6 py-5 shadow-sm">
-          <div className="flex items-center gap-2 mb-3">
-            <FileText className="w-5 h-5 text-[#00796b]" />
-            <h2 className="text-lg font-semibold text-slate-900">Conference Overview</h2>
-          </div>
-
-          <div className="space-y-3 text-sm text-slate-700 leading-relaxed">
-            <p>
-              It gives us great pleasure to welcome you to the 19th Annual Conference of Obstetric
-              Anaesthesiologists, proudly hosted by the Department of Anaesthesiology, SIMS and the
-              ISA City Chapter, Shivamogga. The conference will be held at the Shimoga Institute of
-              Medical Sciences, located in the serene, culturally rich city and gateway of Western
-              Ghats, Shivamogga, Karnataka.
-            </p>
-            <p>
-              It is concerning to our fraternity that despite advances in the medical field, there
-              exists a significant gap between urban and rural perioperative maternal care,
-              contributing to maternal deaths in India. This year&apos;s theme highlights the vital
-              need to ensure equitable, evidence‑based and safe obstetric anaesthesia services
-              across diverse healthcare settings.
-            </p>
-            <p>
-              This prestigious gathering brings together experts, practitioners, and learners in the
-              field of obstetric anaesthesia to share knowledge, discuss advances, and explore
-              innovations that continue to shape safe motherhood and perioperative care, while
-              addressing challenges faced in both resource‑rich and resource‑limited environments.
-              The conference promises a vibrant academic program featuring distinguished speakers,
-              interactive sessions, hands‑on workshops, and opportunities to engage with peers from
-              across the region and beyond.
-            </p>
-            <p>
-              Set amidst the lush landscapes of Karnataka, Shivamogga offers the perfect backdrop
-              for academic exchange and rejuvenation. We warmly invite you to join us in Shivamogga
-              for an enriching scientific experience amidst a welcoming environment. Together, let
-              us work towards narrowing the urban–rural gap and shaping safe motherhood everywhere.
-            </p>
-            <p className="font-semibold text-slate-900">
-              We look forward to your participation!
-              <br />
-              <span className="font-normal">Regards, Organizing Committee • AOACON 2026</span>
-            </p>
-          </div>
-        </section>
+        <section className="border-b border-slate-300 bg-white py-12 lg:py-14">
+                <div className="max-w-5xl mx-auto px-4 lg:px-6">
+                  <div className="space-y-5">
+                    <h2 className="text-[26px] lg:text-[28px] font-bold text-slate-900 leading-snug">
+                      Welcome to the 19th National Conference of Association of Obstetric
+                      Anaesthesiologists
+                    </h2>
+                    <div className="space-y-1 text-[18px] text-slate-800 leading-relaxed">
+                      <p className="font-semibold uppercase tracking-[0.25em] text-slate-500">
+                        Theme 2026 : Safe Motherhood everywhere: Bridging the Urban – Rural Gap in Obstetric Anaesthesia
+                      </p>
+                    </div>
+                    <div className="space-y-4 text-[18px] text-slate-800 leading-relaxed text-justify">
+                      <p>
+                        It gives us great pleasure to welcome you to the 19th National Conference of Obstetric Anaesthesiologists, 
+                        proudly hosted by the Department of Anaesthesiology, SIMS and the ISA City Chapter, Shivamogga. 
+                        The conference will be held at the Shimoga Institute of Medical Sciences, located in the serene, 
+                        culturally rich city and gateway of the Western Ghats, Shivamogga, Karnataka.
+                      </p>
+                      <p>
+                        It is concerning to our fraternity that despite the advances in the medical field, 
+                        there exists a significant gap between urban and rural perioperative maternal care contributing 
+                        to maternal deaths in India. This year's theme highlights the vital need to ensure equitable, 
+                        evidence-based and safe obstetric anaesthesia services across diverse healthcare settings. 
+                        This prestigious gathering brings together experts, practitioners, 
+                        and learners in the field of obstetric anaesthesia to share knowledge, discuss advances, 
+                        and explore innovations that continue to shape safe motherhood 
+                        and perioperative care and address the challenges faced in both 
+                        resource-rich and resource-limited environments. The conference promises a 
+                        vibrant academic program featuring distinguished speakers, interactive sessions, 
+                        hands-on workshops, and opportunities to engage with peers from across the region and beyond.
+                      </p>
+                      <p>
+                        Set amidst the lush landscapes of Karnataka, Shivamogga offers the perfect backdrop for academic exchange and rejuvenation.
+                      </p>
+                      <p>
+                        We warmly invite you to join us in Shivamogga for an enriching scientific experience amidst a welcoming environment. 
+                        Together, let us work towards narrowing the urban–rural gap and shaping safe motherhood everywhere.
+                      </p>
+                      <p className="font-semibold">
+                        We look forward to your participation.
+                        <span className="block mt-2 font-normal">
+                          Regards,<br/>
+        The Organizing committee<br/>
+        AOACON 2026<br/>
+        Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and ISA City Chapter, Shivamogga<br/>
+                        </span>
+                      </p>
+                    </div>
+        
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                      {[
+                        { name: 'Dr. Virupakshappa V', title: 'Chief Patron', img: virupakshappaImg },
+                        { name: 'Dr. Ravindra G L', title: 'Organizing Chairperson', img: ravindraImg },
+                        { name: 'Dr. Champa B V', title: 'Organizing Secretary', img: champaImg },
+                        { name: 'Dr. Ashwini S', title: 'Treasurer', img: ashwiniImg },
+                      ].map((member) => (
+                        <div key={member.name} className="flex flex-col items-center text-center">
+                          <div className="h-24 w-24 rounded-full border-2 border-slate-200 bg-slate-100 overflow-hidden">
+                            <img
+                              src={member.img}
+                              alt={member.name}
+                              className="h-full w-full object-cover"
+                              loading="lazy"
+                            />
+                          </div>
+                          <p className="mt-3 text-sm font-semibold text-slate-900">{member.name}</p>
+                          <p className="text-xs text-slate-600">{member.title}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </section>
 
         {}
         <section className="rounded-2xl bg-gradient-to-r from-slate-50 via-sky-50 to-emerald-50 border border-sky-100 px-4 sm:px-6 py-5 shadow-sm">
