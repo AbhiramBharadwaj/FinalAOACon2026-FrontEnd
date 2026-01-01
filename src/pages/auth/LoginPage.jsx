@@ -74,7 +74,7 @@ const LoginPage = () => {
               AOACON 2026 Login
             </h1>
             <p className="text-center text-xs text-slate-700 mb-6">
-              Shivamogga Institute of Medical Sciences
+              Shimoga Institute of Medical Sciences
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">

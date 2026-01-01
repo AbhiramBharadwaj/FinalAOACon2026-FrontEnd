@@ -200,7 +200,7 @@ const RegisterPage = () => {
               AOACON 2026 Register
             </h1>
             <p className="text-center text-xs text-slate-700 mb-6">
-              Shivamogga Institute of Medical Sciences
+              Shimoga Institute of Medical Sciences
             </p>
 
             {step === 1 ? (

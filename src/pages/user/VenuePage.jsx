@@ -28,7 +28,7 @@ const VenuePage = () => {
                 </h1>
               </div>
               <p className="text-base lg:text-lg max-w-4xl text-slate-200/95 leading-relaxed mb-8 lg:mb-10">
-                AOACON 2026 will be held at Shivamogga Institute of Medical Sciences (SIMS),
+                AOACON 2026 will be held at Shimoga Institute of Medical Sciences (SIMS),
                 Shivamogga. The operation theatre complex and academic areas provide a dedicated
                 setting for scientific sessions, workshops, and hands‑on training.
               </p>
@@ -51,11 +51,11 @@ const VenuePage = () => {
           <div className="max-w-6xl mx-auto">
             <h2 className="text-[22px] lg:text-[24px] font-bold text-slate-900 mb-6 flex items-center gap-3">
               <Building2 className="w-6 h-6 lg:w-7 lg:h-7 text-[#0b60a8]" />
-              Shivamogga Institute of Medical Sciences (SIMS), Shivamogga
+              Shimoga Institute of Medical Sciences (SIMS), Shivamogga
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 text-[16px]">
               <p className="text-slate-800 leading-relaxed">
-                Shivamogga Institute of Medical Sciences is a government medical college and
+                Shimoga Institute of Medical Sciences is a government medical college and
                 teaching hospital that caters to a large population of central Karnataka. The
                 institute combines a busy tertiary‑care hospital, modern operation theatre
                 complex, and dedicated academic spaces, making it an ideal venue for AOACON 2026.
@@ -82,7 +82,7 @@ const VenuePage = () => {
                 <br />
                 Operation Theatre Complex,
                 <br />
-                Shivamogga Institute of Medical Sciences (SIMS),
+                Shimoga Institute of Medical Sciences (SIMS),
                 <br />
                 Shivamogga, Karnataka, India.
               </p>
