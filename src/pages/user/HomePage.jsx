@@ -1,12 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  Calendar,
-  MapPin,
-  Users,
-  Clock,
-  Stethoscope,
-  Building2,
-} from 'lucide-react';
+import { MapPin, Clock, Stethoscope, Building2 } from 'lucide-react';
 import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
 import logo from '../../images/main-logo.png';
@@ -70,34 +63,30 @@ const HomePage = () => {
         <div className="relative max-w-6xl mx-auto px-4 lg:px-6 py-12 lg:py-16">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             {}
-            <div className="lg:col-span-2 space-y-5">
-              <div className="inline-flex items-center gap-2 px-5 py-2 bg-[#1976d2] border border-sky-300 text-[18px] font-semibold">
-                <Users className="w-5 h-5" />
-                19th National Conference • AOA
+            <div className="lg:col-span-2 space-y-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#1976d2] border border-sky-300 text-[13px] sm:text-[14px] font-semibold uppercase tracking-[0.22em]">
+                AOACON 2026 • SHIVAMOGGA
               </div>
 
-              <p className="text-[13px] sm:text-[14px] tracking-[0.3em] uppercase text-sky-100">
-                AOACON 2026 • Shivamogga
-              </p>
-              <h1 className="text-[30px] sm:text-[32px] lg:text-[34px] font-bold leading-snug">
-                Association of Obstetric Anaesthesiologists Conference
+              <h1 className="text-[34px] sm:text-[40px] lg:text-[48px] font-extrabold leading-tight uppercase">
+                19 National Conference
+                <span className="block">of Association of Obstetric</span>
+                <span className="block">Anaesthesiologists</span>
               </h1>
 
-              <p className="text-[18px] text-slate-100 leading-relaxed">
-                Hosted by the Department of Anaesthesiology, Shimoga Institute of Medical
-                Sciences (SIMS) and ISA City Chapter, Shivamogga – at the gateway to the
-                Western Ghats.
+              <p className="text-[20px] sm:text-[20px] text-white font-semibold uppercase tracking-[0.28em] font-serif">
+                Theme 2026
+              </p>
+              <p className="text-[20px] sm:text-[20px] text-slate-100 leading-relaxed max-w-3xl font-serif">
+                Safe Motherhood everywhere: Bridging the Urban - Rural Gap in Obstetric
+                Anaesthesia
               </p>
 
-              <div className="flex flex-wrap gap-3 text-[15px]">
-                <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#0b3c7d] border border-sky-300">
-                  <Calendar className="w-5 h-5" />
-                  30 Oct – 1 Nov 2026
-                </span>
-                <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#0b3c7d] border border-sky-300">
-                  <MapPin className="w-5 h-5" />
-                  Shimoga Institute of Medical Sciences, Shivamogga
-                </span>
+              <div className="space-y-3 text-[20px] text-slate-100 leading-relaxed font-serif">
+                <p>
+                  <span className="font-semibold text-white">Organized and hosted by:</span>{' '}
+                  Department of Anaesthesiology, SIMS &amp; ISA City Chapter, Shivamogga
+                </p>
               </div>
             </div>
 
@@ -158,10 +147,7 @@ const HomePage = () => {
               </p>
             </div>
           </div>
-          <p className="text-[15px]">
-            OT complex and academic blocks provide spaces for plenaries, workshops and
-            hands‑on training.
-          </p>
+          
         </div>
       </section>
 
@@ -170,14 +156,8 @@ const HomePage = () => {
         <div className="max-w-5xl mx-auto px-4 lg:px-6">
           <div className="space-y-5">
             <h2 className="text-[26px] lg:text-[28px] font-bold text-slate-900 leading-snug">
-              Welcome to the 19th National Conference of Association of Obstetric
-              Anaesthesiologists
+              Warm Greetings,
             </h2>
-            <div className="space-y-1 text-[18px] text-slate-800 leading-relaxed">
-              <p className="font-semibold uppercase tracking-[0.25em] text-slate-500">
-                Theme 2026 : Safe Motherhood everywhere: Bridging the Urban – Rural Gap in Obstetric Anaesthesia
-              </p>
-            </div>
             <div className="space-y-4 text-[18px] text-slate-800 leading-relaxed text-justify">
               <p>
                 It gives us great pleasure to welcome you to the 19th National Conference of Obstetric Anaesthesiologists, 
@@ -311,7 +291,7 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
           <div className="flex items-center gap-3 mb-7">
             <Stethoscope className="w-6 h-6 text-rose-100" />
             <h2 className="text-[24px] font-bold text-white">
-              Focus Tracks & Hands‑On Workshops
+              Pre Conference Workshops (30th Oct 2026 )
             </h2>
           </div>
 
@@ -320,36 +300,20 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
               <p className="font-semibold text-[17px] text-emerald-900 mb-2">
                 Obstetric Critical Care & Resuscitation
               </p>
-              <p className="text-slate-800">
-                Protocol‑driven management of haemorrhage, sepsis, shock and peri‑arrest
-                scenarios with simulation‑supported learning.
-              </p>
             </div>
             <div className="bg-[#e0f2ff] border border-sky-400 px-5 py-5">
               <p className="font-semibold text-[17px] text-sky-900 mb-2">
                 Obstetric RA & POCUS
-              </p>
-              <p className="text-slate-800">
-                Neuraxial techniques, peripheral nerve blocks, and bedside ultrasound for
-                optimised obstetric anaesthesia and critical care.
               </p>
             </div>
             <div className="bg-[#fff3cd] border border-amber-400 px-5 py-5">
               <p className="font-semibold text-[17px] text-amber-900 mb-2">
                 Labour Analgesia
               </p>
-              <p className="text-slate-800">
-                Practical epidural strategies, combined techniques, and labour analgesia
-                pathways tailored to different practice settings.
-              </p>
             </div>
             <div className="bg-[#fde4f2] border border-rose-400 px-5 py-5">
               <p className="font-semibold text-[17px] text-rose-900 mb-2">
                 Critical Incidences, Simulation & Nursing Track
-              </p>
-              <p className="text-slate-800">
-                High‑impact scenarios, crisis resource management, and obstetric emergencies
-                for nurses and allied staff.
               </p>
             </div>
           </div>

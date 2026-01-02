@@ -61,11 +61,13 @@ const ContactPage = () => {
             <div className="text-sm text-slate-800 space-y-1">
               <p className="font-semibold text-slate-900">Office Address</p>
               <p>
-                3rd Floor, Operation Theatre Complex,
+                3rd Floor, Department of Anaesthesiology,
+                <br />
+                Operation Theatre Complex,
                 <br />
                 Shimoga Institute of Medical Sciences (SIMS),
                 <br />
-                Shivamogga, Karnataka
+                Shivamogga, Karnataka, India
               </p>
             </div>
 

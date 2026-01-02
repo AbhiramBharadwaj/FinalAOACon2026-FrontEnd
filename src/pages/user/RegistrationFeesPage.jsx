@@ -14,32 +14,6 @@ const RegistrationFeesPage = () => {
       <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 space-y-6 pb-20">
 
         {}
-        <section className="p-4 border border-emerald-200 rounded-xl bg-emerald-50/80 flex gap-2">
-          <Info className="w-4 h-4 text-emerald-700 mt-0.5 flex-shrink-0" />
-          <p className="text-[12px] text-emerald-900">
-            * All the registration fees are exclusive of 18% GST.
-          </p>
-        </section>
-
-        {}
-        <section className="p-5 border border-slate-200 rounded-xl bg-[#fff4cf] space-y-3">
-          <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-            <Info className="w-4 h-4 text-[#9c3253]" />
-            Important Notes
-          </h2>
-          <ul className="list-disc list-inside space-y-1 text-[12px] text-slate-800">
-            <li>Conference registration is mandatory for workshop registration.</li>
-            <li>Workshops and AOA Certified Course registrations are limited to 40 participants each.</li>
-            <li>
-              PGs &amp; Fellows must submit a valid Bonafide Certificate issued by the Head of the
-              Department.
-            </li>
-            <li>GST applicable as per rules.</li>
-            <li>Accompanying person fee: ₹7,000 + GST.</li>
-          </ul>
-        </section>
-
-        {}
         <section
           id="terms-conditions"
           className="p-5 border border-slate-200 rounded-xl bg-[#8ea731] space-y-4 "

@@ -78,7 +78,7 @@ const VenuePage = () => {
             <h2 className="text-white">------------------------------------------------------------------</h2>
             <div className="text-[16px] text-white leading-relaxed space-y-4">
               <p className="font-semibold text-[18px]">
-                3rd floor, Department of Anaesthesia,
+                3rd floor, Department of Anaesthesiology,
                 <br />
                 Operation Theatre Complex,
                 <br />

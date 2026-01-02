@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import logo from '../../images/logo.png';
 import mainLogo from '../../images/main-logo.png';
 import simsLogo from '../../images/SIMSLogo.png';
+import brochurePdf from '../../files/AOA CON BROCHURE ANNOUNCEMENT.pdf';
 import {
   LogOut,
   Menu,
@@ -53,7 +54,7 @@ const PRIMARY_LINKS_TOP = [
 ];
 
 const PRIMARY_LINKS_BOTTOM = [
-  { label: 'Download', path: '/download', icon: Download },
+  { label: 'Download', download: true, icon: Download },
   { label: 'Registration', path: '/register-details', icon: User },
   { label: 'Profile', path: '/dashboard', icon: User },
 ];
@@ -162,6 +163,23 @@ const MobileDrawer = ({ open, onClose }) => {
             <div className="space-y-1.5">
               {bottomDrawerItems.map((item) => {
                 const Icon = item.icon;
+                if (item.download) {
+                  return (
+                    <a
+                      key={item.label}
+                      href={brochurePdf}
+                      download="AOA CON BROCHURE ANNOUNCEMENT.pdf"
+                      onClick={onClose}
+                      className="flex items-center gap-3 w-full px-3 py-2 rounded-2xl text-left text-sm border transition-all bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-[#005aa9]/40 hover:text-[#005aa9]"
+                    >
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-slate-50 border border-slate-200 text-slate-500">
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      <span className="font-medium truncate">{item.label}</span>
+                    </a>
+                  );
+                }
+
                 return (
                   <button
                     key={item.label}
@@ -348,13 +366,14 @@ const Header = () => {
                 </div>
               ))}
 
-              <Link
-                to="/download"
+              <a
+                href={brochurePdf}
+                download="AOA CON BROCHURE ANNOUNCEMENT.pdf"
                 className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-white border-b-2 border-transparent transition-colors duration-200"
               >
                 <Download className="w-4 h-4 text-white hover:text-yellow-900 transition-colors" />
                 <span>Download</span>
-              </Link>
+              </a>
               <Link
                 to="/register-details"
                 className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-white border-b-2 border-transparent transition-colors duration-200"

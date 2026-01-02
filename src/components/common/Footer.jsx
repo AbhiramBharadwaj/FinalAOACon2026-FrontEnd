@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Calendar } from 'lucide-react';
 import mainLogo from '../../images/main-logo.png';
+import brochurePdf from '../../files/AOA CON BROCHURE ANNOUNCEMENT.pdf';
 
 const Footer = () => {
   return (
@@ -39,9 +40,13 @@ const Footer = () => {
               <Link to="/register-details" className="text-slate-300 hover:text-white">
                 Registration
               </Link>
-              <Link to="/download" className="text-slate-300 hover:text-white">
+              <a
+                href={brochurePdf}
+                download="AOA CON BROCHURE ANNOUNCEMENT.pdf"
+                className="text-slate-300 hover:text-white"
+              >
                 Brochure
-              </Link>
+              </a>
               <Link to="/contact" className="text-slate-300 hover:text-white">
                 Contact
               </Link>
@@ -77,9 +82,13 @@ const Footer = () => {
               <p className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-sky-300 mt-0.5" />
                 <span>
-                  Department of Anaesthesiology, SIMS
+                  3rd floor, Department of Anaesthesiology,
                   <br />
-                  Shivamogga, Karnataka, India
+                  Operation Theatre Complex,
+                  <br />
+                  Shimoga Institute of Medical Sciences (SIMS),
+                  <br />
+                  Shivamogga, Karnataka, India.
                 </span>
               </p>
               <p className="flex items-center gap-2">

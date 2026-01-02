@@ -17,6 +17,7 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import logo from '../../images/main-logo.png'
+import brochurePdf from '../../files/AOA CON BROCHURE ANNOUNCEMENT.pdf';
 
 const MobileNav = () => {
   const [showDrawer, setShowDrawer] = useState(false);
@@ -44,7 +45,7 @@ const MobileNav = () => {
     { label: 'Registration Details', path: '/register-details', icon: FileText },
     { label: 'Registration', path: '/register', icon: FileText },
     { label: 'Abstract', path: '/abstract', icon: FileText },
-    { label: 'Downloads', path: '/downloads', icon: Download },
+    { label: 'Download', download: true, icon: Download },
     { label: 'Contact', path: '/contact', icon: Phone },
     { label: 'Gallery', path: '/gallery', icon: Image },
   ];
@@ -133,7 +134,25 @@ const MobileNav = () => {
               <div className="h-full overflow-y-auto py-4 px-4 space-y-1.5 scrollbar-thin scrollbar-thumb-slate-300/60 scrollbar-track-slate-100/60">
                 {drawerItems.map((item) => {
                   const Icon = item.icon;
-                  const active = isActive(item.path);
+                  const active = item.download ? false : isActive(item.path);
+
+                  if (item.download) {
+                    return (
+                      <a
+                        key={item.label}
+                        href={brochurePdf}
+                        download="AOA CON BROCHURE ANNOUNCEMENT.pdf"
+                        onClick={closeDrawer}
+                        className="flex items-center gap-3 w-full px-3 py-2 rounded-2xl text-left text-sm transition-all duration-200 border bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-[#005aa9]/30 hover:text-[#005aa9]"
+                      >
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 border text-slate-500 transition-all bg-slate-50 border-slate-200 group-hover:bg-[#005aa9]/10">
+                          <Icon className="w-4 h-4" />
+                        </div>
+                        <span className="font-medium truncate">{item.label}</span>
+                      </a>
+                    );
+                  }
+
                   return (
                     <button
                       key={item.label}

@@ -354,7 +354,9 @@ const CommitteePage = () => {
             const showSectionTitle =
               Boolean(section.sectionTitle) && section.sectionTitle !== 'Core Organizing Team';
             const showRoleTitle =
-              section.sectionTitle !== 'Chief Patron' && section.sectionTitle !== 'Patrons';
+              section.sectionTitle !== 'Chief Patron' &&
+              section.sectionTitle !== 'Patrons' &&
+              section.sectionTitle !== 'Scientific Team';
 
             return (
               <section key={section.sectionTitle} className="px-2 sm:px-4">
@@ -364,7 +366,17 @@ const CommitteePage = () => {
                   </h2>
                 )}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6 sm:gap-8 justify-center mx-auto max-w-7xl">
+                <div
+                  className={`grid grid-cols-1 sm:grid-cols-2 ${
+                    [
+                      'Scientific Team',
+                      'Workshops & Courses',
+                      'Reception & Registration Team',
+                    ].includes(section.sectionTitle)
+                      ? 'lg:grid-cols-3'
+                      : 'lg:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]'
+                  } gap-6 sm:gap-8 justify-center mx-auto max-w-7xl`}
+                >
                   {section.roles.flatMap((roleBlock) =>
                     roleBlock.members.map((member, index) => (
                       <div

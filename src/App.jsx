@@ -20,7 +20,6 @@ import VenuePage from './pages/user/VenuePage';
 import ContactPage from './pages/user/ContactPage';
 import GalleryPage from './pages/user/GalleryPage';
 import HomePage from './pages/user/HomePage';
-import BrochurePage from './pages/user/BrochurePage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import RegistrationsManagementPage from './pages/admin/RegistrationsManagementPage';
@@ -136,9 +135,6 @@ function App() {
                   <OfficeBearersPage />
               } />
               
-              <Route path="/download" element={
-                  <BrochurePage />
-              } />
               
               <Route path="/register" element={
                   <RegisterPage />
