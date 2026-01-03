@@ -26,6 +26,7 @@ import {
   abstractAPI,
   feedbackAPI,
   API_BASE_URL,
+  userAPI,
 } from '../../utils/api';
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
@@ -39,10 +40,11 @@ const DashboardPage = () => {
     abstract: null,
     feedback: null,
   });
+  const [profile, setProfile] = useState(null);
+  const [profileLoading, setProfileLoading] = useState(false);
 
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const {
-    stepperProgress,
     setRegistration,
     setAccommodationBookings,
     setAbstract,
@@ -53,8 +55,7 @@ const DashboardPage = () => {
   const steps = [
     { key: 'registration', label: 'Registration', short: 'Reg' },
     { key: 'accommodation', label: 'Accommodation', short: 'Stay' },
-    { key: 'conferenceDays', label: 'Conference Days', short: 'Days' },
-    { key: 'abstractUpload', label: 'Abstract', short: 'Abs' },
+    { key: 'abstract', label: 'Abstract', short: 'Abs' },
     { key: 'feedback', label: 'Feedback', short: 'Fb' },
   ];
 
@@ -120,17 +121,20 @@ const DashboardPage = () => {
     );
   };
 
-  const getCurrentStep = () => {
-    if (!stepperProgress.registration) return 0;
-    if (!stepperProgress.accommodation) return 1;
-    if (!stepperProgress.conferenceDays) return 2;
-    if (!stepperProgress.abstractUpload) return 3;
-    return 4;
-  };
-
   const abstractFileUrl = stats.abstract?.filePath
     ? `${API_BASE_URL}/${stats.abstract.filePath}`
     : null;
+  const profileRole = profile?.role || user?.role;
+  const stepCompletion = {
+    registration: !!stats.registration,
+    accommodation: stats.accommodations.length > 0,
+    abstract: !!stats.abstract,
+    feedback: !!stats.feedback,
+  };
+  const completedCount = steps.reduce(
+    (count, step) => count + (stepCompletion[step.key] ? 1 : 0),
+    0
+  );
 
   useEffect(() => {
     fetchDashboardData();
@@ -139,6 +143,17 @@ const DashboardPage = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
+
+      try {
+        setProfileLoading(true);
+        const profileResponse = await userAPI.getMe();
+        const profileData = profileResponse.data.user;
+        setProfile(profileData);
+        updateUser(profileData);
+      } catch {
+      } finally {
+        setProfileLoading(false);
+      }
 
       try {
         const regResponse = await registrationAPI.getMyRegistration();
@@ -178,6 +193,8 @@ const DashboardPage = () => {
       </div>
     );
   }
+
+  const isProfileComplete = !!profile?.isProfileComplete;
 
   return (
     <div className="min-h-screen bg-cover bg-center bg-no-repeat relative"
@@ -238,13 +255,13 @@ const DashboardPage = () => {
                 <h2 className="text-sm font-semibold text-slate-900">Overall progress</h2>
               </div>
               <span className="text-xs font-medium text-slate-600">
-                Step {getCurrentStep() + 1} of 5
+                Completed {completedCount} of {steps.length}
               </span>
             </div>
             <div className="relative flex items-center -space-x-px">
               <div className="absolute inset-x-6 inset-y-1/2 -z-10 h-px bg-slate-200" />
               {steps.map((step, index) => {
-                const active = index <= getCurrentStep();
+                const active = stepCompletion[step.key];
                 return (
                   <div key={step.key} className="flex flex-1 flex-col items-center min-w-0">
                     <div className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-semibold transition-all ${
@@ -267,11 +284,18 @@ const DashboardPage = () => {
         </div>
 
         {}
+        {!isProfileComplete && (
+          <div className="bg-amber-50 border border-amber-200 text-amber-800 text-xs px-3 py-2 rounded-xl">
+            Complete your profile to unlock registration, accommodation, abstract submission, and feedback.
+          </div>
+        )}
+
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {!stats.registration && (
             <button
               onClick={() => navigate('/registration')}
-              className="group bg-white/90 backdrop-blur-xl border border-[#9c3253]/30 rounded-2xl px-3 py-3 text-center text-xs sm:text-sm hover:border-[#9c3253]/50 transition-all"
+              disabled={!isProfileComplete}
+              className="group bg-white/90 backdrop-blur-xl border border-[#9c3253]/30 rounded-2xl px-3 py-3 text-center text-xs sm:text-sm hover:border-[#9c3253]/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <CreditCard className="w-5 h-5 mx-auto mb-2 text-[#9c3253] group-hover:scale-110 transition-transform" />
               <p className="font-semibold text-slate-900">Register</p>
@@ -280,7 +304,8 @@ const DashboardPage = () => {
           )}
           <button
             onClick={() => navigate('/accommodation')}
-            className="group bg-white/90 backdrop-blur-xl border border-[#ff8a1f]/30 rounded-2xl px-3 py-3 text-center text-xs sm:text-sm hover:border-[#ff8a1f]/50 transition-all"
+            disabled={!isProfileComplete}
+            className="group bg-white/90 backdrop-blur-xl border border-[#ff8a1f]/30 rounded-2xl px-3 py-3 text-center text-xs sm:text-sm hover:border-[#ff8a1f]/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Hotel className="w-5 h-5 mx-auto mb-2 text-[#ff8a1f] group-hover:scale-110 transition-transform" />
             <p className="font-semibold text-slate-900">Stay</p>
@@ -288,7 +313,8 @@ const DashboardPage = () => {
           </button>
           <button
             onClick={() => navigate('/abstract/rules')}
-            className="group bg-white/90 backdrop-blur-xl border border-[#7cb342]/30 rounded-2xl px-3 py-3 text-center text-xs sm:text-sm hover:border-[#7cb342]/50 transition-all"
+            disabled={!isProfileComplete}
+            className="group bg-white/90 backdrop-blur-xl border border-[#7cb342]/30 rounded-2xl px-3 py-3 text-center text-xs sm:text-sm hover:border-[#7cb342]/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <FileText className="w-5 h-5 mx-auto mb-2 text-[#7cb342] group-hover:scale-110 transition-transform" />
             <p className="font-semibold text-slate-900">Abstract</p>
@@ -296,12 +322,85 @@ const DashboardPage = () => {
           </button>
           <button
             onClick={() => navigate('/feedback')}
-            className="group bg-white/90 backdrop-blur-xl border border-[#ff8a1f]/30 rounded-2xl px-3 py-3 text-center text-xs sm:text-sm hover:border-[#ff8a1f]/50 transition-all"
+            disabled={!isProfileComplete}
+            className="group bg-white/90 backdrop-blur-xl border border-[#ff8a1f]/30 rounded-2xl px-3 py-3 text-center text-xs sm:text-sm hover:border-[#ff8a1f]/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <MessageSquare className="w-5 h-5 mx-auto mb-2 text-[#ff8a1f] group-hover:scale-110 transition-transform" />
             <p className="font-semibold text-slate-900">Feedback</p>
             <p className="text-[11px] text-slate-600">After event</p>
           </button>
+        </div>
+
+        <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-2xl px-4 py-4 sm:px-5 sm:py-5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+            <div>
+              <h2 className="text-sm font-semibold text-slate-900">Profile details</h2>
+              <p className="text-[11px] text-slate-600">
+                Complete your profile before continuing with registration and bookings.
+              </p>
+            </div>
+            {profile && (
+              <span
+                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-medium border ${
+                  profile.isProfileComplete
+                    ? 'bg-[#7cb342]/10 text-[#7cb342] border-[#7cb342]/30'
+                    : 'bg-[#ff8a1f]/10 text-[#ff8a1f] border-[#ff8a1f]/30'
+                }`}
+              >
+                {profile.isProfileComplete ? 'Profile complete' : 'Profile incomplete'}
+              </span>
+            )}
+          </div>
+
+          {profileLoading ? (
+            <div className="py-6">
+              <LoadingSpinner size="sm" text="Loading profile..." />
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-600">
+                <span className="inline-flex items-center gap-1">
+                  <User className="w-3.5 h-3.5 text-[#9c3253]" />
+                  Role: {getRoleText(profileRole)}
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <Mail className="w-3.5 h-3.5 text-[#ff8a1f]" />
+                  Email and phone are locked after registration.
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                <div className="rounded-xl border border-slate-200 bg-white/70 px-3 py-2">
+                  <p className="text-[11px] text-slate-500">Full name</p>
+                  <p className="font-semibold text-slate-900 truncate">{profile?.name || user?.name || '-'}</p>
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-white/70 px-3 py-2">
+                  <p className="text-[11px] text-slate-500">Email</p>
+                  <p className="font-semibold text-slate-900 truncate">{profile?.email || user?.email || '-'}</p>
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-white/70 px-3 py-2">
+                  <p className="text-[11px] text-slate-500">Medical council no.</p>
+                  <p className="font-semibold text-slate-900 truncate">
+                    {profile?.medicalCouncilNumber || 'Not added'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <button
+                  onClick={() => navigate('/profile')}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#9c3253] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#8a2b47]"
+                >
+                  {isProfileComplete ? 'Edit profile' : 'Complete profile'}
+                </button>
+                {!isProfileComplete && (
+                  <span className="text-[11px] text-slate-600">
+                    Profile details are required before registration and bookings.
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -430,7 +529,8 @@ const DashboardPage = () => {
                   </p>
                   <button
                     onClick={() => navigate('/registration')}
-                    className="inline-flex items-center justify-center rounded-xl bg-[#9c3253] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#8a2b47]"
+                    disabled={!isProfileComplete}
+                    className="inline-flex items-center justify-center rounded-xl bg-[#9c3253] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#8a2b47] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Register now
                   </button>
@@ -450,7 +550,8 @@ const DashboardPage = () => {
                 </h2>
                 <button
                   onClick={() => navigate('/accommodation')}
-                  className="text-[11px] sm:text-xs font-medium text-[#ff8a1f] hover:text-[#e67e22]"
+                  disabled={!isProfileComplete}
+                  className="text-[11px] sm:text-xs font-medium text-[#ff8a1f] hover:text-[#e67e22] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   View all
                 </button>
@@ -491,7 +592,8 @@ const DashboardPage = () => {
                   </p>
                   <button
                     onClick={() => navigate('/accommodation')}
-                    className="inline-flex items-center justify-center rounded-xl bg-[#ff8a1f] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#e67e22]"
+                    disabled={!isProfileComplete}
+                    className="inline-flex items-center justify-center rounded-xl bg-[#ff8a1f] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#e67e22] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Book stay
                   </button>

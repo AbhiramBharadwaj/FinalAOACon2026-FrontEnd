@@ -34,6 +34,11 @@ export const authAPI = {
   register: (userData) => api.post('/auth/register', userData),
   adminLogin: (credentials) => api.post('/auth/admin/login', credentials),
 };
+
+export const userAPI = {
+  getMe: () => api.get('/auth/me'),
+  updateProfile: (data) => api.put('/auth/profile', data),
+};
 export const attendanceAPI = {
   getMyQr: () => api.get('/attendance/my-qr'),
   generateQr: (registrationId) => api.post(`/attendance/generate-qr/${registrationId}`),

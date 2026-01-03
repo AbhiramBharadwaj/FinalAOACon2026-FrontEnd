@@ -56,7 +56,7 @@ const PRIMARY_LINKS_TOP = [
 const PRIMARY_LINKS_BOTTOM = [
   { label: 'Download', download: true, icon: Download },
   { label: 'Registration', path: '/register-details', icon: User },
-  { label: 'Profile', path: '/dashboard', icon: User },
+  { label: 'Dashboard', path: '/dashboard', icon: User },
 ];
 
 // MOBILE DRAWER (left side) – reusing your MobileNav logic but without bottom bar
@@ -386,7 +386,7 @@ const Header = () => {
                 className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-white border-b-2 border-transparent transition-colors duration-200"
               >
                 <User className="w-4 h-4 text-white hover:text-yellow-900 transition-colors" />
-                <span>Profile</span>
+                <span>Dashboard</span>
               </Link>
             </nav>
 
@@ -431,6 +431,16 @@ const Header = () => {
                         </div>
                       </div>
                       <div className="py-1">
+                        <button
+                          onClick={() => {
+                            navigate('/profile');
+                            setShowProfileDropdown(false);
+                          }}
+                          className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                        >
+                          <User className="w-4 h-4 text-slate-500" />
+                          <span>Profile settings</span>
+                        </button>
                         <button
                           onClick={handleLogout}
                           className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors"

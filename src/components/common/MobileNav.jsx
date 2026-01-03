@@ -28,10 +28,11 @@ const MobileNav = () => {
   const bottomNavItems = [
     { icon: Home, label: 'Home', path: '/' },
     { icon: Hotel, label: 'Stay', path: '/accommodation' },
-    { icon: User, label: 'Profile', path: '/dashboard' },
+    { icon: User, label: 'Dashboard', path: '/dashboard' },
   ];
 
   const drawerItems = [
+    { label: 'Profile settings', path: '/profile', icon: User },
     { label: 'Committee', path: '/committee', icon: Users },
     // { label: 'Office Bearers', path: '/committee/office-bearers', icon: Users },
     // { label: 'Organising Committee', path: '/committee/organising', icon: Users },

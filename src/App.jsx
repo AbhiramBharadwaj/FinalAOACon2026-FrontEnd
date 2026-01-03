@@ -4,6 +4,7 @@ import { AppProvider } from './contexts/AppContext';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import DashboardPage from './pages/user/DashboardPage';
+import ProfilePage from './pages/user/ProfilePage';
 import RegistrationPage from './pages/user/RegistrationPage';
 import CheckoutPage from './pages/user/CheckoutPage';
 import PaymentStatusPage from './pages/user/PaymentStatusPage';
@@ -148,6 +149,11 @@ function App() {
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <DashboardPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <ProfilePage />
                 </ProtectedRoute>
               } />
               <Route path="/registration" element={
