@@ -38,7 +38,7 @@ const LoginPage = () => {
       const { token, user } = response.data;
 
       login(token, user);
-      navigate('/');
+      navigate('/dashboard');
     } catch (error) {
       setError(error.response?.data?.message || 'Login failed');
     } finally {

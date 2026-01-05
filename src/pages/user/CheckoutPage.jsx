@@ -377,7 +377,7 @@ const CheckoutPage = () => {
                 
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-[#7cb342]" />
-                  <span>5000+ delegates expected</span>
+                  <span>1000+ delegates expected</span>
                 </div>
               </div>
             </div>

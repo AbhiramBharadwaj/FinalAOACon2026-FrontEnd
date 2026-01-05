@@ -296,16 +296,6 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-[18px]">
-            <div className="bg-[#e3fcec] border border-emerald-400 px-5 py-5">
-              <p className="font-semibold text-[17px] text-emerald-900 mb-2">
-                Obstetric Critical Care & Resuscitation
-              </p>
-            </div>
-            <div className="bg-[#e0f2ff] border border-sky-400 px-5 py-5">
-              <p className="font-semibold text-[17px] text-sky-900 mb-2">
-                Obstetric RA & POCUS
-              </p>
-            </div>
             <div className="bg-[#fff3cd] border border-amber-400 px-5 py-5">
               <p className="font-semibold text-[17px] text-amber-900 mb-2">
                 Labour Analgesia
@@ -313,7 +303,17 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
             </div>
             <div className="bg-[#fde4f2] border border-rose-400 px-5 py-5">
               <p className="font-semibold text-[17px] text-rose-900 mb-2">
-                Critical Incidences, Simulation & Nursing Track
+                Critical Incidences in Obstetric Anaesthesia
+              </p>
+            </div>
+            <div className="bg-[#e0f2ff] border border-sky-400 px-5 py-5">
+              <p className="font-semibold text-[17px] text-sky-900 mb-2">
+                POCUS in Obstetrics
+              </p>
+            </div>
+            <div className="bg-[#e3fcec] border border-emerald-400 px-5 py-5">
+              <p className="font-semibold text-[17px] text-emerald-900 mb-2">
+                Maternal Collapse & Resuscitation
               </p>
             </div>
           </div>

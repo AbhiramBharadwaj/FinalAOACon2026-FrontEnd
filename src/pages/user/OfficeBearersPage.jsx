@@ -13,22 +13,30 @@ import akilandeswari from '../../images/AOAOfficeBearers/Akilandeswari-M.jpg';
 import nidhiBhatia from '../../images/AOAOfficeBearers/nidhi-bhatia.jpg';
 import manokanthMadapu from '../../images/AOAOfficeBearers/manokanth-madapu.jpg';
 import manishaShembrkar from '../../images/AOAOfficeBearers/manisha-shembrkar.jpg';
+import lalitRaiger from '../../images/AOAOfficeBearers/Lalit K Raiger.png';
 
-const officeBearers = [
-  { name: 'Dr. Anju Grewal', designation: 'President', image: anjuGrewal },
-  { name: 'Dr. Aruna Parameswari', designation: 'Secretary', image: arunaParameswari },
+const governingBody = [
+  { name: 'Dr. Sunanda Gupta', designation: 'Founder President', image: sunandaGupta },
+  { name: 'Dr. Anjan Trikha', designation: 'Founder Editor in Chief, JOACC & Past President', image: anjanTrikha },
+  { name: 'Dr. Sunil T Pandya', designation: 'Past President', image: sunilPandaya },
   { name: 'Dr. Kajal Jain', designation: 'Immediate Past President', image: kajalJain },
+  { name: 'Dr. Lalit K Raiger', designation: 'President Elect', image: lalitRaiger },
+];
+
+const executiveLeaders = [
+  { name: 'Dr. Anju Grewal', designation: 'President', image: anjuGrewal },
+  { name: 'Dr. Aruna Parameswari', designation: 'Hony. National Secretary', image: arunaParameswari },
   { name: 'Dr. Shilpa Kasokedar', designation: 'Vice President', image: shilpaKasodeka },
   { name: 'Dr. G. L. Ravindra', designation: 'Joint Secretary', image: glRavindra },
-  { name: 'Dr. Sunanda Gupta', designation: 'Founder President', image: sunandaGupta },
-  { name: 'Dr. Anjan Trikha', designation: 'Past President & Chief Editor', image: anjanTrikha },
-  { name: 'Dr. Sunil T Pandya', designation: 'Past President', image: sunilPandaya },
-  { name: 'Dr. Anjelena Kumar Gupta', designation: 'Treasurer', image: anjelenaKumar },
-  { name: 'Dr. Gita Nath', designation: 'Executive Members', image: gitaNath },
-  { name: 'Dr. Akilandeswari M', designation: 'Executive Members', image: akilandeswari },
+  { name: 'Dr. Anjelena K Gupta', designation: 'Treasurer', image: anjelenaKumar },
+];
+
+const executiveMembers = [
   { name: 'Dr. Nidhi Bhatia', designation: 'Executive Members', image: nidhiBhatia },
+  { name: 'Dr. Akilandeswari M', designation: 'Executive Members', image: akilandeswari },
   { name: 'Dr. Manokanth Madapu', designation: 'Executive Members', image: manokanthMadapu },
   { name: 'Dr. Manisha Shembekar', designation: 'Executive Members', image: manishaShembrkar },
+  { name: 'Dr. Gita Nath', designation: 'Executive Members', image: gitaNath },
 ];
 
 const OfficeBearersPage = () => {
@@ -66,29 +74,101 @@ const OfficeBearersPage = () => {
           </div>
         </section>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-7 lg:gap-8">
-          {officeBearers.map((member) => (
-            <div
-              key={member.name}
-              className="bg-white rounded-[22px] border border-[#d7dff0]  shadow-md px-5 py-6 text-center"
-            >
-              <div className="mx-auto w-28 h-28 rounded-full border-[3px] border-dotted border-[#b46a94] p-1">
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-full h-full rounded-full object-cover"
-                  loading="lazy"
-                />
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14 space-y-10">
+        <div>
+          <div className="text-center">
+            <h2 className="text-lg sm:text-xl font-semibold text-slate-900">
+              AOA - India Governing Body
+            </h2>
+            <div className="mx-auto mt-3 h-1 w-20 rounded-full bg-[#d81b60]" />
+          </div>
+          <div className="mt-6 flex flex-wrap justify-center gap-6 sm:gap-7 lg:gap-8 max-w-[900px] mx-auto">
+            {governingBody.map((member) => (
+              <div
+                key={member.name}
+                className="w-full max-w-[240px] bg-white rounded-[22px] border border-[#d7dff0] shadow-md px-5 py-6 text-center"
+              >
+                <div className="mx-auto w-28 h-28 rounded-full border-[3px] border-dotted border-[#b46a94] p-1">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-full h-full rounded-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <p className="mt-5 text-sm sm:text-lg font-semibold text-[#d81b60]">
+                  {member.name}
+                </p>
+                <p className="text-xs sm:text-base font-semibold text-[#3f51b5]">
+                  {member.designation}
+                </p>
               </div>
-              <p className="mt-5 text-sm sm:text-lg font-semibold text-[#d81b60]">
-                {member.name}
-              </p>
-              <p className="text-xs sm:text-base font-semibold text-[#3f51b5]">
-                {member.designation}
-              </p>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="text-center">
+            <h2 className="text-lg sm:text-xl font-semibold text-slate-900">
+              Current Executive AOA India
+            </h2>
+            <div className="mx-auto mt-3 h-1 w-20 rounded-full bg-[#d81b60]" />
+          </div>
+          <div className="mt-6 flex flex-wrap justify-center gap-6 sm:gap-7 lg:gap-8 max-w-[900px] mx-auto">
+            {executiveLeaders.map((member) => (
+              <div
+                key={member.name}
+                className="w-full max-w-[240px] bg-white rounded-[22px] border border-[#d7dff0] shadow-md px-5 py-6 text-center"
+              >
+                <div className="mx-auto w-28 h-28 rounded-full border-[3px] border-dotted border-[#b46a94] p-1">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-full h-full rounded-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <p className="mt-5 text-sm sm:text-lg font-semibold text-[#d81b60]">
+                  {member.name}
+                </p>
+                <p className="text-xs sm:text-base font-semibold text-[#3f51b5]">
+                  {member.designation}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8">
+            <div className="text-center">
+              <h3 className="text-sm sm:text-base font-semibold text-slate-700">
+                Executive Members
+              </h3>
+              <div className="mx-auto mt-2 h-0.5 w-16 rounded-full bg-slate-300" />
             </div>
-          ))}
+            <div className="mt-5 flex flex-wrap justify-center gap-6 sm:gap-7 lg:gap-8 max-w-[900px] mx-auto">
+              {executiveMembers.map((member) => (
+                <div
+                  key={member.name}
+                  className="w-full max-w-[240px] bg-white rounded-[22px] border border-[#d7dff0] shadow-md px-5 py-6 text-center"
+                >
+                  <div className="mx-auto w-28 h-28 rounded-full border-[3px] border-dotted border-[#b46a94] p-1">
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="w-full h-full rounded-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <p className="mt-5 text-sm sm:text-lg font-semibold text-[#d81b60]">
+                    {member.name}
+                  </p>
+                  <p className="text-xs sm:text-base font-semibold text-[#3f51b5]">
+                    {member.designation}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     </div>
