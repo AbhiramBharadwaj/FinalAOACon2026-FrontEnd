@@ -162,9 +162,6 @@ const OfficeBearersPage = () => {
                   <p className="mt-5 text-sm sm:text-lg font-semibold text-[#d81b60]">
                     {member.name}
                   </p>
-                  <p className="text-xs sm:text-base font-semibold text-[#3f51b5]">
-                    {member.designation}
-                  </p>
                 </div>
               ))}
             </div>

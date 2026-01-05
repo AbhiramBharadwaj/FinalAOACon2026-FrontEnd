@@ -330,7 +330,7 @@ const CheckoutPage = () => {
               <ul className="space-y-2 text-xs text-slate-700">
                 <li className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-[#9c3253] flex-shrink-0" />
-                  All conference sessions (3 days)
+                  All conference sessions
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-[#ff8a1f] flex-shrink-0" />
@@ -359,7 +359,7 @@ const CheckoutPage = () => {
                 {registration.addAoaCourse && (
                   <li className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-purple-600 flex-shrink-0" />
-                    Hands-on AOA Certified Course + Certificate
+                    AOA Certified Course + Certificate
                   </li>
                 )}
               </ul>
