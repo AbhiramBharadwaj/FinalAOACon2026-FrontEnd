@@ -701,7 +701,8 @@ const DashboardPage = () => {
                   </p>
                   <button
                     onClick={() => navigate('/abstract/rules')}
-                    className="w-full rounded-xl bg-[#7cb342] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#68c239]"
+                    disabled={!isProfileComplete}
+                    className="w-full rounded-xl bg-[#7cb342] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#68c239] disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     Submit abstract
                   </button>
@@ -730,7 +731,8 @@ const DashboardPage = () => {
                   </p>
                   <button
                     onClick={() => navigate('/feedback')}
-                    className="w-full rounded-xl bg-[#ff8a1f] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#e67e22]"
+                    disabled={!isProfileComplete}
+                    className="w-full rounded-xl bg-[#ff8a1f] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#e67e22] disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     Submit feedback
                   </button>
@@ -748,10 +750,10 @@ const DashboardPage = () => {
                 
                 <div className="flex items-center gap-2 rounded-xl bg-[#7cb342]/5 px-3 py-2 border border-[#7cb342]/20">
                   <Users className="w-4 h-4 text-[#7cb342]" />
-                  <span>5000+ delegates expected</span>
+                  <span>1000+ delegates expected</span>
                 </div>
                 <button
-                  onClick={() => navigate('/program')}
+                  onClick={() => navigate('')}
                   className="w-full rounded-xl bg-[#9c3253] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#8a2b47]"
                 >
                   View full program

@@ -82,7 +82,7 @@ const RegisterPage = () => {
       
       login(token, user);
       alert("registration is successfull");
-      navigate('/registration');
+      navigate('/dashboard');
     } catch (error) {
       if (error.response?.data?.message) {
         setErrors({ general: error.response.data.message });
@@ -129,7 +129,7 @@ const RegisterPage = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {[
                     { role: USER_ROLES.AOA, title: 'AOA Member', desc: 'Association member' },
-                    { role: USER_ROLES.NON_AOA, title: 'Non-AOA', desc: 'Other professionals' },
+                    { role: USER_ROLES.NON_AOA, title: 'Non-AOA', desc: '' },
                     { role: USER_ROLES.PGS, title: 'PGS & Fellows', desc: 'Postgraduate students' }
                   ].map(({ role, title, desc }) => (
                     <div 

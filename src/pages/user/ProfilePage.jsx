@@ -484,13 +484,23 @@ const ProfilePage = () => {
               </div>
             )}
 
-            <button
-              type="submit"
-              disabled={profileSaving}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#9c3253] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#8a2b47] disabled:opacity-60"
-            >
-              {profileSaving ? 'Saving...' : isProfileComplete ? 'Update profile' : 'Save profile'}
-            </button>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <button
+                type="submit"
+                disabled={profileSaving}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#9c3253] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#8a2b47] disabled:opacity-60"
+              >
+                {profileSaving ? 'Saving...' : isProfileComplete ? 'Update profile' : 'Save profile'}
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/dashboard')}
+                disabled={profileSaving}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-[#9c3253]/30 bg-white text-[#9c3253] px-4 py-2.5 text-xs sm:text-sm font-semibold hover:border-[#9c3253]/50 hover:text-[#8a2b47] disabled:opacity-60"
+              >
+                Go and book registration
+              </button>
+            </div>
           </form>
         </div>
       </div>
