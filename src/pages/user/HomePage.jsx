@@ -156,7 +156,7 @@ const HomePage = () => {
         <div className="max-w-5xl mx-auto px-4 lg:px-6">
           <div className="space-y-5">
             <h2 className="text-[26px] lg:text-[28px] font-bold text-slate-900 leading-snug">
-              Warm Greetings,
+              Pranams  and  greetings,
             </h2>
             <div className="space-y-4 text-[18px] text-slate-800 leading-relaxed text-justify">
               <p>
@@ -168,7 +168,7 @@ const HomePage = () => {
               <p>
                 It is concerning to our fraternity that despite the advances in the medical field, 
                 there exists a significant gap between urban and rural perioperative maternal care contributing 
-                to maternal deaths in India. This year's theme highlights the vital need to ensure equitable, 
+                to maternal morbidity and mortality in India. This year's theme highlights the vital need to ensure equitable, 
                 evidence-based and safe obstetric anaesthesia services across diverse healthcare settings. 
                 This prestigious gathering brings together experts, practitioners, 
                 and learners in the field of obstetric anaesthesia to share knowledge, discuss advances, 
