@@ -25,8 +25,8 @@ const governingBody = [
 
 const executiveLeaders = [
   { name: 'Dr. Anju Grewal', designation: 'President', image: anjuGrewal },
-  { name: 'Dr. Aruna Parameswari', designation: 'Hony. National Secretary', image: arunaParameswari },
-  { name: 'Dr. Shilpa Kasokedar', designation: 'Vice President', image: shilpaKasodeka },
+  { name: 'Dr. Aruna Parameswari', designation: ' Secretary', image: arunaParameswari },
+  { name: 'Dr. Shilpa Kasodekar', designation: 'Vice President', image: shilpaKasodeka },
   { name: 'Dr. G. L. Ravindra', designation: 'Joint Secretary', image: glRavindra },
   { name: 'Dr. Anjelena K Gupta', designation: 'Treasurer', image: anjelenaKumar },
 ];
