@@ -38,7 +38,11 @@ const LoginPage = () => {
       const { token, user } = response.data;
 
       login(token, user);
-      navigate('/dashboard');
+      if (user?.isProfileComplete === false) {
+        navigate('/profile');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (error) {
       setError(error.response?.data?.message || 'Login failed');
     } finally {

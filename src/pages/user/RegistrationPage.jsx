@@ -32,10 +32,11 @@ const WORKSHOPS = [
 
 const RegistrationPage = () => {
   const [formData, setFormData] = useState({
-    registrationType: '',
+    addWorkshop: false,
+    addAoaCourse: false,
+    addLifeMembership: false,
     selectedWorkshop: '',
     accompanyingPersons: 0,
-    addAoaCourse: false,
   });
   const [existingRegistration, setExistingRegistration] = useState(null);
   const [pricing, setPricing] = useState(null);
@@ -69,10 +70,11 @@ const RegistrationPage = () => {
         const reg = regRes.data;
         setExistingRegistration(reg);
         setFormData({
-          registrationType: reg.registrationType,
+          addWorkshop: reg.addWorkshop || false,
+          addAoaCourse: reg.addAoaCourse || false,
+          addLifeMembership: reg.addLifeMembership || false,
           selectedWorkshop: reg.selectedWorkshop || '',
           accompanyingPersons: reg.accompanyingPersons || 0,
-          addAoaCourse: reg.addAoaCourse || false,
         });
       }
     } catch (err) {
@@ -101,16 +103,7 @@ const RegistrationPage = () => {
     e.preventDefault();
     setError('');
 
-    if (!formData.registrationType) {
-      setError('Please select a registration type');
-      return;
-    }
-
-    const isWorkshopType =
-      formData.registrationType === 'WORKSHOP_CONFERENCE' ||
-      formData.registrationType === 'COMBO';
-
-    if (isWorkshopType && !formData.selectedWorkshop) {
+    if (formData.addWorkshop && !formData.selectedWorkshop) {
       setError('Please select a workshop');
       return;
     }
@@ -120,17 +113,7 @@ const RegistrationPage = () => {
       return;
     }
 
-    if (
-      pricing?.pricing?.[formData.registrationType]?.totalWithoutGST <= 0
-    ) {
-      setError('This package is not available in the current booking phase');
-      return;
-    }
-
-    if (
-      (formData.registrationType === 'AOA_CERTIFIED_COURSE' || formData.addAoaCourse) &&
-      pricing?.meta?.aoaCourseFull
-    ) {
+    if (formData.addAoaCourse && pricing?.meta?.aoaCourseFull) {
       setError('AOA Certified Course seats are full');
       return;
     }
@@ -138,10 +121,11 @@ const RegistrationPage = () => {
     setSubmitting(true);
     try {
       const submitData = new FormData();
-      submitData.append('registrationType', formData.registrationType);
-      if (isWorkshopType) submitData.append('selectedWorkshop', formData.selectedWorkshop);
-      submitData.append('accompanyingPersons', String(formData.accompanyingPersons));
+      submitData.append('addWorkshop', String(formData.addWorkshop));
       submitData.append('addAoaCourse', String(formData.addAoaCourse));
+      submitData.append('addLifeMembership', String(formData.addLifeMembership));
+      if (formData.addWorkshop) submitData.append('selectedWorkshop', formData.selectedWorkshop);
+      submitData.append('accompanyingPersons', String(formData.accompanyingPersons));
 
       if (user.role === 'PGS' && collegeLetter) {
         submitData.append('collegeLetter', collegeLetter);
@@ -160,28 +144,32 @@ const RegistrationPage = () => {
   // Helper functions remain same
   const getBookingPhaseText = (phase) => ({ EARLY_BIRD: 'Early Bird', REGULAR: 'Regular', SPOT: 'Spot Booking' }[phase] || phase);
   const getRoleText = (role) => ({ AOA: 'AOA Member', NON_AOA: 'Non-AOA Member', PGS: 'PGS & Fellows' }[role] || role);
-  const getRegistrationTypeDisplay = (type) => ({
-    CONFERENCE_ONLY: 'Conference Only',
-    WORKSHOP_CONFERENCE: 'Workshop + Conference',
-    COMBO: 'Combo Package',
-    AOA_CERTIFIED_COURSE: 'AOA Certified Course Only',
-  }[type] || type);
+  const getSelectedPackageLabel = (data) => {
+    const labels = [];
+    if (data?.addWorkshop) labels.push('Workshop');
+    if (data?.addAoaCourse) labels.push('AOA Certified Course');
+    if (data?.addLifeMembership) labels.push('AOA Life Membership');
+    return labels.length ? `Conference + ${labels.join(' + ')}` : 'Conference Only';
+  };
 
-  const isWorkshopType = ['WORKSHOP_CONFERENCE', 'COMBO'].includes(formData.registrationType);
-  const isConferenceOnly = formData.registrationType === 'CONFERENCE_ONLY';
-  const canAddAoaCourse = (user?.role === 'AOA' || user?.role === 'NON_AOA') && isConferenceOnly;
-  const aoaAddOn = pricing?.addOns?.aoaCourseAddOn;
+  const workshopAddOn = pricing?.addOns?.workshop;
+  const aoaAddOn = pricing?.addOns?.aoaCourse;
+  const lifeMembershipAddOn = pricing?.addOns?.lifeMembership;
+  const isPaidRegistration = existingRegistration?.paymentStatus === 'PAID';
+  const paidSoFar = existingRegistration?.totalPaid || 0;
 
-  const packageBase = pricing?.pricing?.[formData.registrationType]?.totalWithoutGST || 0;
-  const accompanyingBase = formData.accompanyingPersons * 7000;
+  const packageBase = pricing?.base?.conference?.priceWithoutGST || 0;
+  const workshopBase = formData.addWorkshop ? (workshopAddOn?.priceWithoutGST || 0) : 0;
   const aoaBase = formData.addAoaCourse ? (aoaAddOn?.priceWithoutGST || 0) : 0;
-  const totalBaseAmount = packageBase + accompanyingBase + aoaBase;
+  const lifeMembershipBase = formData.addLifeMembership ? (lifeMembershipAddOn?.priceWithoutGST || 0) : 0;
+  const accompanyingBase = formData.accompanyingPersons * 7000;
+  const totalBaseAmount = packageBase + workshopBase + aoaBase + lifeMembershipBase + accompanyingBase;
   const totalGST = Math.round(totalBaseAmount * 0.18);
   const subtotalWithGST = totalBaseAmount + totalGST;
   const processingFee = Math.round(subtotalWithGST * 0.0165);
   const finalAmount = subtotalWithGST + processingFee;
+  const balanceDue = Math.max(0, finalAmount - paidSoFar);
 
-  const shouldHideAOACourse = user?.role === 'PGS';
 
   if (authLoading || loading) {
     return (
@@ -253,10 +241,14 @@ const RegistrationPage = () => {
                 <div>
                   <p className="font-medium text-slate-900">Current Registration</p>
                   <p className="text-xs text-slate-600">
-                    {getRegistrationTypeDisplay(existingRegistration.registrationType)}
-                    {existingRegistration.addAoaCourse && ' + AOA Course'}
+                    {getSelectedPackageLabel(existingRegistration)}
                     {' • '} #{existingRegistration.registrationNumber}
                   </p>
+                  {isPaidRegistration && (
+                    <p className="text-[11px] text-emerald-700 mt-1">
+                      Base registration paid. You will only be charged for new add-ons.
+                    </p>
+                  )}
                 </div>
               </div>
               <span className="text-sm font-bold text-[#9c3253]">
@@ -342,128 +334,178 @@ const RegistrationPage = () => {
               {}
               <div className="bg-white/90 backdrop-blur-xl border border-white/40 px-4 py-4 rounded-lg">
                 <h2 className="text-sm font-semibold text-slate-900 mb-3">
-                  Select registration type
+                  Conference registration
                 </h2>
-                <div className="space-y-3">
-                  {pricing ? (
-                    Object.entries(pricing.pricing)
-                      .filter(([type]) => shouldHideAOACourse ? type !== 'AOA_CERTIFIED_COURSE' : true)
-                      .map(([type, priceData]) => {
-                        const isAvailable = priceData.totalWithoutGST > 0;
-                        const isSelected = formData.registrationType === type;
-
-                        return (
-                          <label
-                            key={type}
-                            className={`block rounded border px-4 py-3 text-xs cursor-pointer transition-colors ${
-                              isAvailable
-                                ? isSelected
-                                  ? 'border-[#9c3253] bg-[#9c3253]/5'
-                                  : 'border-slate-200 hover:border-[#ff8a1f] bg-white hover:bg-[#ff8a1f]/5'
-                                : 'border-slate-200 bg-slate-50 opacity-60 cursor-not-allowed'
-                            }`}
-                            onClick={() => {
-                              if (isAvailable) {
-                                setFormData(prev => ({
-                                  ...prev,
-                                  registrationType: type,
-                                  selectedWorkshop: type === 'AOA_CERTIFIED_COURSE' ? '' : prev.selectedWorkshop,
-                                  addAoaCourse: type === 'CONFERENCE_ONLY' ? prev.addAoaCourse : false,
-                                }));
-                                setError('');
-                              }
-                            }}
-                          >
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="flex items-start gap-3">
-                                <input
-                                  type="radio"
-                                  name="registrationType"
-                                  value={type}
-                                  checked={isSelected}
-                                  disabled={!isAvailable}
-                                  onChange={() => {}}
-                                  className="mt-0.5 h-4 w-4 text-[#9c3253] border-slate-300"
-                                />
-                                <div>
-                                  <p className="font-medium text-slate-900">
-                                    {getRegistrationTypeDisplay(type)}
-                                  </p>
-                                  <p className="text-[11px] text-slate-600 mt-0.5">
-                                    {type === 'CONFERENCE_ONLY' && 'All conference sessions, materials and certificate.'}
-                                    {type === 'WORKSHOP_CONFERENCE' && 'Workshop access plus all conference sessions.'}
-                                    {type === 'COMBO' && 'Conference, workshop and combo benefits.'}
-                                    {type === 'AOA_CERTIFIED_COURSE' && 'Standalone AOA Certified Course only (limited 40 seats).'}
-                                  </p>
-                                  {type === 'AOA_CERTIFIED_COURSE' && (
-                                    <p className="mt-1 text-[11px] text-[#7cb342] flex items-center gap-1">
-                                      <CheckCircle className="w-3 h-3" />
-                                      ₹5,000 + GST • Only for AOA / Non‑AOA members • No PGS / Fellows
-                                    </p>
-                                  )}
-                                  {!isAvailable && (
-                                    <p className="mt-1 text-[11px] text-red-600 flex items-center gap-1">
-                                      <XCircle className="w-3 h-3" />
-                                      Not available in current phase
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-                              <div className="text-right">
-                                {isAvailable ? (
-                                  <>
-                                    <p className="text-sm font-semibold text-[#9c3253]">
-                                      ₹{priceData.totalWithoutGST.toLocaleString()}
-                                    </p>
-                                    <p className="text-[11px] text-[#ff8a1f]">
-                                      + ₹{priceData.gst.toLocaleString()} GST
-                                    </p>
-                                  </>
-                                ) : (
-                                  <p className="text-sm text-slate-500">N/A</p>
-                                )}
-                              </div>
-                            </div>
-                          </label>
-                        );
-                      })
-                  ) : (
-                    <div className="rounded border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-xs text-slate-600">
-                      Pricing loading...
+                <div className="rounded border border-slate-200 bg-white px-4 py-3 text-xs">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-medium text-slate-900">Conference Only</p>
+                      <p className="text-[11px] text-slate-600 mt-0.5">
+                        All conference sessions, materials, certificate, and meals.
+                      </p>
+                      {isPaidRegistration && (
+                        <p className="text-[11px] text-emerald-700 mt-1">
+                          Already booked and paid.
+                        </p>
+                      )}
                     </div>
-                  )}
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-[#9c3253]">
+                        ₹{packageBase.toLocaleString()}
+                      </p>
+                      <p className="text-[11px] text-[#ff8a1f]">
+                        + ₹{Math.round(packageBase * 0.18).toLocaleString()} GST
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <h3 className="text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">
+                    Add-ons
+                  </h3>
+                  <div className="space-y-2">
+                    <label
+                      className={`flex items-center justify-between gap-3 rounded border px-3 py-2 text-xs ${
+                        workshopAddOn?.priceWithoutGST > 0
+                          ? 'border-slate-200 bg-white'
+                          : 'border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed'
+                      }`}
+                    >
+                      <div className="flex items-start gap-2">
+                        <input
+                          type="checkbox"
+                          checked={formData.addWorkshop}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              addWorkshop:
+                                isPaidRegistration && existingRegistration?.addWorkshop
+                                  ? true
+                                  : e.target.checked,
+                              selectedWorkshop: e.target.checked ? prev.selectedWorkshop : '',
+                            }))
+                          }
+                          disabled={
+                            workshopAddOn?.priceWithoutGST <= 0 ||
+                            (isPaidRegistration && existingRegistration?.addWorkshop)
+                          }
+                          className="mt-0.5 h-4 w-4 text-[#9c3253] border-slate-300"
+                        />
+                        <div>
+                          <p className="font-medium text-slate-900">Workshop access</p>
+                          <p className="text-[11px] text-slate-600">Select one workshop below.</p>
+                          {workshopAddOn?.priceWithoutGST <= 0 && (
+                            <p className="text-[11px] text-red-600 mt-1 flex items-center gap-1">
+                              <XCircle className="w-3 h-3" />
+                              Not available in this phase
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-semibold text-[#9c3253]">
+                          ₹{(workshopAddOn?.priceWithoutGST || 0).toLocaleString()}
+                        </p>
+                      </div>
+                    </label>
+
+                    {aoaAddOn && (
+                      <label
+                        className={`flex items-center justify-between gap-3 rounded border px-3 py-2 text-xs ${
+                          aoaAddOn.priceWithoutGST > 0 && !pricing?.meta?.aoaCourseFull
+                            ? 'border-purple-300 bg-purple-50'
+                            : 'border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed'
+                        }`}
+                      >
+                        <div className="flex items-start gap-2">
+                        <input
+                          type="checkbox"
+                          checked={formData.addAoaCourse}
+                          onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                addAoaCourse:
+                                  isPaidRegistration && existingRegistration?.addAoaCourse
+                                    ? true
+                                    : e.target.checked,
+                              }))
+                            }
+                            disabled={
+                              aoaAddOn.priceWithoutGST <= 0 ||
+                              pricing?.meta?.aoaCourseFull ||
+                              (isPaidRegistration && existingRegistration?.addAoaCourse)
+                            }
+                            className="mt-0.5 h-4 w-4 text-purple-600 border-slate-300"
+                          />
+                          <div>
+                            <p className="font-medium text-purple-900">AOA Certified Course</p>
+                            <p className="text-[11px] text-purple-700">
+                              Bundle price brings Conference + Course to ₹13,000 (AOA / Non-AOA only).
+                            </p>
+                            {pricing?.meta?.aoaCourseFull && (
+                              <p className="text-[11px] text-red-600 mt-1 flex items-center gap-1">
+                                <XCircle className="w-3 h-3" />
+                                Seats full
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-semibold text-purple-700">
+                            ₹{aoaAddOn.priceWithoutGST.toLocaleString()}
+                          </p>
+                          <p className="text-[11px] text-purple-500">
+                            {40 - (pricing?.meta?.aoaCourseCount || 0)} seats left
+                          </p>
+                        </div>
+                      </label>
+                    )}
+
+                    {lifeMembershipAddOn && (
+                      <label
+                        className={`flex items-center justify-between gap-3 rounded border px-3 py-2 text-xs ${
+                          lifeMembershipAddOn.priceWithoutGST > 0
+                            ? 'border-[#ff8a1f]/30 bg-[#ff8a1f]/5'
+                            : 'border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed'
+                        }`}
+                      >
+                        <div className="flex items-start gap-2">
+                        <input
+                          type="checkbox"
+                          checked={formData.addLifeMembership}
+                          onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                addLifeMembership:
+                                  isPaidRegistration && existingRegistration?.addLifeMembership
+                                    ? true
+                                    : e.target.checked,
+                              }))
+                            }
+                            disabled={
+                              lifeMembershipAddOn.priceWithoutGST <= 0 ||
+                              (isPaidRegistration && existingRegistration?.addLifeMembership)
+                            }
+                            className="mt-0.5 h-4 w-4 text-[#ff8a1f] border-slate-300"
+                          />
+                          <div>
+                            <p className="font-medium text-slate-900">AOA Life Membership</p>
+                            <p className="text-[11px] text-slate-600">Only for Non-AOA members.</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-semibold text-[#ff8a1f]">
+                            ₹{lifeMembershipAddOn.priceWithoutGST.toLocaleString()}
+                          </p>
+                        </div>
+                      </label>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              {}
-              {canAddAoaCourse && aoaAddOn && (
-                <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-400 rounded-lg p-4">
-                  <label className="flex items-center gap-4 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formData.addAoaCourse}
-                      onChange={(e) => setFormData(prev => ({ ...prev, addAoaCourse: e.target.checked }))}
-                      disabled={pricing?.meta?.aoaCourseFull}
-                      className="w-5 h-5 text-purple-600 rounded"
-                    />
-                    <div className="flex-1">
-                      <p className="font-medium text-purple-900">
-                        Add AOA Certified Course to your Conference registration
-                      </p>
-                      <p className="text-xs text-purple-700 mt-1">
-                        ₹{aoaAddOn.priceWithoutGST.toLocaleString()} + ₹{aoaAddOn.gst.toLocaleString()} GST
-                        {' • '}
-                        Only {40 - (pricing.meta.aoaCourseCount || 0)} seats left
-                      </p>
-                      {pricing?.meta?.aoaCourseFull && (
-                        <p className="text-xs text-red-600 mt-1">Seats full</p>
-                      )}
-                    </div>
-                  </label>
-                </div>
-              )}
-
-              {isWorkshopType && (
+              {formData.addWorkshop && (
                 <div className="bg-white/90 backdrop-blur-xl border border-white/40 px-4 py-4 rounded-lg">
                   <h2 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
                     <UsersIcon className="w-4 h-4 text-[#ff8a1f]" />
@@ -547,7 +589,7 @@ const RegistrationPage = () => {
               {}
               <button
                 type="submit"
-                disabled={submitting || !formData.registrationType}
+                disabled={submitting}
                 className="w-full inline-flex items-center justify-center gap-2 border border-[#9c3253] bg-[#9c3253] px-4 py-3 text-sm font-semibold text-white hover:bg-[#8a2b47] disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
               >
                 {submitting ? (
@@ -569,17 +611,14 @@ const RegistrationPage = () => {
                 Order summary
               </h2>
 
-              {formData.registrationType && totalBaseAmount > 0 ? (
+              {totalBaseAmount > 0 ? (
                 <>
                   <div className="border border-[#ff8a1f]/20 bg-[#ff8a1f]/5 px-3 py-3 mb-3 rounded">
                     <p className="text-[11px] text-slate-500 mb-1">Selected package</p>
                     <p className="font-medium text-slate-900">
-                      {getRegistrationTypeDisplay(formData.registrationType)}
+                      {getSelectedPackageLabel(formData)}
                     </p>
-                    {formData.addAoaCourse && (
-                      <p className="mt-1 text-[11px] text-purple-700 font-medium">+ AOA Certified Course</p>
-                    )}
-                    {isWorkshopType && formData.selectedWorkshop && (
+                    {formData.addWorkshop && formData.selectedWorkshop && (
                       <p className="mt-1 inline-flex items-center rounded-full bg-[#7cb342]/10 px-2 py-0.5 text-[10px] text-[#7cb342] border border-[#7cb342]/30">
                         {WORKSHOPS.find(w => w.id === formData.selectedWorkshop)?.name}
                       </p>
@@ -588,13 +627,25 @@ const RegistrationPage = () => {
 
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-slate-600">Package</span>
+                      <span className="text-slate-600">Conference base</span>
                       <span>₹{packageBase.toLocaleString()}</span>
                     </div>
+                    {formData.addWorkshop && (
+                      <div className="flex justify-between text-[#ff8a1f]">
+                        <span>Workshop add-on</span>
+                        <span>₹{workshopBase.toLocaleString()}</span>
+                      </div>
+                    )}
                     {formData.addAoaCourse && (
                       <div className="flex justify-between text-purple-700">
                         <span>AOA Course Add-on</span>
                         <span>₹{aoaBase.toLocaleString()}</span>
+                      </div>
+                    )}
+                    {formData.addLifeMembership && (
+                      <div className="flex justify-between text-[#ff8a1f]">
+                        <span>AOA Life Membership</span>
+                        <span>₹{lifeMembershipBase.toLocaleString()}</span>
                       </div>
                     )}
                     {formData.accompanyingPersons > 0 && (
@@ -627,13 +678,22 @@ const RegistrationPage = () => {
                       <span>Processing Fee (1.65%)</span>
                       <span>+₹{processingFee.toLocaleString()}</span>
                     </div>
+
+                    {paidSoFar > 0 && (
+                      <div className="flex justify-between text-emerald-700 font-medium">
+                        <span>Paid so far</span>
+                        <span>-₹{paidSoFar.toLocaleString()}</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="mt-4 border-t-2 border-[#9c3253] pt-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-bold text-slate-900">Final Amount</span>
+                      <span className="text-sm font-bold text-slate-900">
+                        {paidSoFar > 0 ? 'Balance Due' : 'Final Amount'}
+                      </span>
                       <span className="text-lg font-bold text-[#9c3253]">
-                        ₹{finalAmount.toLocaleString()}
+                        ₹{(paidSoFar > 0 ? balanceDue : finalAmount).toLocaleString()}
                       </span>
                     </div>
                     <p className="text-[10px] text-slate-500 text-right mt-1">

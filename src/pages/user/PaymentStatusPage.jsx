@@ -39,6 +39,14 @@ const PaymentStatusPage = () => {
   const [error, setError] = useState('');
   const [qrData, setQrData] = useState(null);
 
+  const getRegistrationLabel = (registration) => {
+    const labels = [];
+    if (registration?.addWorkshop || registration?.selectedWorkshop) labels.push('Workshop');
+    if (registration?.addAoaCourse) labels.push('AOA Certified Course');
+    if (registration?.addLifeMembership || registration?.lifetimeMembershipId) labels.push('AOA Life Membership');
+    return labels.length ? `Conference + ${labels.join(' + ')}` : 'Conference Only';
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -111,7 +119,7 @@ const PaymentStatusPage = () => {
       doc.text('Registration Details', 20, detailsY);
       detailsY += 12;
       doc.setFontSize(10);
-      doc.text(`Package: ${data.registrationType?.replace('_', ' + ') || 'N/A'}`, 20, detailsY);
+      doc.text(`Package: ${getRegistrationLabel(data) || 'N/A'}`, 20, detailsY);
       detailsY += 8;
       if (data.lifetimeMembershipId) {
         doc.text(`Lifetime Membership ID: ${data.lifetimeMembershipId}`, 20, detailsY);
@@ -154,10 +162,19 @@ const PaymentStatusPage = () => {
       }
     }
 
-    const baseAmount = data.basePrice || (data.totalAmount / 1.18) || 0;
-    const workshopPrice = data.workshopPrice || 0;
-    const comboDiscount = data.comboDiscount || 0;
-    const gst = data.gst || (baseAmount * 0.18) || 0;
+    const baseAmount =
+      data.basePrice ||
+      (data.packageBase
+        ? data.packageBase -
+          (data.workshopAddOn || 0) -
+          (data.aoaCourseBase || 0) -
+          (data.lifeMembershipBase || 0)
+        : 0);
+    const workshopPrice = data.workshopAddOn || 0;
+    const aoaCourseBase = data.aoaCourseBase || 0;
+    const lifeMembershipBase = data.lifeMembershipBase || 0;
+    const accompanyingBase = data.accompanyingBase || 0;
+    const gst = data.totalGST || Math.round((data.totalBase || 0) * 0.18) || 0;
     const total = data.totalAmount || 0;
 
     doc.setFontSize(12);
@@ -167,9 +184,11 @@ const PaymentStatusPage = () => {
       startY: detailsY + 20,
       head: [['Description', 'Amount (₹)']],
       body: [
-        ['Base Amount', baseAmount.toLocaleString('en-IN', { maximumFractionDigits: 2 })],
-        ...(workshopPrice > 0 ? [['Workshop Fee', workshopPrice.toLocaleString('en-IN', { maximumFractionDigits: 2 })]] : []),
-        ...(comboDiscount > 0 ? [['Combo Discount', `-${comboDiscount.toLocaleString('en-IN', { maximumFractionDigits: 2 })}`]] : []),
+        ['Conference Base', baseAmount.toLocaleString('en-IN', { maximumFractionDigits: 2 })],
+        ...(workshopPrice > 0 ? [['Workshop Add-on', workshopPrice.toLocaleString('en-IN', { maximumFractionDigits: 2 })]] : []),
+        ...(aoaCourseBase > 0 ? [['AOA Course Add-on', aoaCourseBase.toLocaleString('en-IN', { maximumFractionDigits: 2 })]] : []),
+        ...(lifeMembershipBase > 0 ? [['AOA Life Membership', lifeMembershipBase.toLocaleString('en-IN', { maximumFractionDigits: 2 })]] : []),
+        ...(accompanyingBase > 0 ? [['Accompanying person(s)', accompanyingBase.toLocaleString('en-IN', { maximumFractionDigits: 2 })]] : []),
         ['GST (18%)', gst.toLocaleString('en-IN', { maximumFractionDigits: 2 })],
         ['Total Amount', total.toLocaleString('en-IN', { maximumFractionDigits: 2 })],
       ],
@@ -337,7 +356,7 @@ const PaymentStatusPage = () => {
                   <div className="flex justify-between py-2 border-b border-slate-100/50">
                     <span className="text-slate-600">Package</span>
                     <span className="font-medium capitalize">
-                      {data.registrationType?.replace('_', ' + ') || 'N/A'}
+                      {getRegistrationLabel(data) || 'N/A'}
                     </span>
                   </div>
                   <div className="flex justify-between py-2 border-b border-slate-100/50">

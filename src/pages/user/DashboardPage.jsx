@@ -68,14 +68,12 @@ const DashboardPage = () => {
     return texts[role] || role;
   };
 
-  const getRegistrationTypeText = (type) => {
-    const texts = {
-      CONFERENCE_ONLY: 'Conference Only',
-      WORKSHOP_CONFERENCE: 'Workshop + Conference',
-      COMBO: 'Combo Package',
-      AOA_CERTIFIED_COURSE: 'AOA Certified Course Only',
-    };
-    return texts[type] || type;
+  const getRegistrationTypeText = (registration) => {
+    const labels = [];
+    if (registration?.addWorkshop || registration?.selectedWorkshop) labels.push('Workshop');
+    if (registration?.addAoaCourse) labels.push('AOA Certified Course');
+    if (registration?.addLifeMembership || registration?.lifetimeMembershipId) labels.push('AOA Life Membership');
+    return labels.length ? `Conference + ${labels.join(' + ')}` : 'Conference Only';
   };
 
   const getBookingPhaseText = (phase) => {
@@ -418,10 +416,18 @@ const DashboardPage = () => {
                   )}
                 </h2>
                 {stats.registration && (
-                  <button className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-medium text-[#9c3253] hover:text-[#8a2b47]">
-                    <Download className="w-3.5 h-3.5" />
-                    Invoice
-                  </button>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => navigate('/registration')}
+                      className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-medium text-[#9c3253] hover:text-[#8a2b47]"
+                    >
+                      Edit registration
+                    </button>
+                    <button className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-medium text-[#9c3253] hover:text-[#8a2b47]">
+                      <Download className="w-3.5 h-3.5" />
+                      Invoice
+                    </button>
+                  </div>
                 )}
               </div>
 
@@ -430,7 +436,7 @@ const DashboardPage = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl bg-[#9c3253]/5 px-3 py-3 border border-[#9c3253]/20">
                     <div>
                       <p className="font-medium text-slate-900">
-                        {getRegistrationTypeText(stats.registration.registrationType)}
+                        {getRegistrationTypeText(stats.registration)}
                       </p>
                       {stats.registration.addAoaCourse && (
                         <p className="text-[11px] text-purple-700 font-medium mt-1 flex items-center gap-1">

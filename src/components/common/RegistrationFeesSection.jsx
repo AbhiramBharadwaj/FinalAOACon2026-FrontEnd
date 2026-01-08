@@ -8,15 +8,15 @@ const feeRows = [
     spot: { conf: '13000' },
   },
   {
-    label: 'Non-Member',
-    early: { conf: '11000', ws: '13000', combo: '16000' },
-    regular: { conf: '13000', ws: '15000', combo: '18000' },
+    label: 'Non-AOA Member',
+    early: { conf: '11000', ws: '13000', combo: '14000' },
+    regular: { conf: '13000', ws: '15000', combo: '16000' },
     spot: { conf: '16000' },
   },
   {
     label: 'PGs & Fellows',
-    early: { conf: '7000', ws: '9000', combo: '12000' },
-    regular: { conf: '9000', ws: '11000', combo: '14000' },
+    early: { conf: '7000', ws: '9000', combo: null },
+    regular: { conf: '9000', ws: '11000', combo: null },
     spot: { conf: '12000' },
   },
 ];
@@ -168,9 +168,10 @@ const RegistrationFeesSection = () => {
               To be held on 29th and 30th October 2026
             </p>
             <ul className="list-disc list-inside text-sm text-slate-800 space-y-1">
-              <li>Fee: ₹5,000 + GST</li>
-              <li>Applicable only for practitioners</li>
+              <li>Conference + AOA Certified Course bundle: ₹13,000 + GST (AOA / Non-AOA)</li>
+              <li>Applicable only for practitioners (AOA &amp; Non-AOA)</li>
               <li>Limited to 40 participants</li>
+              <li>Conference registration is mandatory</li>
               <li>No spot registration</li>
             </ul>
           </div>

@@ -14,6 +14,7 @@ const ProfilePage = () => {
     email: '',
     phone: '',
     gender: '',
+    mealPreference: '',
     country: '',
     state: '',
     city: '',
@@ -49,6 +50,7 @@ const ProfilePage = () => {
       { key: 'email', label: 'your email' },
       { key: 'phone', label: 'your phone number' },
       { key: 'gender', label: 'your gender' },
+      { key: 'mealPreference', label: 'your meal preference' },
       { key: 'country', label: 'your country' },
       { key: 'state', label: 'your state' },
       { key: 'city', label: 'your city' },
@@ -84,6 +86,7 @@ const ProfilePage = () => {
           email: profileData.email || '',
           phone: profileData.phone || '',
           gender: profileData.gender || '',
+          mealPreference: profileData.mealPreference || '',
           country: profileData.country || '',
           state: profileData.state || '',
           city: profileData.city || '',
@@ -133,6 +136,7 @@ const ProfilePage = () => {
         email: updatedUser.email || '',
         phone: updatedUser.phone || '',
         gender: updatedUser.gender || '',
+        mealPreference: updatedUser.mealPreference || '',
         country: updatedUser.country || '',
         state: updatedUser.state || '',
         city: updatedUser.city || '',
@@ -290,19 +294,49 @@ const ProfilePage = () => {
                 <label className="block text-xs font-medium text-slate-700 mb-1" htmlFor="profile-gender">
                   Gender *
                 </label>
-                <select
+                <div
                   id="profile-gender"
-                  name="gender"
-                  value={profileForm.gender}
-                  onChange={handleProfileChange}
-                  required
-                  className="block w-full px-3 py-2 text-xs border border-slate-300 bg-white/70 focus:outline-none focus:ring-1 focus:ring-[#9c3253]"
+                  className="flex flex-wrap items-center gap-4 rounded-md border border-slate-300 bg-white/70 px-3 py-2.5 text-xs"
                 >
-                  <option value="">Select gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
+                  {['Male', 'Female', 'Other'].map((option) => (
+                    <label key={option} className="inline-flex items-center gap-2 text-slate-700">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value={option}
+                        checked={profileForm.gender === option}
+                        onChange={handleProfileChange}
+                        required={option === 'Male'}
+                        className="h-3.5 w-3.5 accent-[#9c3253]"
+                      />
+                      <span>{option}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-700 mb-1" htmlFor="profile-mealPreference">
+                  Meal preference *
+                </label>
+                <div
+                  id="profile-mealPreference"
+                  className="flex flex-wrap items-center gap-4 rounded-md border border-slate-300 bg-white/70 px-3 py-2.5 text-xs"
+                >
+                  {['Veg', 'Non Veg'].map((option) => (
+                    <label key={option} className="inline-flex items-center gap-2 text-slate-700">
+                      <input
+                        type="radio"
+                        name="mealPreference"
+                        value={option}
+                        checked={profileForm.mealPreference === option}
+                        onChange={handleProfileChange}
+                        required={option === 'Veg'}
+                        className="h-3.5 w-3.5 accent-[#9c3253]"
+                      />
+                      <span>{option}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1" htmlFor="profile-country">
@@ -494,11 +528,11 @@ const ProfilePage = () => {
               </button>
               <button
                 type="button"
-                onClick={() => navigate('/dashboard')}
-                disabled={profileSaving}
+                onClick={() => navigate('/registration')}
+                disabled={profileSaving || !isProfileComplete}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-[#9c3253]/30 bg-white text-[#9c3253] px-4 py-2.5 text-xs sm:text-sm font-semibold hover:border-[#9c3253]/50 hover:text-[#8a2b47] disabled:opacity-60"
               >
-                Go and book registration
+                Go to registration
               </button>
             </div>
           </form>

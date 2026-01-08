@@ -11,6 +11,14 @@ const AttendanceManagementPage = () => {
   const [exporting, setExporting] = useState('');
   const [isMobile, setIsMobile] = useState(false);
 
+  const getRegistrationLabel = (registration) => {
+    const labels = [];
+    if (registration?.addWorkshop || registration?.selectedWorkshop) labels.push('Workshop');
+    if (registration?.addAoaCourse) labels.push('AOA Certified Course');
+    if (registration?.addLifeMembership || registration?.lifetimeMembershipId) labels.push('AOA Life Membership');
+    return labels.length ? `Conference + ${labels.join(' + ')}` : 'Conference Only';
+  };
+
   useEffect(() => {
     fetchAttendances();
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -21,7 +29,7 @@ const AttendanceManagementPage = () => {
 
   const fetchAttendances = async () => {
     try {
-      const response = await fetch('https://finalaoa2026-backend.onrender.com/api/attendance', {
+      const response = await fetch('http://localhost:5050/api/attendance', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await response.json();
@@ -47,7 +55,7 @@ const AttendanceManagementPage = () => {
 
   const downloadQR = async (attendanceId) => {
     const link = document.createElement('a');
-    link.href = `https://finalaoa2026-backend.onrender.com/api/attendance/qr-download/${attendanceId}`;
+    link.href = `http://localhost:5050/api/attendance/qr-download/${attendanceId}`;
     link.download = 'QR.png';
     document.body.appendChild(link);
     link.click();
@@ -58,8 +66,8 @@ const AttendanceManagementPage = () => {
     setExporting(type);
     try {
       const endpoint = type === 'attended' 
-        ? 'https://finalaoa2026-backend.onrender.com/api/attendance/export-attended' 
-        : 'https://finalaoa2026-backend.onrender.com/api/attendance/export-not-attended';
+        ? 'http://localhost:5050/api/attendance/export-attended' 
+        : 'http://localhost:5050/api/attendance/export-not-attended';
       
       const response = await fetch(endpoint, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -98,7 +106,7 @@ const AttendanceManagementPage = () => {
         <div className="flex justify-between items-center">
           <span className="text-xs text-slate-500">Type</span>
           <span className="px-2 py-0.5 text-xs bg-blue-100 text-blue-800 rounded-full font-medium">
-            {attendance.registrationId.registrationType.replace('_', ' ').toLowerCase()}
+            {getRegistrationLabel(attendance.registrationId)}
           </span>
         </div>
       </div>
@@ -318,7 +326,7 @@ const AttendanceManagementPage = () => {
                           </td>
                           <td className="px-4 py-3">
                             <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full font-medium">
-                              {attendance.registrationId.registrationType.replace('_', ' ').toLowerCase()}
+                              {getRegistrationLabel(attendance.registrationId)}
                             </span>
                           </td>
                           <td className="px-4 py-3">

@@ -37,6 +37,14 @@ const RegistrationsManagementPage = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
 
+  const getRegistrationLabel = (registration) => {
+    const labels = [];
+    if (registration?.addWorkshop || registration?.selectedWorkshop) labels.push('Workshop');
+    if (registration?.addAoaCourse) labels.push('AOA Certified Course');
+    if (registration?.addLifeMembership || registration?.lifetimeMembershipId) labels.push('AOA Life Membership');
+    return labels.length ? `Conference + ${labels.join(' + ')}` : 'Conference Only';
+  };
+
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -355,7 +363,7 @@ const RegistrationsManagementPage = () => {
                     {reg.registrationNumber}
                   </td>
                   <td className="px-3 py-2 text-[11px] text-slate-700">
-                    {reg.registrationType?.replace('_', ' + ')}
+                    {getRegistrationLabel(reg)}
                   </td>
                   <td className="px-3 py-2 font-mono text-[11px] text-slate-900">
                     ₹{reg.totalAmount?.toLocaleString()}
@@ -441,7 +449,7 @@ const RegistrationsManagementPage = () => {
                 <div>
                   <p className="text-[10px] text-slate-500">Package</p>
                   <p className="text-[11px] text-slate-800">
-                    {reg.registrationType?.replace('_', ' + ')}
+                    {getRegistrationLabel(reg)}
                   </p>
                 </div>
                 <div>
@@ -567,10 +575,7 @@ const RegistrationsManagementPage = () => {
                   </p>
                   <p className="text-[11px] text-slate-700">
                     Package:{' '}
-                    {modalData.registration.registrationType?.replace(
-                      '_',
-                      ' + '
-                    )}
+                    {getRegistrationLabel(modalData.registration)}
                   </p>
                   <p className="text-[11px] text-slate-700">
                     Amount: ₹

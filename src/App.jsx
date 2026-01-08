@@ -49,6 +49,28 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ?children : <Navigate to="/login" replace />;
 };
 
+const ProfileGateRoute = ({ children }) => {
+  const { isAuthenticated, isAdmin, loading, user } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#005aa9]"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!isAdmin && user?.isProfileComplete === false) {
+    return <Navigate to="/profile" replace />;
+  }
+
+  return children;
+};
+
 const AdminRoute = ({ children }) => {
   const { isAuthenticated, isAdmin, loading } = useAuth();
 
@@ -147,9 +169,9 @@ function App() {
 
               {}
               <Route path="/dashboard" element={
-                <ProtectedRoute>
+                <ProfileGateRoute>
                   <DashboardPage />
-                </ProtectedRoute>
+                </ProfileGateRoute>
               } />
               <Route path="/profile" element={
                 <ProtectedRoute>

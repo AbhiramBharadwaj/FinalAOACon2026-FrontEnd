@@ -62,7 +62,7 @@ const CheckoutPage = () => {
   };
 
   const handlePayment = async () => {
-    if (registration?.paymentStatus === 'PAID') {
+    if (balanceDue <= 0) {
       navigate('/dashboard');
       return;
     }
@@ -135,14 +135,12 @@ const CheckoutPage = () => {
     return texts[role] || role;
   };
 
-  const getRegistrationTypeText = (type) => {
-    const texts = {
-      CONFERENCE_ONLY: 'Conference Only',
-      WORKSHOP_CONFERENCE: 'Workshop + Conference',
-      COMBO: 'Combo Package',
-      AOA_CERTIFIED_COURSE: 'AOA Certified Course Only',
-    };
-    return texts[type] || type;
+  const getRegistrationTypeText = (registration) => {
+    const labels = [];
+    if (registration?.addWorkshop || registration?.selectedWorkshop) labels.push('Workshop');
+    if (registration?.addAoaCourse) labels.push('AOA Certified Course');
+    if (registration?.addLifeMembership || registration?.lifetimeMembershipId) labels.push('AOA Life Membership');
+    return labels.length ? `Conference + ${labels.join(' + ')}` : 'Conference Only';
   };
 
   const getBookingPhaseText = (phase) => {
@@ -162,6 +160,9 @@ const CheckoutPage = () => {
     };
     return map[phase] || 'bg-slate-50 text-slate-700 border-slate-200';
   };
+
+  const totalPaid = registration?.totalPaid || 0;
+  const balanceDue = registration ? Math.max(0, registration.totalAmount - totalPaid) : 0;
 
   if (loading) {
     return (
@@ -298,7 +299,7 @@ const CheckoutPage = () => {
                 <div>
                   <p className="text-[11px] text-slate-500">Package</p>
                   <p className="font-medium text-slate-900">
-                    {getRegistrationTypeText(registration.registrationType)}
+                    {getRegistrationTypeText(registration)}
                   </p>
                 </div>
                 {registration.addAoaCourse && (
@@ -344,13 +345,13 @@ const CheckoutPage = () => {
                   <CheckCircle className="w-4 h-4 text-[#9c3253] flex-shrink-0" />
                   Lunch and tea breaks
                 </li>
-                {registration.registrationType !== 'CONFERENCE_ONLY' && (
+                {registration.addWorkshop && (
                   <li className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-[#ff8a1f] flex-shrink-0" />
                     Workshop access as per selection
                   </li>
                 )}
-                {registration.registrationType === 'COMBO' && (
+                {(registration.addLifeMembership || registration.lifetimeMembershipId) && (
                   <li className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-[#7cb342] flex-shrink-0" />
                     Lifetime AOA membership
@@ -393,9 +394,11 @@ const CheckoutPage = () => {
 
               {}
               <div className="border border-[#9c3253]/20 bg-[#9c3253]/5 px-3 py-3 text-center mb-4 rounded-lg">
-                <p className="text-xs text-slate-500 mb-1">Final Amount Payable</p>
+                <p className="text-xs text-slate-500 mb-1">
+                  {balanceDue > 0 ? 'Balance Due' : 'Final Amount Paid'}
+                </p>
                 <p className="text-lg font-bold text-[#9c3253]">
-                  ₹{registration.totalAmount?.toLocaleString()}
+                  ₹{(balanceDue > 0 ? balanceDue : registration.totalAmount)?.toLocaleString()}
                 </p>
                 <p className="text-[10px] text-[#ff8a1f] font-medium mt-1">
                   Incl. GST & Processing Fee
@@ -405,14 +408,30 @@ const CheckoutPage = () => {
               {}
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-600">Conference Package</span>
-                  <span className="font-medium">₹{registration.packageBase.toLocaleString()}</span>
+                  <span className="text-slate-600">Conference base</span>
+                  <span className="font-medium">
+                    ₹{(registration.basePrice ?? registration.packageBase ?? 0).toLocaleString()}
+                  </span>
                 </div>
+
+                {registration.addWorkshop && (
+                  <div className="flex justify-between text-xs text-[#ff8a1f] font-medium">
+                    <span>Workshop add-on</span>
+                    <span>₹{registration.workshopAddOn?.toLocaleString?.() || registration.workshopPrice?.toLocaleString?.() || '0'}</span>
+                  </div>
+                )}
 
                 {registration.addAoaCourse && (
                   <div className="flex justify-between text-xs text-purple-700 font-medium">
                     <span>AOA Certified Course Add-on</span>
                     <span>₹{registration.aoaCourseBase.toLocaleString()}</span>
+                  </div>
+                )}
+
+                {(registration.addLifeMembership || registration.lifetimeMembershipId) && (
+                  <div className="flex justify-between text-xs text-[#ff8a1f] font-medium">
+                    <span>AOA Life Membership</span>
+                    <span>₹{registration.lifeMembershipBase?.toLocaleString?.() || '0'}</span>
                   </div>
                 )}
 
@@ -439,6 +458,13 @@ const CheckoutPage = () => {
                   <span>Processing Fee (1.65%)</span>
                   <span>+₹{registration.processingFee.toLocaleString()}</span>
                 </div>
+
+                {totalPaid > 0 && (
+                  <div className="flex justify-between text-xs text-emerald-700 font-medium">
+                    <span>Paid so far</span>
+                    <span>-₹{totalPaid.toLocaleString()}</span>
+                  </div>
+                )}
               </div>
 
               {}
@@ -463,12 +489,12 @@ const CheckoutPage = () => {
               {}
               <button
                 onClick={handlePayment}
-                disabled={processing || registration.paymentStatus === 'PAID'}
+                disabled={processing || balanceDue <= 0}
                 className="w-full inline-flex items-center justify-center gap-2 border border-[#9c3253] bg-[#9c3253] px-4 py-3 text-sm font-semibold text-white hover:bg-[#8a2b47] disabled:opacity-60 disabled:cursor-not-allowed mb-3 transition-all duration-200"
               >
                 {processing ? (
                   <LoadingSpinner size="sm" />
-                ) : registration.paymentStatus === 'PAID' ? (
+                ) : balanceDue <= 0 ? (
                   <>
                     <CheckCircle className="w-4 h-4" />
                     Payment complete
@@ -476,12 +502,12 @@ const CheckoutPage = () => {
                 ) : (
                   <>
                     <CreditCard className="w-4 h-4" />
-                    Pay ₹{registration.totalAmount?.toLocaleString()}
+                    Pay ₹{balanceDue.toLocaleString()}
                   </>
                 )}
               </button>
 
-              {registration.paymentStatus === 'PAID' && (
+              {balanceDue <= 0 && (
                 <button
                   onClick={() => navigate('/dashboard')}
                   className="w-full inline-flex items-center justify-center border border-[#7cb342]/50 bg-[#7cb342]/5 px-4 py-2.5 text-xs font-semibold text-[#7cb342] hover:bg-[#7cb342]/10 transition-colors"

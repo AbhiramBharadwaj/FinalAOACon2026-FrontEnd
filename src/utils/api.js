@@ -1,7 +1,7 @@
 // src/utils/api.js
 import axios from 'axios';
 
-const API_URL = 'https://finalaoa2026-backend.onrender.com/api';
+const API_URL = 'http://localhost:5050/api';
 export const API_BASE_URL = API_URL.replace(/\/api$/, '');
 const api = axios.create({
   baseURL: API_URL,
