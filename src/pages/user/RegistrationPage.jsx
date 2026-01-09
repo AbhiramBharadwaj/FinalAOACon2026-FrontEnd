@@ -157,6 +157,14 @@ const RegistrationPage = () => {
   const lifeMembershipAddOn = pricing?.addOns?.lifeMembership;
   const isPaidRegistration = existingRegistration?.paymentStatus === 'PAID';
   const paidSoFar = existingRegistration?.totalPaid || 0;
+  const isAoaMember = user?.role && user.role.toLowerCase().includes('aoa');
+  const hasWorkshopLocked = isPaidRegistration && existingRegistration?.addWorkshop;
+  const hasCourseLocked = isPaidRegistration && existingRegistration?.addAoaCourse;
+  const aoaAddonSelection = formData.addWorkshop
+    ? 'workshop'
+    : formData.addAoaCourse
+      ? 'course'
+      : '';
 
   const packageBase = pricing?.base?.conference?.priceWithoutGST || 0;
   const workshopBase = formData.addWorkshop ? (workshopAddOn?.priceWithoutGST || 0) : 0;
@@ -374,33 +382,50 @@ const RegistrationPage = () => {
                     >
                       <div className="flex items-start gap-2">
                         <input
-                          type="checkbox"
-                          checked={formData.addWorkshop}
+                          type={isAoaMember ? 'radio' : 'checkbox'}
+                          name={isAoaMember ? 'aoa-addon' : undefined}
+                          value={isAoaMember ? 'workshop' : undefined}
+                          checked={isAoaMember ? aoaAddonSelection === 'workshop' : formData.addWorkshop}
                           onChange={(e) =>
                             setFormData((prev) => ({
                               ...prev,
                               addWorkshop:
                                 isPaidRegistration && existingRegistration?.addWorkshop
                                   ? true
-                                  : e.target.checked,
-                              selectedWorkshop: e.target.checked ? prev.selectedWorkshop : '',
+                                  : isAoaMember
+                                    ? true
+                                    : e.target.checked,
+                              selectedWorkshop:
+                                isAoaMember
+                                  ? prev.selectedWorkshop
+                                  : e.target.checked
+                                    ? prev.selectedWorkshop
+                                    : '',
+                              addAoaCourse:
+                                isAoaMember ? false : prev.addAoaCourse,
                             }))
                           }
                           disabled={
                             workshopAddOn?.priceWithoutGST <= 0 ||
-                            (isPaidRegistration && existingRegistration?.addWorkshop)
+                            hasWorkshopLocked ||
+                            (isAoaMember && hasCourseLocked)
                           }
                           className="mt-0.5 h-4 w-4 text-[#9c3253] border-slate-300"
                         />
-                        <div>
-                          <p className="font-medium text-slate-900">Workshop access</p>
-                          <p className="text-[11px] text-slate-600">Select one workshop below.</p>
-                          {workshopAddOn?.priceWithoutGST <= 0 && (
-                            <p className="text-[11px] text-red-600 mt-1 flex items-center gap-1">
-                              <XCircle className="w-3 h-3" />
-                              Not available in this phase
-                            </p>
-                          )}
+                          <div>
+                            <p className="font-medium text-slate-900">Workshop access</p>
+                            <p className="text-[11px] text-slate-600">Select one workshop below.</p>
+                            {isAoaMember && !hasWorkshopLocked && (
+                              <p className="text-[11px] text-slate-500 mt-1">
+                                Choose either Workshop or AOA Certified Course.
+                              </p>
+                            )}
+                            {workshopAddOn?.priceWithoutGST <= 0 && (
+                              <p className="text-[11px] text-red-600 mt-1 flex items-center gap-1">
+                                <XCircle className="w-3 h-3" />
+                                Not available in this phase
+                              </p>
+                            )}
                         </div>
                       </div>
                       <div className="text-right">
@@ -419,22 +444,30 @@ const RegistrationPage = () => {
                         }`}
                       >
                         <div className="flex items-start gap-2">
-                        <input
-                          type="checkbox"
-                          checked={formData.addAoaCourse}
-                          onChange={(e) =>
+                          <input
+                            type={isAoaMember ? 'radio' : 'checkbox'}
+                          name={isAoaMember ? 'aoa-addon' : undefined}
+                          value={isAoaMember ? 'course' : undefined}
+                            checked={isAoaMember ? aoaAddonSelection === 'course' : formData.addAoaCourse}
+                            onChange={(e) =>
                               setFormData((prev) => ({
                                 ...prev,
                                 addAoaCourse:
                                   isPaidRegistration && existingRegistration?.addAoaCourse
                                     ? true
-                                    : e.target.checked,
+                                    : isAoaMember
+                                      ? true
+                                      : e.target.checked,
+                                addWorkshop:
+                                  isAoaMember ? false : prev.addWorkshop,
+                                selectedWorkshop: isAoaMember ? '' : prev.selectedWorkshop,
                               }))
                             }
                             disabled={
                               aoaAddOn.priceWithoutGST <= 0 ||
                               pricing?.meta?.aoaCourseFull ||
-                              (isPaidRegistration && existingRegistration?.addAoaCourse)
+                              hasCourseLocked ||
+                              (isAoaMember && hasWorkshopLocked)
                             }
                             className="mt-0.5 h-4 w-4 text-purple-600 border-slate-300"
                           />
@@ -443,6 +476,11 @@ const RegistrationPage = () => {
                             <p className="text-[11px] text-purple-700">
                               Bundle price brings Conference + Course to ₹13,000 (AOA / Non-AOA only).
                             </p>
+                            {isAoaMember && !hasCourseLocked && (
+                              <p className="text-[11px] text-slate-500 mt-1">
+                                Choose either Workshop or AOA Certified Course.
+                              </p>
+                            )}
                             {pricing?.meta?.aoaCourseFull && (
                               <p className="text-[11px] text-red-600 mt-1 flex items-center gap-1">
                                 <XCircle className="w-3 h-3" />
