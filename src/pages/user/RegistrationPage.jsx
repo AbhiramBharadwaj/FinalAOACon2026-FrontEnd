@@ -9,7 +9,6 @@ import {
   Clock,
   CheckCircle,
   ArrowRight,
-  FileText,
   Users as UsersIcon,
   Calendar,
   XCircle,
@@ -43,7 +42,6 @@ const RegistrationPage = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [collegeLetter, setCollegeLetter] = useState(null);
 
   const { user, loading: authLoading } = useAuth();
   const { setRegistration } = useApp();
@@ -84,32 +82,12 @@ const RegistrationPage = () => {
     }
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.type !== 'application/pdf') {
-      setError('Please upload a PDF file only');
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      setError('File size must be less than 5MB');
-      return;
-    }
-    setCollegeLetter(file);
-    setError('');
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     if (formData.addWorkshop && !formData.selectedWorkshop) {
       setError('Please select a workshop');
-      return;
-    }
-
-    if (user.role === 'PGS' && !collegeLetter && !existingRegistration?.collegeLetter) {
-      setError('College letter is required for PGS & Fellows');
       return;
     }
 
@@ -126,10 +104,6 @@ const RegistrationPage = () => {
       submitData.append('addLifeMembership', String(formData.addLifeMembership));
       if (formData.addWorkshop) submitData.append('selectedWorkshop', formData.selectedWorkshop);
       submitData.append('accompanyingPersons', String(formData.accompanyingPersons));
-
-      if (user.role === 'PGS' && collegeLetter) {
-        submitData.append('collegeLetter', collegeLetter);
-      }
 
       const response = await registrationAPI.create(submitData);
       setRegistration(response.data.registration);
@@ -309,34 +283,6 @@ const RegistrationPage = () => {
             </div>
 
             {}
-            {user?.role === 'PGS' && (
-              <div className="bg-white/90 backdrop-blur-xl border border-white/40 px-4 py-4 rounded-lg">
-                <h2 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-[#ff8a1f]" />
-                  College recommendation letter
-                  <span className="text-[11px] font-normal text-slate-500">(required for PGS)</span>
-                </h2>
-                <div className="border border-dashed border-[#7cb342]/30 bg-[#7cb342]/5 px-4 py-6 text-center rounded">
-                  {existingRegistration?.collegeLetter ? (
-                    <p className="text-sm text-[#7cb342] font-medium mb-3">Letter already uploaded</p>
-                  ) : null}
-                  <FileText className="w-8 h-8 text-[#7cb342] mx-auto mb-2" />
-                  <p className="text-xs text-slate-700 mb-2">
-                    Upload signed letter from your institution (PDF, max 5MB).
-                  </p>
-                  <label className="inline-flex items-center px-4 py-2 rounded border border-[#9c3253] text-[#9c3253] text-xs font-medium bg-[#9c3253]/5 hover:bg-[#9c3253]/10 cursor-pointer transition-colors">
-                    {collegeLetter ? 'Change PDF' : 'Choose PDF file'}
-                    <input type="file" accept=".pdf" onChange={handleFileChange} className="sr-only" />
-                  </label>
-                  {collegeLetter && (
-                    <p className="mt-2 text-xs text-[#7cb342] truncate">
-                      Selected: <span className="font-medium">{collegeLetter.name}</span>
-                    </p>
-                  )}
-                </div>
-              </div>
-            )}
-
             {}
             <form onSubmit={handleSubmit} className="space-y-5">
               {}
