@@ -15,28 +15,31 @@ import manokanthMadapu from '../../images/AOAOfficeBearers/manokanth-madapu.jpg'
 import manishaShembrkar from '../../images/AOAOfficeBearers/manisha-shembrkar.jpg';
 import lalitRaiger from '../../images/AOAOfficeBearers/Lalit K Raiger.png';
 
-const governingBody = [
-  { name: 'Dr. Sunanda Gupta', designation: 'Founder President', image: sunandaGupta },
-  { name: 'Dr. Anjan Trikha', designation: 'Founder Editor in Chief, JOACC & Past President', image: anjanTrikha },
-  { name: 'Dr. Sunil T Pandya', designation: 'Past President', image: sunilPandaya },
-  { name: 'Dr. Kajal Jain', designation: 'Immediate Past President', image: kajalJain },
-  { name: 'Dr. Lalit K Raiger', designation: 'President Elect', image: lalitRaiger },
+const topLeadership = [
+  { role: 'President', name: 'Dr. Anju Grewal', image: anjuGrewal },
+  { role: 'Secretary', name: 'Dr. Aruna Parameswari', image: arunaParameswari },
+  { role: 'President Elect', name: 'Dr. Lalit K Raiger', image: lalitRaiger },
 ];
 
-const executiveLeaders = [
-  { name: 'Dr. Anju Grewal', designation: 'President', image: anjuGrewal },
-  { name: 'Dr. Aruna Parameswari', designation: ' Secretary', image: arunaParameswari },
-  { name: 'Dr. Shilpa Kasodekar', designation: 'Vice President', image: shilpaKasodeka },
-  { name: 'Dr. G. L. Ravindra', designation: 'Joint Secretary', image: glRavindra },
-  { name: 'Dr. Anjelena K Gupta', designation: 'Treasurer', image: anjelenaKumar },
+const middleLeadership = [
+  { role: 'Vice President', name: 'Dr. Shilpa Kasodekar', image: shilpaKasodeka },
+  { role: 'Joint Secretary', name: 'Dr. G. L. Ravindra', image: glRavindra },
+  { role: 'Treasurer', name: 'Dr. Anjelena K Gupta', image: anjelenaKumar },
+];
+
+const pastLeadership = [
+  { role: 'Founder President', name: 'Dr. Sunanda Gupta', image: sunandaGupta },
+  { role: 'Past President', name: 'Dr. Anjan Trikha', image: anjanTrikha },
+  { role: 'Past President', name: 'Dr. Sunil T Pandya', image: sunilPandaya },
+  { role: 'Immediate Past President', name: 'Dr. Kajal Jain', image: kajalJain },
 ];
 
 const executiveMembers = [
-  { name: 'Dr. Nidhi Bhatia', designation: 'Executive Members', image: nidhiBhatia },
-  { name: 'Dr. Akilandeswari M', designation: 'Executive Members', image: akilandeswari },
-  { name: 'Dr. Manokanth Madapu', designation: 'Executive Members', image: manokanthMadapu },
-  { name: 'Dr. Manisha Shembekar', designation: 'Executive Members', image: manishaShembrkar },
-  { name: 'Dr. Gita Nath', designation: 'Executive Members', image: gitaNath },
+  { name: 'Dr. Gita Nath', image: gitaNath },
+  { name: 'Dr. Akilandeswari M', image: akilandeswari },
+  { name: 'Dr. Nidhi Bhatia', image: nidhiBhatia },
+  { name: 'Dr. Manokanth Madapu', image: manokanthMadapu },
+  { name: 'Dr. Manisha Shembekar', image: manishaShembrkar },
 ];
 
 const OfficeBearersPage = () => {
@@ -74,94 +77,80 @@ const OfficeBearersPage = () => {
           </div>
         </section>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14 space-y-10">
-        <div>
-          <div className="text-center">
-            <h2 className="text-lg sm:text-xl font-semibold text-slate-900">
-              AOA - India Governing Body
-            </h2>
-            <div className="mx-auto mt-3 h-1 w-20 rounded-full bg-[#d81b60]" />
-          </div>
-          <div className="mt-6 flex flex-wrap justify-center gap-6 sm:gap-7 lg:gap-8 max-w-[900px] mx-auto">
-            {governingBody.map((member) => (
-              <div
-                key={member.name}
-                className="w-full max-w-[240px] bg-white rounded-[22px] border border-[#d7dff0] shadow-md px-5 py-6 text-center"
-              >
-                <div className="mx-auto w-28 h-28 rounded-full border-[3px] border-dotted border-[#b46a94] p-1">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-full h-full rounded-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
-                <p className="mt-5 text-sm sm:text-lg font-semibold text-[#d81b60]">
-                  {member.name}
-                </p>
-                <p className="text-xs sm:text-base font-semibold text-[#3f51b5]">
-                  {member.designation}
-                </p>
-              </div>
-            ))}
-          </div>
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
+        <div className="text-center">
+          
+          <div className="mx-auto mt-3 h-1 w-20 rounded-full bg-[#d81b60]" />
         </div>
 
-        <div>
-          <div className="text-center">
-            <h2 className="text-lg sm:text-xl font-semibold text-slate-900">
-              Current Executive AOA India
-            </h2>
-            <div className="mx-auto mt-3 h-1 w-20 rounded-full bg-[#d81b60]" />
-          </div>
-          <div className="mt-6 flex flex-wrap justify-center gap-6 sm:gap-7 lg:gap-8 max-w-[900px] mx-auto">
-            {executiveLeaders.map((member) => (
-              <div
-                key={member.name}
-                className="w-full max-w-[240px] bg-white rounded-[22px] border border-[#d7dff0] shadow-md px-5 py-6 text-center"
-              >
-                <div className="mx-auto w-28 h-28 rounded-full border-[3px] border-dotted border-[#b46a94] p-1">
+        <div className="mt-8 space-y-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 place-items-center">
+            {topLeadership.map((member) => (
+              <div key={member.name} className="flex flex-col items-center text-center gap-3">
+                <p className="text-sm font-semibold text-[#9c3253]">{member.role}</p>
+                <div className="rounded-full bg-gradient-to-tr from-[#b6842f] via-[#f6d27b] to-[#b6842f] p-1 shadow-md">
                   <img
                     src={member.image}
                     alt={member.name}
-                    className="w-full h-full rounded-full object-cover"
+                    className="h-28 w-28 sm:h-32 sm:w-32 md:h-36 md:w-36 rounded-full object-cover border-4 border-white"
                     loading="lazy"
                   />
                 </div>
-                <p className="mt-5 text-sm sm:text-lg font-semibold text-[#d81b60]">
-                  {member.name}
-                </p>
-                <p className="text-xs sm:text-base font-semibold text-[#3f51b5]">
-                  {member.designation}
-                </p>
+                <p className="text-sm font-semibold text-slate-900">{member.name}</p>
               </div>
             ))}
           </div>
 
-          <div className="mt-8">
-            <div className="text-center">
-              <h3 className="text-sm sm:text-base font-semibold text-slate-700">
-                Executive Members
-              </h3>
-              <div className="mx-auto mt-2 h-0.5 w-16 rounded-full bg-slate-300" />
-            </div>
-            <div className="mt-5 flex flex-wrap justify-center gap-6 sm:gap-7 lg:gap-8 max-w-[900px] mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 place-items-center">
+            {middleLeadership.map((member) => (
+              <div key={member.name} className="flex flex-col items-center text-center gap-3">
+                <p className="text-sm font-semibold text-[#9c3253]">{member.role}</p>
+                <div className="rounded-full bg-gradient-to-tr from-[#b6842f] via-[#f6d27b] to-[#b6842f] p-1 shadow-md">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="h-28 w-28 sm:h-32 sm:w-32 md:h-36 md:w-36 rounded-full object-cover border-4 border-white"
+                    loading="lazy"
+                  />
+                </div>
+                <p className="text-sm font-semibold text-slate-900">{member.name}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7 place-items-center">
+            {pastLeadership.map((member) => (
+              <div key={member.name} className="flex flex-col items-center text-center gap-3">
+                <p className="text-sm font-semibold text-[#9c3253]">{member.role}</p>
+                <div className="rounded-full bg-gradient-to-tr from-[#b6842f] via-[#f6d27b] to-[#b6842f] p-1 shadow-md">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="h-28 w-28 sm:h-32 sm:w-32 md:h-36 md:w-36 rounded-full object-cover border-4 border-white"
+                    loading="lazy"
+                  />
+                </div>
+                <p className="text-sm font-semibold text-slate-900">{member.name}</p>
+              </div>
+            ))}
+          </div>
+
+          <div>
+            <p className="text-center text-sm font-semibold tracking-[0.3em] text-[#9c3253] uppercase">
+              Executive Members
+            </p>
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 place-items-center">
               {executiveMembers.map((member) => (
-                <div
-                  key={member.name}
-                  className="w-full max-w-[240px] bg-white rounded-[22px] border border-[#d7dff0] shadow-md px-5 py-6 text-center"
-                >
-                  <div className="mx-auto w-28 h-28 rounded-full border-[3px] border-dotted border-[#b46a94] p-1">
+                <div key={member.name} className="flex flex-col items-center text-center gap-3">
+                  <div className="rounded-full bg-gradient-to-tr from-[#b6842f] via-[#f6d27b] to-[#b6842f] p-1 shadow-md">
                     <img
                       src={member.image}
                       alt={member.name}
-                      className="w-full h-full rounded-full object-cover"
+                      className="h-28 w-28 sm:h-32 sm:w-32 md:h-36 md:w-36 rounded-full object-cover border-4 border-white"
                       loading="lazy"
                     />
                   </div>
-                  <p className="mt-5 text-sm sm:text-lg font-semibold text-[#d81b60]">
-                    {member.name}
-                  </p>
+                  <p className="text-sm font-semibold text-slate-900">{member.name}</p>
                 </div>
               ))}
             </div>

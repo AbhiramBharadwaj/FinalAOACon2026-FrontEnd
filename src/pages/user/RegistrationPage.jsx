@@ -21,12 +21,51 @@ import { useApp } from '../../contexts/AppContext';
 import { registrationAPI } from '../../utils/api';
 import Header from '../../components/common/Header';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import AnjuGrewal from '../../images/AOAOfficeBearers/Anju-Grewal.jpg';
+import ArunaParameswari from '../../images/AOAOfficeBearers/Aruna-Parameswari.jpg';
+import LalitKRaiger from '../../images/AOAOfficeBearers/Lalit K Raiger.png';
+import ShilpaKasodeka from '../../images/AOAOfficeBearers/shilpa-kasodeka.jpg';
+import RavindraGL from '../../images/AOAOfficeBearers/GL-Ravindra.jpg';
+import AnjeleenaKumar from '../../images/AOAOfficeBearers/Anjelena-Kumar.jpg';
+import SunandaGupta from '../../images/AOAOfficeBearers/sunanda-gupta.jpg';
+import AnjanTrikha from '../../images/AOAOfficeBearers/anjan-trikha.jpg';
+import SunilPandya from '../../images/AOAOfficeBearers/sunil-pandaya.jpg';
+import KajalJain from '../../images/AOAOfficeBearers/Kajal-Jain.jpg';
+import GitaNath from '../../images/AOAOfficeBearers/Gita-Nath.jpg';
+import AkilandeswariM from '../../images/AOAOfficeBearers/Akilandeswari-M.jpg';
+import NidhiBhatia from '../../images/AOAOfficeBearers/nidhi-bhatia.jpg';
+import ManokanthMadapu from '../../images/AOAOfficeBearers/manokanth-madapu.jpg';
+import ManishaShembekar from '../../images/AOAOfficeBearers/manisha-shembrkar.jpg';
 
 const WORKSHOPS = [
   { id: 'labour-analgesia', name: 'Labour Analgesia', leads: 'Dr Bharath & team' },
   { id: 'critical-incidents', name: 'Critical Incidents in Obstetric Anaesthesia', leads: 'Dr Sandhya & team' },
   { id: 'pocus', name: 'POCUS in Obstetric Anaesthesia', leads: 'Dr Praveen Kumar & team' },
   { id: 'maternal-collapse', name: 'Maternal Collapse & Resuscitation / Obstetric RA Blocks', leads: 'Dr Vikram & team' },
+];
+
+const CORE_OFFICE_BEARERS = [
+  { role: 'President', name: 'Dr. Anju Grewal', photo: AnjuGrewal },
+  { role: 'Secretary', name: 'Dr. Aruna Parameswari', photo: ArunaParameswari },
+  { role: 'President Elect', name: 'Dr. Lalit K Raiger', photo: LalitKRaiger },
+  { role: 'Vice President', name: 'Dr. Shilpa Kasodekar', photo: ShilpaKasodeka },
+  { role: 'Joint Secretary', name: 'Dr. Ravindra G L', photo: RavindraGL },
+  { role: 'Treasurer', name: 'Dr. Anjeleena Kumar Gupta', photo: AnjeleenaKumar },
+];
+
+const PAST_PRESIDENTS = [
+  { role: 'Founder President', name: 'Dr. Sunanda Gupta', photo: SunandaGupta },
+  { role: 'Past President', name: 'Dr. Anjan Trikha', photo: AnjanTrikha },
+  { role: 'Past President', name: 'Dr. Sunil T Pandya', photo: SunilPandya },
+  { role: 'Immediate Past President', name: 'Dr. Kajal Jain', photo: KajalJain },
+];
+
+const EXECUTIVE_MEMBERS = [
+  { name: 'Dr. Gita Nath', photo: GitaNath },
+  { name: 'Dr. Akilandeswari M', photo: AkilandeswariM },
+  { name: 'Dr. Nidhi Bhatia', photo: NidhiBhatia },
+  { name: 'Dr. Manokanth Madapu', photo: ManokanthMadapu },
+  { name: 'Dr. Manisha Shembekar', photo: ManishaShembekar },
 ];
 
 const RegistrationPage = () => {
@@ -693,6 +732,68 @@ const RegistrationPage = () => {
             </div>
           </aside>
         </div>
+
+        <section className="bg-white/95 backdrop-blur-xl border border-white/40 rounded-xl px-4 py-6 sm:px-6">
+          <div className="text-center">
+            <p className="text-[11px] uppercase tracking-[0.3em] text-slate-500">
+              AOA Office Bearers
+            </p>
+            <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 mt-2">
+              Executive Council
+            </h2>
+          </div>
+
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {CORE_OFFICE_BEARERS.map((member) => (
+              <div key={member.name} className="flex flex-col items-center text-center gap-3">
+                <p className="text-sm font-semibold text-[#9c3253]">{member.role}</p>
+                <div className="rounded-full bg-gradient-to-tr from-[#b6842f] via-[#f6d27b] to-[#b6842f] p-1 shadow-md">
+                  <img
+                    src={member.photo}
+                    alt={member.name}
+                    className="h-28 w-28 sm:h-32 sm:w-32 md:h-36 md:w-36 rounded-full object-cover border-4 border-white"
+                  />
+                </div>
+                <p className="text-sm font-semibold text-slate-900">{member.name}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {PAST_PRESIDENTS.map((member) => (
+              <div key={member.name} className="flex flex-col items-center text-center gap-3">
+                <p className="text-sm font-semibold text-[#9c3253]">{member.role}</p>
+                <div className="rounded-full bg-gradient-to-tr from-[#b6842f] via-[#f6d27b] to-[#b6842f] p-1 shadow-md">
+                  <img
+                    src={member.photo}
+                    alt={member.name}
+                    className="h-28 w-28 sm:h-32 sm:w-32 md:h-36 md:w-36 rounded-full object-cover border-4 border-white"
+                  />
+                </div>
+                <p className="text-sm font-semibold text-slate-900">{member.name}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-10 text-center text-sm font-semibold tracking-[0.3em] text-[#9c3253] uppercase">
+            Executive Members
+          </p>
+
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {EXECUTIVE_MEMBERS.map((member) => (
+              <div key={member.name} className="flex flex-col items-center text-center gap-3">
+                <div className="rounded-full bg-gradient-to-tr from-[#b6842f] via-[#f6d27b] to-[#b6842f] p-1 shadow-md">
+                  <img
+                    src={member.photo}
+                    alt={member.name}
+                    className="h-28 w-28 sm:h-32 sm:w-32 md:h-36 md:w-36 rounded-full object-cover border-4 border-white"
+                  />
+                </div>
+                <p className="text-sm font-semibold text-slate-900">{member.name}</p>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );
