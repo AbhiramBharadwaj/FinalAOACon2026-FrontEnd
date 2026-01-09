@@ -33,6 +33,13 @@ import MobileNav from '../../components/common/MobileNav';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
 const DashboardPage = () => {
+  const WORKSHOP_LABELS = {
+    'labour-analgesia': 'Labour Analgesia',
+    'critical-incidents': 'Critical Incidents in Obstetric Anaesthesia',
+    pocus: 'POCUS in Obstetric Anaesthesia',
+    'maternal-collapse': 'Maternal Collapse & Resuscitation / Obstetric RA Blocks',
+  };
+
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     registration: null,
@@ -53,6 +60,7 @@ const DashboardPage = () => {
   const navigate = useNavigate();
 
   const steps = [
+    { key: 'profile', label: 'Profile', short: 'Profile' },
     { key: 'registration', label: 'Registration', short: 'Reg' },
     { key: 'accommodation', label: 'Accommodation', short: 'Stay' },
     { key: 'abstract', label: 'Abstract', short: 'Abs' },
@@ -72,7 +80,7 @@ const DashboardPage = () => {
     const labels = [];
     if (registration?.addWorkshop || registration?.selectedWorkshop) labels.push('Workshop');
     if (registration?.addAoaCourse) labels.push('AOA Certified Course');
-    if (registration?.addLifeMembership || registration?.lifetimeMembershipId) labels.push('AOA Life Membership');
+    if (registration?.addLifeMembership) labels.push('AOA Life Membership');
     return labels.length ? `Conference + ${labels.join(' + ')}` : 'Conference Only';
   };
 
@@ -84,6 +92,9 @@ const DashboardPage = () => {
     };
     return texts[phase] || phase;
   };
+
+  const getWorkshopLabel = (workshopId) =>
+    WORKSHOP_LABELS[workshopId] || workshopId || 'N/A';
 
   const getBookingPhaseBadge = (phase) => {
     const map = {
@@ -123,7 +134,9 @@ const DashboardPage = () => {
     ? `${API_BASE_URL}/${stats.abstract.filePath}`
     : null;
   const profileRole = profile?.role || user?.role;
+  const isProfileComplete = !!profile?.isProfileComplete;
   const stepCompletion = {
+    profile: isProfileComplete,
     registration: !!stats.registration,
     accommodation: stats.accommodations.length > 0,
     abstract: !!stats.abstract,
@@ -192,8 +205,6 @@ const DashboardPage = () => {
     );
   }
 
-  const isProfileComplete = !!profile?.isProfileComplete;
-
   return (
     <div className="min-h-screen bg-cover bg-center bg-no-repeat relative"
       style={{ backgroundImage: "url('https://www.justmbbs.com/img/college/karnataka/shimoga-institute-of-medical-sciences-shimoga-banner.jpg')" }}
@@ -256,22 +267,30 @@ const DashboardPage = () => {
                 Completed {completedCount} of {steps.length}
               </span>
             </div>
-            <div className="relative flex items-center -space-x-px">
-              <div className="absolute inset-x-6 inset-y-1/2 -z-10 h-px bg-slate-200" />
-              {steps.map((step, index) => {
+            <div className="flex flex-wrap gap-2">
+              {steps.map((step) => {
                 const active = stepCompletion[step.key];
+                const isProfileStep = step.key === 'profile';
+                const activeStyles = isProfileStep
+                  ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                  : 'border-[#9c3253]/20 bg-[#9c3253]/10 text-[#9c3253]';
                 return (
-                  <div key={step.key} className="flex flex-1 flex-col items-center min-w-0">
-                    <div className={`flex h-8 w-8 items-center justify-center rounded-full border text-xs font-semibold transition-all ${
-                      active
-                        ? 'bg-[#9c3253] border-[#9c3253] text-white shadow-md'
-                        : 'bg-slate-100 border-slate-200 text-slate-500'
-                    }`}>
-                      {index + 1}
-                    </div>
-                    <span className={`mt-2 text-[11px] text-center font-medium truncate ${
-                      active ? 'text-[#9c3253]' : 'text-slate-500'
-                    }`}>
+                  <div
+                    key={step.key}
+                    className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold ${
+                      active ? activeStyles : 'border-slate-200 bg-slate-50 text-slate-500'
+                    }`}
+                  >
+                    <span
+                      className={`h-2 w-2 rounded-full ${
+                        active
+                          ? isProfileStep
+                            ? 'bg-emerald-500'
+                            : 'bg-[#9c3253]'
+                          : 'bg-slate-300'
+                      }`}
+                    />
+                    <span className="truncate">
                       {window.innerWidth < 640 ? step.short : step.label}
                     </span>
                   </div>
@@ -438,10 +457,9 @@ const DashboardPage = () => {
                       <p className="font-medium text-slate-900">
                         {getRegistrationTypeText(stats.registration)}
                       </p>
-                      {stats.registration.addAoaCourse && (
-                        <p className="text-[11px] text-purple-700 font-medium mt-1 flex items-center gap-1">
-                          <Plus className="w-3 h-3" />
-                          + AOA Certified Course
+                      {stats.registration.addWorkshop && stats.registration.selectedWorkshop && (
+                        <p className="text-[11px] text-slate-600 mt-1">
+                          Workshop: {getWorkshopLabel(stats.registration.selectedWorkshop)}
                         </p>
                       )}
                       <p className="text-[11px] text-slate-600/80 mt-1">
@@ -489,18 +507,6 @@ const DashboardPage = () => {
                       <span>+₹{stats.registration.processingFee.toLocaleString()}</span>
                     </div>
                   </div>
-
-                  {stats.registration.lifetimeMembershipId && (
-                    <div className="rounded-xl bg-[#7cb342]/10 px-3 py-2 flex items-center gap-2 border border-[#7cb342]/20">
-                      <Award className="w-4 h-4 text-[#7cb342]" />
-                      <span className="text-xs sm:text-sm">
-                        Lifetime ID:{' '}
-                        <span className="font-semibold text-[#7cb342]">
-                          {stats.registration.lifetimeMembershipId}
-                        </span>
-                      </span>
-                    </div>
-                  )}
 
                   {}
                   {stats.registration.paymentStatus === 'PENDING' && (
@@ -744,27 +750,6 @@ const DashboardPage = () => {
                   </button>
                 </div>
               )}
-            </div>
-
-            <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-2xl px-4 py-4 sm:px-5 sm:py-5">
-              <h3 className="text-sm font-semibold mb-3 text-slate-900">Conference details</h3>
-              <div className="space-y-3 text-xs sm:text-sm">
-                <div className="flex items-center gap-2 rounded-xl bg-[#9c3253]/5 px-3 py-2 border border-[#9c3253]/20">
-                  <Calendar className="w-4 h-4 text-[#9c3253]" />
-                  <span>Oct 30 – Nov 1, 2026</span>
-                </div>
-                
-                <div className="flex items-center gap-2 rounded-xl bg-[#7cb342]/5 px-3 py-2 border border-[#7cb342]/20">
-                  <Users className="w-4 h-4 text-[#7cb342]" />
-                  <span>1000+ delegates expected</span>
-                </div>
-                <button
-                  onClick={() => navigate('')}
-                  className="w-full rounded-xl bg-[#9c3253] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#8a2b47]"
-                >
-                  View full program
-                </button>
-              </div>
             </div>
 
             <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-2xl px-4 py-4 grid grid-cols-2 gap-3 text-center text-xs sm:text-sm">

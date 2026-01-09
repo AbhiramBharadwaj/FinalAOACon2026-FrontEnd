@@ -139,7 +139,7 @@ const CheckoutPage = () => {
     const labels = [];
     if (registration?.addWorkshop || registration?.selectedWorkshop) labels.push('Workshop');
     if (registration?.addAoaCourse) labels.push('AOA Certified Course');
-    if (registration?.addLifeMembership || registration?.lifetimeMembershipId) labels.push('AOA Life Membership');
+    if (registration?.addLifeMembership) labels.push('AOA Life Membership');
     return labels.length ? `Conference + ${labels.join(' + ')}` : 'Conference Only';
   };
 
@@ -264,11 +264,11 @@ const CheckoutPage = () => {
                     </div>
                   </div>
                 )}
-                {registration?.collegeLetter && (
+                {user?.collegeLetter && (
                   <div className="flex items-center gap-3 border border-slate-200 bg-[#9c3253]/5 px-3 py-2 rounded">
                     <FileText className="w-4 h-4 text-[#9c3253] flex-shrink-0" />
                     <div>
-                      <p className="text-[10px] uppercase tracking-wide text-slate-500">College letter</p>
+                      <p className="text-[10px] uppercase tracking-wide text-slate-500">Recommendation letter</p>
                       <p className="font-medium text-slate-900">Uploaded</p>
                     </div>
                   </div>
@@ -309,79 +309,9 @@ const CheckoutPage = () => {
                     </p>
                   </div>
                 )}
-                {registration.lifetimeMembershipId && (
-                  <div className="border border-[#ff8a1f]/20 bg-[#ff8a1f]/5 px-3 py-2 flex items-center gap-2 rounded">
-                    <Award className="w-4 h-4 text-[#ff8a1f]" />
-                    <div>
-                      <p className="text-[11px] text-slate-600">Lifetime membership ID</p>
-                      <p className="text-sm font-semibold text-slate-900">
-                        {registration.lifetimeMembershipId}
-                      </p>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 px-4 py-4">
-              <h3 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-[#7cb342]" />
-                What is included
-              </h3>
-              <ul className="space-y-2 text-xs text-slate-700">
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-[#9c3253] flex-shrink-0" />
-                  All conference sessions
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-[#ff8a1f] flex-shrink-0" />
-                  Conference kit and materials
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-[#7cb342] flex-shrink-0" />
-                  Certificate of participation
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-[#9c3253] flex-shrink-0" />
-                  Lunch and tea breaks
-                </li>
-                {registration.addWorkshop && (
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-[#ff8a1f] flex-shrink-0" />
-                    Workshop access as per selection
-                  </li>
-                )}
-                {(registration.addLifeMembership || registration.lifetimeMembershipId) && (
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-[#7cb342] flex-shrink-0" />
-                    Lifetime AOA membership
-                  </li>
-                )}
-                {registration.addAoaCourse && (
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-purple-600 flex-shrink-0" />
-                    AOA Certified Course + Certificate
-                  </li>
-                )}
-              </ul>
-            </div>
-
-            <div className="bg-white border border-slate-200 px-4 py-4">
-              <h3 className="text-sm font-semibold text-slate-900 mb-3">
-                Event details
-              </h3>
-              <div className="space-y-2 text-xs text-slate-700">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-[#9c3253]" />
-                  <span>Oct 30 – Nov 1, 2026</span>
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-[#7cb342]" />
-                  <span>1000+ delegates expected</span>
-                </div>
-              </div>
-            </div>
           </section>
 
           {}
@@ -428,7 +358,7 @@ const CheckoutPage = () => {
                   </div>
                 )}
 
-                {(registration.addLifeMembership || registration.lifetimeMembershipId) && (
+                {registration.addLifeMembership && (
                   <div className="flex justify-between text-xs text-[#ff8a1f] font-medium">
                     <span>AOA Life Membership</span>
                     <span>₹{registration.lifeMembershipBase?.toLocaleString?.() || '0'}</span>

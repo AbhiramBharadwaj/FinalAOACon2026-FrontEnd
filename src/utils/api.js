@@ -38,6 +38,10 @@ export const authAPI = {
 export const userAPI = {
   getMe: () => api.get('/auth/me'),
   updateProfile: (data) => api.put('/auth/profile', data),
+  uploadCollegeLetter: (formData) =>
+    api.post('/auth/profile/college-letter', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
 };
 export const attendanceAPI = {
   getMyQr: () => api.get('/attendance/my-qr'),

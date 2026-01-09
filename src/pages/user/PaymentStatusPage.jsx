@@ -43,7 +43,7 @@ const PaymentStatusPage = () => {
     const labels = [];
     if (registration?.addWorkshop || registration?.selectedWorkshop) labels.push('Workshop');
     if (registration?.addAoaCourse) labels.push('AOA Certified Course');
-    if (registration?.addLifeMembership || registration?.lifetimeMembershipId) labels.push('AOA Life Membership');
+    if (registration?.addLifeMembership) labels.push('AOA Life Membership');
     return labels.length ? `Conference + ${labels.join(' + ')}` : 'Conference Only';
   };
 
@@ -121,10 +121,6 @@ const PaymentStatusPage = () => {
       doc.setFontSize(10);
       doc.text(`Package: ${getRegistrationLabel(data) || 'N/A'}`, 20, detailsY);
       detailsY += 8;
-      if (data.lifetimeMembershipId) {
-        doc.text(`Lifetime Membership ID: ${data.lifetimeMembershipId}`, 20, detailsY);
-        detailsY += 8;
-      }
       if (data.role) {
         doc.text(`Category: ${data.role}`, 20, detailsY);
         detailsY += 8;
@@ -365,14 +361,6 @@ const PaymentStatusPage = () => {
                       {currency}{data.totalAmount?.toLocaleString('en-IN')}
                     </span>
                   </div>
-                  {data.lifetimeMembershipId && (
-                    <div className="flex justify-between py-2 border-b border-slate-100/50">
-                      <span className="text-slate-600">Lifetime Membership</span>
-                      <span className="font-medium text-[#7cb342] bg-[#7cb342]/10 px-2 py-1 rounded text-[10px]">
-                        {data.lifetimeMembershipId}
-                      </span>
-                    </div>
-                  )}
                   <div className="flex justify-between py-2">
                     <span className="text-slate-600">Payment Status</span>
                     <span className={`px-2.5 py-1 rounded-full text-[10px] font-medium ${

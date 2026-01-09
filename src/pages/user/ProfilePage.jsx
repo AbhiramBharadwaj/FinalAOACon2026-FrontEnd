@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Mail, User } from 'lucide-react';
+import { ArrowLeft, Mail, User, FileText } from 'lucide-react';
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import { useAuth } from '../../contexts/AuthContext';
-import { userAPI } from '../../utils/api';
+import { userAPI, API_BASE_URL } from '../../utils/api';
 
 const ProfilePage = () => {
   const [profile, setProfile] = useState(null);
@@ -24,13 +24,13 @@ const ProfilePage = () => {
     designation: '',
     medicalCouncilName: '',
     medicalCouncilNumber: '',
-    membershipId: '',
-    collegeLetter: ''
+    membershipId: ''
   });
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileMessage, setProfileMessage] = useState('');
   const [profileError, setProfileError] = useState('');
+  const [collegeLetterUploading, setCollegeLetterUploading] = useState(false);
 
   const { user, updateUser } = useAuth();
   const navigate = useNavigate();
@@ -66,8 +66,8 @@ const ProfilePage = () => {
       requiredFields.push({ key: 'membershipId', label: 'your AOA membership ID' });
     }
 
-    if (profileRole === 'PGS') {
-      requiredFields.push({ key: 'collegeLetter', label: 'your college letter reference' });
+    if (profileRole === 'PGS' && !profile?.collegeLetter) {
+      return 'Please upload your recommendation letter.';
     }
 
     const missingField = requiredFields.find((field) => !hasValue(profileForm[field.key]));
@@ -96,8 +96,7 @@ const ProfilePage = () => {
           designation: profileData.designation || '',
           medicalCouncilName: profileData.medicalCouncilName || '',
           medicalCouncilNumber: profileData.medicalCouncilNumber || '',
-          membershipId: profileData.membershipId || '',
-          collegeLetter: profileData.collegeLetter || ''
+          membershipId: profileData.membershipId || ''
         });
         updateUser(profileData);
       } catch {
@@ -113,6 +112,37 @@ const ProfilePage = () => {
   const handleProfileChange = (event) => {
     const { name, value } = event.target;
     setProfileForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCollegeLetterChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (file.type !== 'application/pdf') {
+      setProfileError('Please upload a PDF file only');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setProfileError('File size must be less than 5MB');
+      return;
+    }
+
+    setCollegeLetterUploading(true);
+    setProfileError('');
+    setProfileMessage('');
+    try {
+      const formData = new FormData();
+      formData.append('collegeLetter', file);
+      const response = await userAPI.uploadCollegeLetter(formData);
+      const updatedUser = response.data.user;
+      setProfile(updatedUser);
+      updateUser(updatedUser);
+      setProfileMessage('Recommendation letter uploaded.');
+    } catch (error) {
+      setProfileError(error.response?.data?.message || 'Unable to upload letter right now.');
+    } finally {
+      setCollegeLetterUploading(false);
+      event.target.value = '';
+    }
   };
 
   const handleProfileSubmit = async (event) => {
@@ -146,8 +176,7 @@ const ProfilePage = () => {
         designation: updatedUser.designation || '',
         medicalCouncilName: updatedUser.medicalCouncilName || '',
         medicalCouncilNumber: updatedUser.medicalCouncilNumber || '',
-        membershipId: updatedUser.membershipId || '',
-        collegeLetter: updatedUser.collegeLetter || ''
+        membershipId: updatedUser.membershipId || ''
       });
       updateUser(updatedUser);
       setProfileMessage(
@@ -501,20 +530,38 @@ const ProfilePage = () => {
             )}
 
             {profileRole === 'PGS' && (
-              <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1" htmlFor="profile-collegeLetter">
-                  College Letter Ref *
+              <div className="border border-dashed border-[#7cb342]/30 bg-[#7cb342]/5 px-4 py-4 rounded">
+                <div className="flex items-center gap-2 mb-2">
+                  <FileText className="w-4 h-4 text-[#7cb342]" />
+                  <p className="text-xs font-semibold text-slate-900">
+                    Recommendation letter (PDF, max 5MB)
+                  </p>
+                </div>
+                {profile?.collegeLetter ? (
+                  <div className="text-xs text-slate-700 flex items-center justify-between gap-2">
+                    <span>Letter uploaded</span>
+                    <a
+                      href={`${API_BASE_URL}/${profile.collegeLetter}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[#9c3253] font-medium hover:text-[#8a2b47]"
+                    >
+                      View PDF
+                    </a>
+                  </div>
+                ) : (
+                  <p className="text-xs text-slate-600">Upload signed letter from your institution.</p>
+                )}
+                <label className="inline-flex items-center mt-3 px-4 py-2 rounded border border-[#9c3253] text-[#9c3253] text-xs font-medium bg-[#9c3253]/5 hover:bg-[#9c3253]/10 cursor-pointer transition-colors">
+                  {collegeLetterUploading ? 'Uploading...' : profile?.collegeLetter ? 'Replace PDF' : 'Choose PDF file'}
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={handleCollegeLetterChange}
+                    disabled={collegeLetterUploading}
+                    className="sr-only"
+                  />
                 </label>
-                <input
-                  id="profile-collegeLetter"
-                  name="collegeLetter"
-                  type="text"
-                  value={profileForm.collegeLetter}
-                  onChange={handleProfileChange}
-                  required
-                  className="block w-full px-3 py-2 text-xs border border-slate-300 bg-white/70 focus:outline-none focus:ring-1 focus:ring-[#9c3253]"
-                  placeholder="SIMS/PGS/2026/001"
-                />
               </div>
             )}
 
