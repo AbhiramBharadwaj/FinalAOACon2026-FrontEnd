@@ -126,7 +126,7 @@ const QrScanner = () => {
       console.log('🔍 Checking QR:', qr);
       
       // Step 1: Check QR validity
-      const checkRes = await fetch('http://localhost:5050/api/attendance/scan/check', {
+      const checkRes = await fetch('https://finalaoa2026-backend.onrender.com/api/attendance/scan/check', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -145,7 +145,7 @@ const QrScanner = () => {
       // Step 2: Auto-mark entry (1 person by default)
       console.log('🎯 Auto-marking entry for:', checkData.registration.userId.name);
       
-      const markRes = await fetch('http://localhost:5050/api/attendance/scan/mark', {
+      const markRes = await fetch('https://finalaoa2026-backend.onrender.com/api/attendance/scan/mark', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -236,7 +236,7 @@ const QrScanner = () => {
   useEffect(() => {
     const fetchRegs = async () => {
       try {
-        const res = await fetch('http://localhost:5050/api/admin/registrations', {
+        const res = await fetch('https://finalaoa2026-backend.onrender.com/api/admin/registrations', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('adminToken') || localStorage.getItem('token')}`,
           },
