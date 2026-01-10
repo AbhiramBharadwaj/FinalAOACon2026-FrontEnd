@@ -97,11 +97,6 @@ const RegistrationPage = () => {
       return;
     }
 
-    if (existingRegistration) {
-      navigate('/checkout');
-      return;
-    }
-
     setSubmitting(true);
     try {
       const submitData = new FormData();
@@ -113,6 +108,7 @@ const RegistrationPage = () => {
 
       const response = await registrationAPI.create(submitData);
       setRegistration(response.data.registration);
+      setExistingRegistration(response.data.registration);
       navigate('/checkout');
     } catch (err) {
       setError(err?.response?.data?.message || 'Failed to save registration');
