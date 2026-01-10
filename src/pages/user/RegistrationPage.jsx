@@ -97,6 +97,11 @@ const RegistrationPage = () => {
       return;
     }
 
+    if (existingRegistration) {
+      navigate('/checkout');
+      return;
+    }
+
     setSubmitting(true);
     try {
       const submitData = new FormData();
@@ -139,7 +144,7 @@ const RegistrationPage = () => {
     ? 'workshop'
     : formData.addAoaCourse
       ? 'course'
-      : '';
+      : 'none';
 
   const packageBase = pricing?.base?.conference?.priceWithoutGST || 0;
   const workshopBase = formData.addWorkshop ? (workshopAddOn?.priceWithoutGST || 0) : 0;
@@ -316,12 +321,37 @@ const RegistrationPage = () => {
                 </div>
 
                 <div className="mt-4">
-                  <h3 className="text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2">
+                  <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide mb-2">
                     Add-ons
                   </h3>
-                  <div className="space-y-2">
+                  <div className="space-y-2 text-base">
+                    {isAoaMember && !hasWorkshopLocked && !hasCourseLocked && (
+                      <label className="flex items-center justify-between gap-3 rounded border border-slate-200 bg-white px-3 py-2 text-base">
+                        <div className="flex items-start gap-2">
+                          <input
+                            type="radio"
+                            name="aoa-addon"
+                            value="none"
+                            checked={aoaAddonSelection === 'none'}
+                            onChange={() =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                addWorkshop: false,
+                                addAoaCourse: false,
+                                selectedWorkshop: '',
+                              }))
+                            }
+                            className="mt-0.5 h-4 w-4 text-slate-500 border-slate-300"
+                          />
+                          <div>
+                            <p className="font-medium text-slate-900">No add-on</p>
+                            <p className="text-sm text-slate-600">Proceed with conference only.</p>
+                          </div>
+                        </div>
+                      </label>
+                    )}
                     <label
-                      className={`flex items-center justify-between gap-3 rounded border px-3 py-2 text-xs ${
+                      className={`flex items-center justify-between gap-3 rounded border px-3 py-2 text-base ${
                         workshopAddOn?.priceWithoutGST > 0
                           ? 'border-slate-200 bg-white'
                           : 'border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed'
@@ -361,14 +391,14 @@ const RegistrationPage = () => {
                         />
                           <div>
                             <p className="font-medium text-slate-900">Workshop access</p>
-                            <p className="text-[11px] text-slate-600">Select one workshop below.</p>
+                            <p className="text-sm text-slate-600">Select one workshop below.</p>
                             {isAoaMember && !hasWorkshopLocked && (
-                              <p className="text-[11px] text-slate-500 mt-1">
+                              <p className="text-sm text-slate-500 mt-1">
                                 Choose either Workshop or AOA Certified Course.
                               </p>
                             )}
                             {workshopAddOn?.priceWithoutGST <= 0 && (
-                              <p className="text-[11px] text-red-600 mt-1 flex items-center gap-1">
+                              <p className="text-sm text-red-600 mt-1 flex items-center gap-1">
                                 <XCircle className="w-3 h-3" />
                                 Not available in this phase
                               </p>
@@ -384,7 +414,7 @@ const RegistrationPage = () => {
 
                     {aoaAddOn && (
                       <label
-                        className={`flex items-center justify-between gap-3 rounded border px-3 py-2 text-xs ${
+                        className={`flex items-center justify-between gap-3 rounded border px-3 py-2 text-base ${
                           aoaAddOn.priceWithoutGST > 0 && !pricing?.meta?.aoaCourseFull
                             ? 'border-purple-300 bg-purple-50'
                             : 'border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed'
@@ -396,7 +426,7 @@ const RegistrationPage = () => {
                           name={isAoaMember ? 'aoa-addon' : undefined}
                           value={isAoaMember ? 'course' : undefined}
                             checked={isAoaMember ? aoaAddonSelection === 'course' : formData.addAoaCourse}
-                            onChange={(e) =>
+                          onChange={(e) =>
                               setFormData((prev) => ({
                                 ...prev,
                                 addAoaCourse:
@@ -420,16 +450,16 @@ const RegistrationPage = () => {
                           />
                           <div>
                             <p className="font-medium text-purple-900">AOA Certified Course</p>
-                            <p className="text-[11px] text-purple-700">
+                            <p className="text-sm text-purple-700">
                               Bundle price brings Conference + Course to ₹13,000 (AOA / Non-AOA only).
                             </p>
                             {isAoaMember && !hasCourseLocked && (
-                              <p className="text-[11px] text-slate-500 mt-1">
+                              <p className="text-sm text-slate-500 mt-1">
                                 Choose either Workshop or AOA Certified Course.
                               </p>
                             )}
                             {pricing?.meta?.aoaCourseFull && (
-                              <p className="text-[11px] text-red-600 mt-1 flex items-center gap-1">
+                              <p className="text-sm text-red-600 mt-1 flex items-center gap-1">
                                 <XCircle className="w-3 h-3" />
                                 Seats full
                               </p>
@@ -440,7 +470,7 @@ const RegistrationPage = () => {
                           <p className="text-sm font-semibold text-purple-700">
                             ₹{aoaAddOn.priceWithoutGST.toLocaleString()}
                           </p>
-                          <p className="text-[11px] text-purple-500">
+                          <p className="text-sm text-purple-500">
                             {40 - (pricing?.meta?.aoaCourseCount || 0)} seats left
                           </p>
                         </div>
@@ -449,7 +479,7 @@ const RegistrationPage = () => {
 
                     {lifeMembershipAddOn && (
                       <label
-                        className={`flex items-center justify-between gap-3 rounded border px-3 py-2 text-xs ${
+                        className={`flex items-center justify-between gap-3 rounded border px-3 py-2 text-base ${
                           lifeMembershipAddOn.priceWithoutGST > 0
                             ? 'border-[#ff8a1f]/30 bg-[#ff8a1f]/5'
                             : 'border-slate-200 bg-slate-50 text-slate-400 cursor-not-allowed'
@@ -476,7 +506,7 @@ const RegistrationPage = () => {
                           />
                           <div>
                             <p className="font-medium text-slate-900">AOA Life Membership</p>
-                            <p className="text-[11px] text-slate-600">Only for Non-AOA members.</p>
+                            <p className="text-sm text-slate-600">Only for Non-AOA members.</p>
                           </div>
                         </div>
                         <div className="text-right">
@@ -580,7 +610,7 @@ const RegistrationPage = () => {
                 {submitting ? (
                   <LoadingSpinner size="sm" />
                 ) : existingRegistration ? (
-                  <>Update Registration <Edit3 className="w-4 h-4" /></>
+                  <>Continue to payment <ArrowRight className="w-4 h-4" /></>
                 ) : (
                   <>Proceed to payment <ArrowRight className="w-4 h-4" /></>
                 )}
