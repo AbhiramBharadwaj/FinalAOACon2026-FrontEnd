@@ -37,7 +37,7 @@ const DashboardPage = () => {
     'labour-analgesia': 'Labour Analgesia',
     'critical-incidents': 'Critical Incidents in Obstetric Anaesthesia',
     pocus: 'POCUS in Obstetric Anaesthesia',
-    'maternal-collapse': 'Maternal Collapse & Resuscitation / Obstetric RA Blocks',
+    'maternal-collapse': 'Maternal Resuscitation and Regional Blocks in Obstetric Anaesthesia',
   };
 
   const [loading, setLoading] = useState(true);
