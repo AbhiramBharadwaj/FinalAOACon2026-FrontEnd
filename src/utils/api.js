@@ -33,6 +33,10 @@ export const authAPI = {
   login: (credentials) => api.post('/auth/login', credentials),
   register: (userData) => api.post('/auth/register', userData),
   adminLogin: (credentials) => api.post('/auth/admin/login', credentials),
+  forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
+  resetPassword: (data) => api.post('/auth/reset-password', data),
+  adminForgotPassword: (email) => api.post('/auth/admin/forgot-password', { email }),
+  adminResetPassword: (data) => api.post('/auth/admin/reset-password', data),
 };
 
 export const userAPI = {

@@ -99,6 +99,15 @@ const AdminLoginPage = () => {
             </div>
           </div>
 
+          <div className="text-right">
+            <Link
+              to="/admin/forgot-password"
+              className="text-xs font-medium text-[#005aa9] hover:text-[#004684] transition-colors"
+            >
+              Forgot password?
+            </Link>
+          </div>
+
           <button
             type="submit"
             disabled={loading}
