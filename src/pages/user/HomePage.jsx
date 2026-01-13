@@ -274,10 +274,9 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
               </div>
 
               <div className="space-y-1">
-                <p className="font-semibold text-slate-900">5. Watch and learn Video sessions</p>
+                <p className="font-semibold text-slate-900">5. Attractive competitions for delegates</p>
                 <p>
-                  Step‑by‑step video demonstrations of expert clinical procedures and techniques
-                  for managing complex obstetric cases.
+                  Partake in our various competitions spread throughout the conference days and win attractive prizes.
                 </p>
               </div>
             </div>
