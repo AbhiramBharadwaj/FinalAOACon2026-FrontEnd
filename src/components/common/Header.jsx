@@ -41,7 +41,7 @@ const NAV_ITEMS = [
     items: [
       { label: 'Accommodation', path: '/accommodation', icon: Hotel },
       { label: 'Program Schedule', path: '/conference-days', icon: Calendar },
-      { label: 'Abstract', path: '/abstract/rules', icon: FileText },
+      // { label: 'Abstract', path: '/abstract/rules', icon: FileText },
       { label: 'Contact', path: '/contact', icon: User },
       { label: 'Gallery', path: '/gallery', icon: Image },
     ],

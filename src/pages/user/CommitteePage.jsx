@@ -22,6 +22,11 @@ import swathiHegdeImg from '../../images/OrganizingComittee/Swathi Hegde.png';
 import vandanaHebballiImg from '../../images/OrganizingComittee/Vandana Hebballi.png';
 import virupakshappaImg from '../../images/OrganizingComittee/Virupakshappa.jpg';
 import yashodhaVImg from '../../images/OrganizingComittee/Yashodha V.png';
+import hemanthImg from '../../images/OrganizingComittee/Dr hemanth.png';
+import poojaShahImg from '../../images/OrganizingComittee/Dr Pooja Shah.png';
+import praveenBjImg from '../../images/OrganizingComittee/Dr Praveen B J.png';
+import sandhyaDImg from '../../images/OrganizingComittee/Dr. Sandhya D.png';
+import soumyaRaoImg from '../../images/OrganizingComittee/Dr. Soumya Rao.png';
 
 const PLACEHOLDER_IMAGE =
   'https://thumbs.dreamstime.com/b/profile-placeholder-image-gray-silhouette-no-photo-person-avatar-default-pic-used-web-design-173998594.jpg';
@@ -155,10 +160,10 @@ const committees = [
         members: [
           { name: 'Dr Swathi Hegde', designation: '', image: swathiHegdeImg },
           { name: 'Dr Namratha L', designation: '', image: namrathaLImg },
-          { name: 'Dr Pooja Shah', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Pooja Shah', designation: '', image: poojaShahImg },
           { name: 'Dr Shashank', designation: '', image: shashankMImg },
           { name: 'Dr Shreehari', designation: '', image: srihariSImg },
-          { name: 'Dr Soumya Rao', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Soumya Rao', designation: '', image: soumyaRaoImg },
         ],
       },
     ],
@@ -170,7 +175,7 @@ const committees = [
         role: '',
         members: [
           { name: 'Dr Yashoda V', designation: 'Workshop Coordinator', image: yashodhaVImg },
-          { name: 'Dr Sandhya', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Sandhya', designation: 'Workshop Coordinator', image: sandhyaDImg },
             { name: 'Dr Vadiraj Kulkarni', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
           { name: 'Dr Vikram A C', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
           { name: 'Dr Bharath', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
@@ -266,9 +271,9 @@ const committees = [
         role: '',
         members: [
           { name: 'Dr Basavaraj', designation: '', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Praveen B J', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Praveen B J', designation: '', image: praveenBjImg },
           { name: 'Dr Kiran M', designation: '', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr Hemanth K J', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr Hemanth K J', designation: '', image: hemanthImg },
         ],
       },
     ],
