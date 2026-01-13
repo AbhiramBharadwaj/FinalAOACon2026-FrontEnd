@@ -313,7 +313,7 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
             </div>
             <div className="bg-[#e3fcec] border border-emerald-400 px-5 py-5">
               <p className="font-semibold text-[17px] text-emerald-900 mb-2">
-                Maternal Resuscitation and Regional Blocks in Obstetric Anaesthesia
+                Maternal Resuscitation + Obstetric Regional Blocks
               </p>
             </div>
           </div>

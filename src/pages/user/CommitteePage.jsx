@@ -19,6 +19,7 @@ import shruthiHiremathImg from '../../images/OrganizingComittee/Shruthi Hiremath
 import srihariSImg from '../../images/OrganizingComittee/Srihari S.png';
 import sushmaPattarImg from '../../images/OrganizingComittee/Sushma Pattar.png';
 import swathiHegdeImg from '../../images/OrganizingComittee/Swathi Hegde.png';
+import swethaPurohitImg from '../../images/OrganizingComittee/Dr. Swetha Purohit.png';
 import vandanaHebballiImg from '../../images/OrganizingComittee/Vandana Hebballi.png';
 import virupakshappaImg from '../../images/OrganizingComittee/Virupakshappa.jpg';
 import yashodhaVImg from '../../images/OrganizingComittee/Yashodha V.png';
@@ -218,7 +219,7 @@ const committees = [
           { name: 'Dr Karthik', designation: '', image: karthikImg },
           { name: 'Dr Sushma Pattar', designation: '', image: sushmaPattarImg },
           { name: 'Dr Harish T S', designation: '', image: PLACEHOLDER_IMAGE },
-          { name: 'Dr. Swetha Purohit', designation: '', image: PLACEHOLDER_IMAGE },
+          { name: 'Dr. Swetha Purohit', designation: '', image: swethaPurohitImg },
           { name: 'Dr Bindu T V', designation: '', image: PLACEHOLDER_IMAGE },
         ],
       },

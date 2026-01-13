@@ -26,7 +26,7 @@ const WORKSHOPS = [
   { id: 'labour-analgesia', name: 'Labour Analgesia', leads: 'Dr Bharath & team' },
   { id: 'critical-incidents', name: 'Critical Incidents in Obstetric Anaesthesia', leads: 'Dr Sandhya & team' },
   { id: 'pocus', name: 'POCUS in Obstetric Anaesthesia', leads: 'Dr Praveen Kumar & team' },
-  { id: 'maternal-collapse', name: 'Maternal Resuscitation and Regional Blocks in Obstetric Anaesthesia', leads: 'Dr Vikram & team' },
+  { id: 'maternal-collapse', name: 'Maternal Resuscitation + Obstetric Regional Blocks', leads: 'Dr Vikram & team' },
 ];
 
 

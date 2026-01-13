@@ -37,8 +37,9 @@ const DashboardPage = () => {
     'labour-analgesia': 'Labour Analgesia',
     'critical-incidents': 'Critical Incidents in Obstetric Anaesthesia',
     pocus: 'POCUS in Obstetric Anaesthesia',
-    'maternal-collapse': 'Maternal Resuscitation and Regional Blocks in Obstetric Anaesthesia',
+    'maternal-collapse': 'Maternal Resuscitation + Obstetric Regional Blocks',
   };
+  const isAbstractOpen = false;
 
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -330,12 +331,14 @@ const DashboardPage = () => {
           </button>
           <button
             onClick={() => navigate('/abstract/rules')}
-            disabled={!isProfileComplete}
+            disabled={!isProfileComplete || !isAbstractOpen}
             className="group bg-white/90 backdrop-blur-xl border border-[#7cb342]/30 rounded-2xl px-3 py-3 text-center text-xs sm:text-sm hover:border-[#7cb342]/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <FileText className="w-5 h-5 mx-auto mb-2 text-[#7cb342] group-hover:scale-110 transition-transform" />
             <p className="font-semibold text-slate-900">Abstract</p>
-            <p className="text-[11px] text-slate-600">Submit</p>
+            <p className="text-[11px] text-slate-600">
+              {isAbstractOpen ? 'Submit' : 'Coming soon'}
+            </p>
           </button>
           <button
             onClick={() => navigate('/feedback')}
@@ -678,45 +681,60 @@ const DashboardPage = () => {
                 <FileText className="w-4 h-4 text-[#7cb342]" />
                 Abstract
               </h3>
-              {stats.abstract ? (
-                <div className="space-y-3 text-xs sm:text-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-600/90">Status</span>
-                    {getStatusBadge(stats.abstract.status)}
-                  </div>
-                  <p className="font-medium text-slate-900 truncate">{stats.abstract.title}</p>
-                  <p className="text-[11px] text-slate-600/80">
-                    #{stats.abstract.submissionNumber}
-                  </p>
-                  <button
-                    onClick={() => navigate('/abstract/upload')}
-                    className="mt-2 w-full rounded-xl bg-[#7cb342] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#68c239]"
-                  >
-                    View abstract
-                  </button>
-                  {abstractFileUrl && (
-                    <a
-                      href={abstractFileUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="block w-full text-center rounded-xl border border-[#7cb342]/40 text-[#7cb342] px-4 py-2 text-xs sm:text-sm font-semibold hover:bg-[#7cb342]/10"
+              {isAbstractOpen ? (
+                stats.abstract ? (
+                  <div className="space-y-3 text-xs sm:text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-600/90">Status</span>
+                      {getStatusBadge(stats.abstract.status)}
+                    </div>
+                    <p className="font-medium text-slate-900 truncate">{stats.abstract.title}</p>
+                    <p className="text-[11px] text-slate-600/80">
+                      #{stats.abstract.submissionNumber}
+                    </p>
+                    <button
+                      onClick={() => navigate('/abstract/upload')}
+                      className="mt-2 w-full rounded-xl bg-[#7cb342] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#68c239]"
                     >
-                      View uploaded file
-                    </a>
-                  )}
-                </div>
+                      View abstract
+                    </button>
+                    {abstractFileUrl && (
+                      <a
+                        href={abstractFileUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="block w-full text-center rounded-xl border border-[#7cb342]/40 text-[#7cb342] px-4 py-2 text-xs sm:text-sm font-semibold hover:bg-[#7cb342]/10"
+                      >
+                        View uploaded file
+                      </a>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <FileText className="w-10 h-10 text-[#7cb342]/60 mx-auto mb-3" />
+                    <p className="text-xs sm:text-sm text-slate-600 mb-2">
+                      No abstract submitted.
+                    </p>
+                    <button
+                      onClick={() => navigate('/abstract/rules')}
+                      disabled={!isProfileComplete}
+                      className="w-full rounded-xl bg-[#7cb342] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#68c239] disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      Submit abstract
+                    </button>
+                  </div>
+                )
               ) : (
                 <div className="text-center py-8">
                   <FileText className="w-10 h-10 text-[#7cb342]/60 mx-auto mb-3" />
                   <p className="text-xs sm:text-sm text-slate-600 mb-2">
-                    No abstract submitted.
+                    Abstract submissions coming soon.
                   </p>
                   <button
-                    onClick={() => navigate('/abstract/rules')}
-                    disabled={!isProfileComplete}
-                    className="w-full rounded-xl bg-[#7cb342] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#68c239] disabled:opacity-60 disabled:cursor-not-allowed"
+                    disabled
+                    className="w-full rounded-xl bg-[#7cb342] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold opacity-60 cursor-not-allowed"
                   >
-                    Submit abstract
+                    Coming soon
                   </button>
                 </div>
               )}
