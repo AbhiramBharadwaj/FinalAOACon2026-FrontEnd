@@ -176,30 +176,30 @@ const AdminDashboardPage = () => {
               </div>
               <div className="space-y-2">
                 {dashboardData.registrations.byRole.map((role, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 bg-slate-50/50 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-medium ${
+                  <div key={index} className="flex items-center justify-between gap-3 p-2 bg-slate-50/50 rounded-lg">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-[11px] font-semibold uppercase tracking-wide ${
                         role._id === 'AOA' ? 'bg-sky-100 text-sky-700' :
                         role._id === 'NON_AOA' ? 'bg-emerald-100 text-emerald-700' :
                         role._id === 'PGS' ? 'bg-purple-100 text-purple-700' :
                         'bg-orange-100 text-orange-700'
                       }`}>
-                        {role._id}
+                        {role._id === 'NON_AOA' ? 'NON' : role._id}
                       </div>
-                      <div>
-                        <p className="text-xs font-medium text-slate-900">{getRoleName(role._id)}</p>
-                        <p className="text-xs text-slate-500">{formatCurrency(role.revenue)}</p>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-slate-900 truncate">{getRoleName(role._id)}</p>
+                        <p className="text-xs text-slate-500 truncate">{formatCurrency(role.revenue)}</p>
                       </div>
                     </div>
-                    <div className="text-right min-w-[90px]">
-                      <p className="text-xs font-medium text-slate-900">{role.count}</p>
-                      <div className="w-14 h-1.5 bg-slate-200 rounded-full mt-0.5">
+                    <div className="text-right min-w-[110px]">
+                      <p className="text-sm font-semibold text-slate-900">{role.count}</p>
+                      <div className="w-24 h-1.5 bg-slate-200 rounded-full mt-1 ml-auto">
                         <div 
                           className="h-1.5 bg-sky-500 rounded-full" 
-                          style={{ width: `${(role.paidCount / role.count) * 100}%` }}
+                          style={{ width: `${role.count > 0 ? (role.paidCount / role.count) * 100 : 0}%` }}
                         />
                       </div>
-                      <p className="text-xs text-slate-500">{role.paidCount} paid</p>
+                      <p className="text-xs text-slate-500 mt-1">{role.paidCount} paid</p>
                     </div>
                   </div>
                 ))}

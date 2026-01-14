@@ -136,6 +136,7 @@ const RegistrationPage = () => {
   const isAoaMember = user?.role && user.role.toLowerCase().includes('aoa');
   const hasWorkshopLocked = isPaidRegistration && existingRegistration?.addWorkshop;
   const hasCourseLocked = isPaidRegistration && existingRegistration?.addAoaCourse;
+  const isWorkshopSelectionLocked = isPaidRegistration && existingRegistration?.addWorkshop;
   const aoaAddonSelection = formData.addWorkshop
     ? 'workshop'
     : formData.addAoaCourse
@@ -150,7 +151,7 @@ const RegistrationPage = () => {
   const totalBaseAmount = packageBase + workshopBase + aoaBase + lifeMembershipBase + accompanyingBase;
   const totalGST = Math.round(totalBaseAmount * 0.18);
   const subtotalWithGST = totalBaseAmount + totalGST;
-  const processingFee = Math.round(subtotalWithGST * 0.0165);
+  const processingFee = Math.round(subtotalWithGST * 0.0195);
   const finalAmount = subtotalWithGST + processingFee;
   const balanceDue = Math.max(0, finalAmount - paidSoFar);
 
@@ -522,16 +523,30 @@ const RegistrationPage = () => {
                     <UsersIcon className="w-4 h-4 text-[#ff8a1f]" />
                     Select workshop
                   </h2>
+                  {!isWorkshopSelectionLocked && (
+                    <p className="text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-1 rounded mb-3">
+                      Note: Workshop selection cannot be changed after payment.
+                    </p>
+                  )}
+                  {isWorkshopSelectionLocked && (
+                    <p className="text-[11px] text-emerald-700 mb-3">
+                      Workshop selection is locked after payment.
+                    </p>
+                  )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                     {WORKSHOPS.map((workshop) => (
                       <label
                         key={workshop.id}
-                        className={`border px-3 py-3 cursor-pointer transition-colors ${
+                        className={`border px-3 py-3 transition-colors ${
                           formData.selectedWorkshop === workshop.id
                             ? 'border-[#7cb342] bg-[#7cb342]/5'
-                            : 'border-slate-200 bg-white hover:border-[#ff8a1f] hover:bg-[#ff8a1f]/5'
-                        }`}
-                        onClick={() => setFormData(prev => ({ ...prev, selectedWorkshop: workshop.id }))}
+                            : 'border-slate-200 bg-white'
+                        } ${isWorkshopSelectionLocked ? 'cursor-not-allowed opacity-70' : 'cursor-pointer hover:border-[#ff8a1f] hover:bg-[#ff8a1f]/5'}`}
+                        onClick={() => {
+                          if (!isWorkshopSelectionLocked) {
+                            setFormData((prev) => ({ ...prev, selectedWorkshop: workshop.id }));
+                          }
+                        }}
                       >
                         <div className="flex items-start gap-2">
                           <input
@@ -540,6 +555,7 @@ const RegistrationPage = () => {
                             value={workshop.id}
                             checked={formData.selectedWorkshop === workshop.id}
                             onChange={() => {}}
+                            disabled={isWorkshopSelectionLocked}
                             className="mt-0.5 h-4 w-4 text-[#7cb342] border-slate-300"
                           />
                           <div>
@@ -686,7 +702,7 @@ const RegistrationPage = () => {
                     </div>
 
                     <div className="flex justify-between text-amber-700">
-                      <span>Processing Fee (1.65%)</span>
+                      <span>Processing Fee (1.95%)</span>
                       <span>+₹{processingFee.toLocaleString()}</span>
                     </div>
 

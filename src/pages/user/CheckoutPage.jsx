@@ -20,6 +20,13 @@ import { registrationAPI, paymentAPI, attendanceAPI } from '../../utils/api';
 import Header from '../../components/common/Header';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
+const WORKSHOP_DETAILS = {
+  'labour-analgesia': { name: 'Labour Analgesia' },
+  'critical-incidents': { name: 'Critical Incidents in Obstetric Anaesthesia' },
+  pocus: { name: 'POCUS in Obstetric Anaesthesia' },
+  'maternal-collapse': { name: 'Maternal Resuscitation + Obstetric Regional Blocks' },
+};
+
 const CheckoutPage = () => {
   const [registration, setRegistration] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -161,8 +168,14 @@ const CheckoutPage = () => {
     return map[phase] || 'bg-slate-50 text-slate-700 border-slate-200';
   };
 
+  const getWorkshopDetail = (workshopId) =>
+    WORKSHOP_DETAILS[workshopId] || { name: workshopId || 'N/A' };
+
   const totalPaid = registration?.totalPaid || 0;
   const balanceDue = registration ? Math.max(0, registration.totalAmount - totalPaid) : 0;
+  const workshopDetail = registration?.selectedWorkshop
+    ? getWorkshopDetail(registration.selectedWorkshop)
+    : null;
 
   if (loading) {
     return (
@@ -302,6 +315,14 @@ const CheckoutPage = () => {
                     {getRegistrationTypeText(registration)}
                   </p>
                 </div>
+                {workshopDetail && (
+                  <div className="border border-[#7cb342]/30 bg-[#7cb342]/5 px-3 py-2 rounded">
+                    <p className="text-xs text-slate-500">Workshop selected</p>
+                    <p className="text-sm font-semibold text-slate-900">
+                      {workshopDetail.name}
+                    </p>
+                  </div>
+                )}
                 {registration.addAoaCourse && (
                   <div className="bg-purple-50 border border-purple-300 px-3 py-2 rounded">
                     <p className="text-[11px] text-purple-700 font-medium">
@@ -385,7 +406,7 @@ const CheckoutPage = () => {
                 </div>
 
                 <div className="flex justify-between text-amber-700 text-xs">
-                  <span>Processing Fee (1.65%)</span>
+                  <span>Processing Fee (1.95%)</span>
                   <span>+₹{registration.processingFee.toLocaleString()}</span>
                 </div>
 

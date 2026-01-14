@@ -506,7 +506,7 @@ const DashboardPage = () => {
                       <span>+₹{stats.registration.totalGST.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-amber-700">
-                      <span>Processing Fee (1.65%)</span>
+                      <span>Processing Fee (1.95%)</span>
                       <span>+₹{stats.registration.processingFee.toLocaleString()}</span>
                     </div>
                   </div>

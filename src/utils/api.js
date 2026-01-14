@@ -105,6 +105,8 @@ export const adminAPI = {
   getUsers: () => api.get('/admin/users'),
   deleteUser: (id) => api.delete(`/admin/users/${id}`),
   bulkDeleteUsers: (ids) => api.post('/admin/users/bulk-delete', { ids }),
+  reviewCollegeLetter: (userId, status) =>
+    api.post(`/admin/college-letters/${userId}/review`, { status }),
   getPayments: (params) => api.get('/admin/payments', { params }),
   createAccommodation: (data) => api.post('/admin/accommodations', data),
   updateAccommodation: (id, data) => api.put(`/admin/accommodations/${id}`, data),

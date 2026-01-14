@@ -15,7 +15,7 @@ import {
   XCircle,
   Calendar,
 } from 'lucide-react';
-import { adminAPI } from '../../utils/api';
+import { adminAPI, API_BASE_URL } from '../../utils/api';
 import Sidebar from '../../components/admin/Sidebar';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
@@ -32,6 +32,9 @@ const UsersManagementPage = () => {
   const [deletingId, setDeletingId] = useState(null);
   const [bulkDeleting, setBulkDeleting] = useState(false);
   const [fetchError, setFetchError] = useState(null);
+  const [reviewNotice, setReviewNotice] = useState(null);
+  const [reviewingId, setReviewingId] = useState(null);
+  const [reviewEditingEnabled, setReviewEditingEnabled] = useState(false);
 
   const getUserId = (user) => user?._id || user?.id;
 
@@ -89,8 +92,43 @@ const UsersManagementPage = () => {
 
   const viewDetails = (user) => {
     if (!user) return;
+    setReviewNotice(null);
+    setReviewEditingEnabled(false);
     setModalData({ user });
     setShowModal(true);
+  };
+
+  const updateUserState = (updatedUser) => {
+    if (!updatedUser) return;
+    const userId = getUserId(updatedUser);
+    setUsers((prev) => prev.map((u) => (getUserId(u) === userId ? updatedUser : u)));
+    setFiltered((prev) => prev.map((u) => (getUserId(u) === userId ? updatedUser : u)));
+    setModalData((prev) =>
+      prev?.user && getUserId(prev.user) === userId ? { ...prev, user: updatedUser } : prev
+    );
+  };
+
+  const reviewCollegeLetter = async (user, status) => {
+    if (!user) return;
+    const userId = getUserId(user);
+    setReviewingId(userId);
+    setReviewNotice(null);
+    try {
+      const res = await adminAPI.reviewCollegeLetter(userId, status);
+      updateUserState(res.data.user);
+      setReviewEditingEnabled(false);
+      setReviewNotice({
+        type: 'success',
+        message: `Recommendation letter ${status.toLowerCase()}.`,
+      });
+    } catch (err) {
+      setReviewNotice({
+        type: 'error',
+        message: err?.response?.data?.message || 'Failed to review recommendation letter.',
+      });
+    } finally {
+      setReviewingId(null);
+    }
   };
 
   const handleDeleteUser = (user) => {
@@ -167,6 +205,24 @@ const UsersManagementPage = () => {
       >
         <Icon className="w-3 h-3" />
         {isActive ? 'Active' : 'Inactive'}
+      </span>
+    );
+  };
+
+  const getLetterStatusBadge = (status) => {
+    const normalized = status || 'PENDING';
+    const styles = {
+      APPROVED: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+      REJECTED: 'bg-rose-100 text-rose-700 border-rose-200',
+      PENDING: 'bg-amber-100 text-amber-700 border-amber-200',
+    };
+    return (
+      <span
+        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border ${
+          styles[normalized] || styles.PENDING
+        }`}
+      >
+        {normalized}
       </span>
     );
   };
@@ -440,6 +496,17 @@ const UsersManagementPage = () => {
             </div>
 
             <div className="px-4 py-4 space-y-4 text-xs">
+              {reviewNotice && (
+                <div
+                  className={`rounded-lg border px-3 py-2 text-[11px] ${
+                    reviewNotice.type === 'success'
+                      ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                      : 'border-rose-200 bg-rose-50 text-rose-700'
+                  }`}
+                >
+                  {reviewNotice.message}
+                </div>
+              )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <p className="text-[10px] font-semibold text-slate-500 flex items-center gap-1">
@@ -514,6 +581,61 @@ const UsersManagementPage = () => {
                     Status: {modalData.user.isActive ? 'Active' : 'Inactive'}
                   </p>
                 </div>
+                {modalData.user.role === 'PGS' && modalData.user.collegeLetter && (
+                  <div className="space-y-2 sm:col-span-2">
+                    <p className="text-[10px] font-semibold text-slate-500 flex items-center gap-1">
+                      Recommendation letter
+                    </p>
+                    <div className="rounded border border-slate-200 bg-slate-50 px-3 py-2 flex flex-wrap items-center gap-2">
+                      <a
+                        href={`${API_BASE_URL}/${modalData.user.collegeLetter}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[11px] font-medium text-[#005aa9] hover:underline"
+                      >
+                        View PDF
+                      </a>
+                      {getLetterStatusBadge(modalData.user.collegeLetterStatus)}
+                      {modalData.user.collegeLetterReviewedAt && (
+                        <span className="text-[10px] text-slate-500">
+                          Reviewed {new Date(modalData.user.collegeLetterReviewedAt).toLocaleString()}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => reviewCollegeLetter(modalData.user, 'APPROVED')}
+                        disabled={
+                          reviewingId === getUserId(modalData.user) ||
+                          (modalData.user.collegeLetterStatus && modalData.user.collegeLetterStatus !== 'PENDING' && !reviewEditingEnabled)
+                        }
+                        className="inline-flex items-center justify-center px-3 py-1 text-[11px] rounded-lg border border-emerald-200 text-emerald-700 hover:bg-emerald-50 disabled:opacity-60"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => reviewCollegeLetter(modalData.user, 'REJECTED')}
+                        disabled={
+                          reviewingId === getUserId(modalData.user) ||
+                          (modalData.user.collegeLetterStatus && modalData.user.collegeLetterStatus !== 'PENDING' && !reviewEditingEnabled)
+                        }
+                        className="inline-flex items-center justify-center px-3 py-1 text-[11px] rounded-lg border border-rose-200 text-rose-700 hover:bg-rose-50 disabled:opacity-60"
+                      >
+                        Reject
+                      </button>
+                      {modalData.user.collegeLetterStatus &&
+                        modalData.user.collegeLetterStatus !== 'PENDING' &&
+                        !reviewEditingEnabled && (
+                          <button
+                            onClick={() => setReviewEditingEnabled(true)}
+                            className="inline-flex items-center justify-center px-3 py-1 text-[11px] rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50"
+                          >
+                            Change review
+                          </button>
+                        )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
