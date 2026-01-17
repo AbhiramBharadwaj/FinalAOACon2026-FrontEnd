@@ -253,7 +253,7 @@ const ProfilePage = () => {
             </span>
             <span className="inline-flex items-center gap-1">
               <Mail className="w-3.5 h-3.5 text-[#ff8a1f]" />
-              Email and phone are locked after registration.
+              Email and phone can be updated from this profile.
             </span>
           </div>
 
@@ -296,9 +296,7 @@ const ProfilePage = () => {
                   value={profileForm.email}
                   onChange={handleProfileChange}
                   required
-                  disabled
-                  readOnly
-                  className="block w-full px-3 py-2 text-xs border border-slate-300 bg-slate-100 text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#9c3253] disabled:cursor-not-allowed"
+                  className="block w-full px-3 py-2 text-xs border border-slate-300 bg-white/70 focus:outline-none focus:ring-1 focus:ring-[#9c3253]"
                   placeholder="email@example.com"
                 />
               </div>
@@ -313,9 +311,7 @@ const ProfilePage = () => {
                   value={profileForm.phone}
                   onChange={handleProfileChange}
                   required
-                  disabled
-                  readOnly
-                  className="block w-full px-3 py-2 text-xs border border-slate-300 bg-slate-100 text-slate-500 focus:outline-none focus:ring-1 focus:ring-[#9c3253] disabled:cursor-not-allowed"
+                  className="block w-full px-3 py-2 text-xs border border-slate-300 bg-white/70 focus:outline-none focus:ring-1 focus:ring-[#9c3253]"
                   placeholder="9876543210"
                 />
               </div>
