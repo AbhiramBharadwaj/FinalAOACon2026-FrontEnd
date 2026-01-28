@@ -31,6 +31,8 @@ import AccommodationManagementPage from './pages/admin/AccommodationManagementPa
 import PaymentsManagementPage from './pages/admin/PaymentsManagementPage';
 import AbstractReviewPage from './pages/admin/AbstractReviewPage';
 import FeedbackViewerPage from './pages/admin/FeedbackViewerPage';
+import ManualRegistrationsPage from './pages/admin/ManualRegistrationsPage';
+import CounterManagementPage from './pages/admin/CounterManagementPage';
 import { useEffect } from 'react';
 import LoadingSpinner from './components/common/LoadingSpinner';
 import QrScanner from './pages/admin/QrScanner';
@@ -279,6 +281,16 @@ function App() {
               <Route path="/admin/feedback" element={
                 <AdminRoute>
                   <FeedbackViewerPage />
+                </AdminRoute>
+              } />
+              <Route path="/admin/manual-registrations" element={
+                <AdminRoute>
+                  <ManualRegistrationsPage />
+                </AdminRoute>
+              } />
+              <Route path="/admin/counter" element={
+                <AdminRoute>
+                  <CounterManagementPage />
                 </AdminRoute>
               } />
 

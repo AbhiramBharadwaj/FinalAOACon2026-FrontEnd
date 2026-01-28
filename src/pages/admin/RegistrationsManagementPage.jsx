@@ -61,6 +61,7 @@ const RegistrationsManagementPage = () => {
   const canvasRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+  const [resendingId, setResendingId] = useState(null);
 
   const getPackageLabels = (registration) => {
     const labels = [];
@@ -386,6 +387,24 @@ const RegistrationsManagementPage = () => {
     }
   };
 
+  const handleResendEmail = async (registration) => {
+    try {
+      setResendingId(registration._id);
+      await adminAPI.resendRegistrationEmail(registration._id);
+      setDeleteNotice({
+        type: 'success',
+        message: `Email resent for ${registration.registrationNumber}.`,
+      });
+    } catch (err) {
+      setDeleteNotice({
+        type: 'error',
+        message: err.response?.data?.message || 'Failed to resend email.',
+      });
+    } finally {
+      setResendingId(null);
+    }
+  };
+
   const getStatusBadge = (status) => {
     const colors = {
       PAID: 'bg-emerald-100 text-emerald-700 border-emerald-200',
@@ -697,6 +716,14 @@ const RegistrationsManagementPage = () => {
                         View
                       </button>
                       <button
+                        onClick={() => handleResendEmail(reg)}
+                        disabled={resendingId === reg._id || reg.paymentStatus !== 'PAID'}
+                        className="inline-flex items-center gap-1 px-2 py-1 text-[11px] rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        <Mail className="w-3 h-3" />
+                        {resendingId === reg._id ? 'Sending' : 'Resend'}
+                      </button>
+                      <button
                         onClick={() => handleDeleteRegistration(reg)}
                         disabled={deletingId === reg._id}
                         className="inline-flex items-center gap-1 px-2 py-1 text-[11px] rounded-lg border border-red-200 text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
@@ -788,6 +815,14 @@ const RegistrationsManagementPage = () => {
                 >
                   <Eye className="w-3 h-3" />
                   Details
+                </button>
+                <button
+                  onClick={() => handleResendEmail(reg)}
+                  disabled={resendingId === reg._id || reg.paymentStatus !== 'PAID'}
+                  className="flex-1 inline-flex items-center justify-center gap-1 px-2 py-1 text-[11px] rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <Mail className="w-3 h-3" />
+                  {resendingId === reg._id ? 'Sending' : 'Resend'}
                 </button>
                 <button
                   onClick={() => handleDeleteRegistration(reg)}

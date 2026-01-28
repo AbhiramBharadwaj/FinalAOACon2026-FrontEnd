@@ -14,6 +14,8 @@ import {
   X,
   QrCodeIcon,
   ListChecksIcon,
+  ClipboardList,
+  Hash,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -32,6 +34,8 @@ const Sidebar = () => {
     { icon: Building2, label: 'Accommodations', path: '/admin/accommodations' },
     { icon: FileText, label: 'Abstracts', path: '/admin/abstracts' },
     { icon: MessageSquare, label: 'Feedback', path: '/admin/feedback' },
+    { icon: ClipboardList, label: 'Manual Registrations', path: '/admin/manual-registrations' },
+    { icon: Hash, label: 'Counter', path: '/admin/counter' },
     { icon: QrCodeIcon, label: 'Scanner', path: '/admin/scanner' },
     { icon: ListChecksIcon, label: 'Attendence', path: '/admin/check/attendance' },
   ];

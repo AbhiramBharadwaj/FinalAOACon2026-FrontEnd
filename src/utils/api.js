@@ -112,6 +112,13 @@ export const adminAPI = {
   updateAccommodation: (id, data) => api.put(`/admin/accommodations/${id}`, data),
   deleteAccommodation: (id) => api.delete(`/admin/accommodations/${id}`),
   getAccommodationBookings: (params) => api.get('/admin/accommodation-bookings', { params }),
+  getManualRegistrationAvailability: (params) =>
+    api.get('/admin/manual-registrations/availability', { params }),
+  getManualRegistrationQuote: (data) => api.post('/admin/manual-registrations/quote', data),
+  createManualRegistration: (data) => api.post('/admin/manual-registrations', data),
+  getRegistrationCounter: () => api.get('/admin/counters/registration-number'),
+  updateRegistrationCounter: (seq) => api.put('/admin/counters/registration-number', { seq }),
+  resendRegistrationEmail: (id) => api.post(`/admin/registrations/${id}/resend-email`),
 };
 
 export default api;
