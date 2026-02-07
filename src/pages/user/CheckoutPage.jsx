@@ -24,7 +24,7 @@ const WORKSHOP_DETAILS = {
   'labour-analgesia': { name: 'Labour Analgesia' },
   'critical-incidents': { name: 'Critical Incidents in Obstetric Anaesthesia' },
   pocus: { name: 'POCUS in Obstetric Anaesthesia' },
-  'maternal-collapse': { name: 'Maternal Resuscitation + Obstetric Regional Blocks' },
+  'maternal-collapse': { name: 'Maternal Resuscitation ' },
 };
 
 const CheckoutPage = () => {

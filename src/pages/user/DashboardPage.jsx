@@ -37,7 +37,7 @@ const DashboardPage = () => {
     'labour-analgesia': 'Labour Analgesia',
     'critical-incidents': 'Critical Incidents in Obstetric Anaesthesia',
     pocus: 'POCUS in Obstetric Anaesthesia',
-    'maternal-collapse': 'Maternal Resuscitation + Obstetric Regional Blocks',
+    'maternal-collapse': 'Maternal Resuscitation ',
   };
   const isAbstractOpen = false;
 
