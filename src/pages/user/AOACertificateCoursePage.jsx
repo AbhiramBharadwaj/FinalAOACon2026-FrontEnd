@@ -37,6 +37,18 @@ const AOACertificateCoursePage = () => {
               Dedicated certificate-track academic module under AOACON 2026.
             </p>
 
+            <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
+              <p className="text-xs font-semibold tracking-wide uppercase text-slate-500">Key Details</p>
+              <ul className="mt-2 space-y-1 text-sm text-slate-800">
+                <li>Dates: 29th and 30th October 2026</li>
+                <li>Conference + AOA Certified Course bundle: Rs 13,000 + GST (AOA / Non-AOA)</li>
+                <li>Applicable only for practitioners (AOA and Non-AOA)</li>
+                <li>Limited to 40 participants</li>
+                <li>Conference registration is mandatory</li>
+                <li>No spot registration</li>
+              </ul>
+            </div>
+
             <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 sm:p-5">
               <p className="text-xs font-semibold tracking-wide uppercase text-amber-700">National Co-Ordinators</p>
               <ul className="mt-2 space-y-1 text-sm text-slate-800">

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChevronRight, Stethoscope, GraduationCap, Users2, BadgeInfo } from 'lucide-react';
+import { ChevronRight, Stethoscope, GraduationCap, Users2 } from 'lucide-react';
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import Footer from '../../components/common/Footer';
@@ -78,18 +78,35 @@ const WorkshopsPage = () => {
           ))}
         </section>
 
-        <section className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 sm:px-5 py-5 shadow-sm">
-          <p className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-            <BadgeInfo className="w-4 h-4 text-amber-700" />
-            National Co-Ordinators for AOA Certificate Course
-          </p>
-          <p className="mt-2 text-sm text-slate-700">{CERTIFICATE_COURSE_COORDINATORS.join(' • ')}</p>
+        <section className="mt-6">
           <Link
             to="/workshops/aoa-certificate-course"
-            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#005aa9] text-white text-sm font-semibold hover:bg-[#004a8b] transition-colors"
+            className="group rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-all overflow-hidden block"
           >
-            View AOA Certificate Course
-            <ChevronRight className="w-4 h-4" />
+            <div className="h-2 bg-gradient-to-r from-amber-400 to-orange-400" />
+            <div className="p-5 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-semibold text-slate-900 group-hover:text-[#005aa9] transition-colors">
+                AOA Certified Course in Obstetric Critical Care
+              </h2>
+              <p className="mt-3 text-sm text-slate-700 leading-relaxed">
+                Dedicated certificate-track academic module with limited seats and mandatory conference registration.
+              </p>
+
+              <div className="mt-4 space-y-2 text-sm text-slate-700">
+                <p className="flex items-start gap-2">
+                  <Users2 className="w-4 h-4 mt-0.5 text-slate-500" />
+                  <span>
+                    <span className="font-semibold text-slate-900">National Co‑Ordinators:</span>{' '}
+                    {CERTIFICATE_COURSE_COORDINATORS.join(', ')}
+                  </span>
+                </p>
+              </div>
+
+              <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#005aa9]">
+                View AOA Certified Course
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+            </div>
           </Link>
         </section>
       </div>
