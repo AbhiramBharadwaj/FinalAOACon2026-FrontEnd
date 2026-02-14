@@ -463,7 +463,7 @@ const AbstractReviewPage = () => {
                       </div>
                       <p className="text-sky-700 text-[11px] mt-1 truncate">{selectedAbstract.filePath}</p>
 
-                      <Link className='mt-5 block flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm bg-[#005aa9] text-white rounded-xl hover:bg-[#004684]  transition-all font-medium shadow-sm hover:shadow-md' to={`http://localhost:5050/${selectedAbstract.filePath}`}>Check Abstract</Link>
+                      <Link className='mt-5 block flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm bg-[#005aa9] text-white rounded-xl hover:bg-[#004684]  transition-all font-medium shadow-sm hover:shadow-md' to={`https://api.aoacon2026.com/${selectedAbstract.filePath}`}>Check Abstract</Link>
                     </div>
                   </div>
 
