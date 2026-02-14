@@ -13,6 +13,7 @@ import {
   Phone,
   LogOut,
   Image,
+  Stethoscope,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -40,9 +41,8 @@ const MobileNav = () => {
     // { label: 'National Faculty', path: '/faculty/national', icon: Users },
     // { label: 'International Faculty', path: '/faculty/international', icon: Users },
     { label: 'Venue', path: '/venue', icon: MapPin },
-    { label: 'Program', path: '/program', icon: Calendar },
-    { label: 'Workshops', path: '/program/workshops', icon: Calendar },
-    { label: 'Program Schedule', path: '/program/schedule', icon: Calendar },
+    { label: 'Workshops', path: '/workshops', icon: Stethoscope },
+    { label: 'Program Schedule', path: '/conference-days', icon: Calendar },
     { label: 'Registration Details', path: '/register-details', icon: FileText },
     { label: 'Registration', path: '/register', icon: FileText },
     { label: 'Abstract', path: '/abstract', icon: FileText },

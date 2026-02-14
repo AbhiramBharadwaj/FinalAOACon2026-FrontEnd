@@ -23,6 +23,9 @@ import VenuePage from './pages/user/VenuePage';
 import ContactPage from './pages/user/ContactPage';
 import GalleryPage from './pages/user/GalleryPage';
 import HomePage from './pages/user/HomePage';
+import WorkshopsPage from './pages/user/WorkshopsPage';
+import WorkshopDetailPage from './pages/user/WorkshopDetailPage';
+import AOACertificateCoursePage from './pages/user/AOACertificateCoursePage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import RegistrationsManagementPage from './pages/admin/RegistrationsManagementPage';
@@ -157,6 +160,15 @@ function App() {
               } />
               <Route path="/gallery" element={
                   <GalleryPage />
+              } />
+              <Route path="/workshops" element={
+                  <WorkshopsPage />
+              } />
+              <Route path="/workshops/aoa-certificate-course" element={
+                  <AOACertificateCoursePage />
+              } />
+              <Route path="/workshops/:slug" element={
+                  <WorkshopDetailPage />
               } />
                <Route path="/office-bearers" element={
                   <OfficeBearersPage />

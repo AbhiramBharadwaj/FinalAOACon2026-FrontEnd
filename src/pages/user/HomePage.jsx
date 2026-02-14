@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { MapPin, Clock, Stethoscope, Building2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { MapPin, Clock, Stethoscope, Building2, ArrowUpRight } from 'lucide-react';
 import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
 import logo from '../../images/main-logo.png';
@@ -9,6 +10,14 @@ import champaImg from '../../images/OrganizingComittee/Champa.jpg';
 import ashwiniImg from '../../images/OrganizingComittee/Ashwini.png';
 
 const targetDate = new Date('2026-10-30T09:00:00+05:30');
+const workshopPreviewCards = [
+  { title: 'Labour Analgesia', accent: 'border-t-4 border-t-amber-400' },
+  { title: 'Critical Incidences in Obstetric Anaesthesia', accent: 'border-t-4 border-t-rose-400' },
+  { title: 'POCUS in Obstetrics', accent: 'border-t-4 border-t-sky-400' },
+  { title: 'Maternal Resuscitation', accent: 'border-t-4 border-t-emerald-400' },
+];
+const descriptionTextClass = 'text-[17px] sm:text-[19px] leading-relaxed';
+const descriptionTextLightClass = 'text-[17px] sm:text-[19px] leading-relaxed text-slate-100';
 
 const HomePage = () => {
   const [countdown, setCountdown] = useState({
@@ -74,15 +83,15 @@ const HomePage = () => {
                 <span className="block">Anaesthesiologists</span>
               </h1>
 
-              <p className="text-[20px] sm:text-[20px] text-white font-semibold uppercase tracking-[0.28em] font-serif">
+              <p className="text-[20px] sm:text-[20px] text-white font-semibold uppercase tracking-[0.28em]">
                 Theme 2026
               </p>
-              <p className="text-[20px] sm:text-[20px] text-slate-100 leading-relaxed max-w-3xl font-serif">
+              <p className={`${descriptionTextLightClass} max-w-3xl`}>
                 Safe Motherhood everywhere: Bridging the Urban - Rural Gap in Obstetric
                 Anaesthesia
               </p>
 
-              <div className="space-y-3 text-[20px] text-slate-100 leading-relaxed font-serif">
+              <div className={`space-y-3 ${descriptionTextLightClass}`}>
                 <p>
                   <span className="font-semibold text-white">Organized and hosted by:</span>{' '}
                   Department of Anaesthesiology, SIMS &amp; ISA City Chapter, Shivamogga
@@ -142,7 +151,7 @@ const HomePage = () => {
               <p className="text-[12px] font-semibold tracking-[0.25em] uppercase">
                 Official venue
               </p>
-              <p className="text-[18px] font-semibold">
+              <p className={descriptionTextClass}>
                  Auditorium, 1st Floor, Shimoga Institute of Medical Sciences (SIMS), Shivamogga, Karnataka
               </p>
             </div>
@@ -158,7 +167,7 @@ const HomePage = () => {
             <h2 className="text-[26px] lg:text-[28px] font-bold text-slate-900 leading-snug">
               Pranams  and  greetings,
             </h2>
-            <div className="space-y-4 text-[18px] text-slate-800 leading-relaxed text-justify">
+            <div className={`space-y-4 ${descriptionTextClass} text-slate-800 text-justify`}>
               <p>
                 It gives us great pleasure to welcome you to the 19th National Conference of Obstetric Anaesthesiologists, 
                 proudly hosted by the Department of Anaesthesiology, SIMS and the ISA City Chapter, Shivamogga. 
@@ -222,18 +231,18 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
       </section>
 
       {}
-      <section className="border-b border-slate-200 bg-[#f8fafc] py-12 lg:py-14">
+      <section className="border-b border-slate-200 bg-white py-12 lg:py-14">
         <div className="max-w-5xl mx-auto px-4 lg:px-6">
-          <div className="bg-white border border-slate-100 rounded-lg p-6 lg:p-8 space-y-6 shadow-sm">
+          <div className="space-y-6">
             <div className="space-y-2">
-              <h2 className="text-[26px] lg:text-[28px] font-bold text-slate-900">
+              <h2 className="text-[30px] lg:text-[34px] font-bold text-slate-900">
                 Conference Highlights
               </h2>
             </div>
 
-            <div className="space-y-5 text-[16px] text-slate-800">
-              <div className="space-y-1">
-                <p className="font-semibold text-slate-900">
+            <div className={`space-y-6 ${descriptionTextClass} text-slate-800`}>
+              <div className="space-y-1.5">
+                <p className="font-semibold text-slate-900 text-[20px] sm:text-[22px]">
                   1. AOA‑Certified Course in Obstetric Critical Care
                 </p>
                 <p>
@@ -244,7 +253,7 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
               </div>
 
               <div className="space-y-2">
-                <p className="font-semibold text-slate-900">2. Pre‑Conference Workshops</p>
+                <p className="font-semibold text-slate-900 text-[20px] sm:text-[22px]">2. Pre‑Conference Workshops</p>
                 <p>
                   <span className="font-semibold">Choose your workshop</span> from our skill‑oriented, hands‑on sessions.
                   These sessions focus on practical training, updated protocols, and real‑life clinical
@@ -253,8 +262,8 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
                 
               </div>
 
-              <div className="space-y-1">
-                <p className="font-semibold text-slate-900">
+              <div className="space-y-1.5">
+                <p className="font-semibold text-slate-900 text-[20px] sm:text-[22px]">
                   3. Lectures, Debates & Panel Discussions
                 </p>
                 <p>
@@ -264,8 +273,8 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
                 </p>
               </div>
 
-              <div className="space-y-1">
-                <p className="font-semibold text-slate-900">4. Live Master Classes from Experts</p>
+              <div className="space-y-1.5">
+                <p className="font-semibold text-slate-900 text-[20px] sm:text-[22px]">4. Live Master Classes from Experts</p>
                 <p>
                   Interactive live master classes featuring expert demonstrations, advanced
                   techniques, and case‑based discussions to enhance practical understanding and
@@ -273,8 +282,8 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
                 </p>
               </div>
 
-              <div className="space-y-1">
-                <p className="font-semibold text-slate-900">5. Attractive competitions for delegates</p>
+              <div className="space-y-1.5">
+                <p className="font-semibold text-slate-900 text-[20px] sm:text-[22px]">5. Attractive competitions for delegates</p>
                 <p>
                   Partake in our various competitions spread throughout the conference days and win attractive prizes.
                 </p>
@@ -285,36 +294,39 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
       </section>
 
       {}
-      <section className="border-b border-slate-300 bg-[#880e4f] py-12 lg:py-14">
+      <section className="border-b border-slate-300 bg-[#f8fafc] py-12 lg:py-14">
         <div className="max-w-6xl mx-auto px-4 lg:px-6">
-          <div className="flex items-center gap-3 mb-7">
-            <Stethoscope className="w-6 h-6 text-rose-100" />
-            <h2 className="text-[24px] font-bold text-white">
-              Pre Conference Workshops (30th Oct 2026 )
-            </h2>
-          </div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 flex items-center gap-2">
+                <Stethoscope className="w-5 h-5 text-[#005aa9]" />
+                Pre Conference Workshops (30th Oct 2026)
+              </h2>
+              <Link
+                to="/workshops"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+              >
+                Explore all workshops
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-[18px]">
-            <div className="bg-[#fff3cd] border border-amber-400 px-5 py-5">
-              <p className="font-semibold text-[17px] text-amber-900 mb-2">
-                Labour Analgesia
-              </p>
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+              {workshopPreviewCards.map((item) => (
+                <Link
+                  key={item.title}
+                  to="/workshops"
+                  className={`group rounded-lg border border-slate-200 bg-white px-4 sm:px-5 py-6 ${item.accent} hover:shadow-md transition-all`}
+                >
+                  <p className="text-lg sm:text-2xl font-semibold text-slate-900">{item.title}</p>
+                  <p className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-slate-600 group-hover:text-[#005aa9]">
+                    View details
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </p>
+                </Link>
+              ))}
             </div>
-            <div className="bg-[#fde4f2] border border-rose-400 px-5 py-5">
-              <p className="font-semibold text-[17px] text-rose-900 mb-2">
-                Critical Incidences in Obstetric Anaesthesia
-              </p>
-            </div>
-            <div className="bg-[#e0f2ff] border border-sky-400 px-5 py-5">
-              <p className="font-semibold text-[17px] text-sky-900 mb-2">
-                POCUS in Obstetrics
-              </p>
-            </div>
-            <div className="bg-[#e3fcec] border border-emerald-400 px-5 py-5">
-              <p className="font-semibold text-[17px] text-emerald-900 mb-2">
-                Maternal Resuscitation 
-              </p>
-            </div>
+
           </div>
         </div>
       </section>
@@ -352,11 +364,11 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
                 Shivamogga & Shimoga Institute of Medical Sciences
               </h2>
             </div>
-            <p className="text-[18px] text-slate-800 leading-relaxed">
+            <p className={`${descriptionTextClass} text-slate-800`}>
               Shivamogga, known as the gateway to the Western Ghats, offers rivers, waterfalls
               and dense greenery along with a vibrant educational ecosystem.
             </p>
-            <p className="text-[18px] text-slate-800 leading-relaxed">
+            <p className={`${descriptionTextClass} text-slate-800`}>
               Shimoga Institute of Medical Sciences (SIMS) is a government medical college with a
               busy tertiary‑care hospital and well‑equipped operation theatre complex – an ideal
               hub for an obstetric anaesthesia conference.
@@ -369,7 +381,7 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
                   Venue snapshot
                 </p>
               </div>
-              <ul className="text-slate-800 space-y-1.5">
+              <ul className={`${descriptionTextClass} text-slate-800 space-y-1.5`}>
                 <li className="flex items-start gap-2">
                   <span className="text-emerald-600 font-semibold mt-[3px]">•</span>
                   Plenary halls, seminar rooms and skills‑lab spaces
