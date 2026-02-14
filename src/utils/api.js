@@ -1,7 +1,7 @@
 // src/utils/api.js
 import axios from 'axios';
 
-const API_URL = 'https://api.aoacon2026.com/api';
+const API_URL = 'http://localhost:5050/api';
 export const API_BASE_URL = API_URL.replace(/\/api$/, '');
 const api = axios.create({
   baseURL: API_URL,
@@ -65,6 +65,8 @@ export const registrationAPI = {
   },
   getMyRegistration: () => api.get('/registration/my-registration'),
   getPricing: () => api.get('/registration/pricing'),
+  applyCoupon: (couponCode) => api.post('/registration/apply-coupon', { couponCode }),
+  validateCoupon: () => api.post('/registration/validate-coupon'),
 };
 
 export const paymentAPI = {

@@ -170,6 +170,8 @@ const PaymentStatusPage = () => {
     const aoaCourseBase = data.aoaCourseBase || 0;
     const lifeMembershipBase = data.lifeMembershipBase || 0;
     const accompanyingBase = data.accompanyingBase || 0;
+    const couponDiscount = data.couponDiscount || 0;
+    const couponCode = data.couponCode || '';
     const gst = data.totalGST || Math.round((data.totalBase || 0) * 0.18) || 0;
     const total = data.totalAmount || 0;
 
@@ -181,6 +183,12 @@ const PaymentStatusPage = () => {
       head: [['Description', 'Amount (₹)']],
       body: [
         ['Conference Base', baseAmount.toLocaleString('en-IN', { maximumFractionDigits: 2 })],
+        ...(couponDiscount > 0
+          ? [[
+              `Coupon ${couponCode ? `(${couponCode})` : ''}`.trim(),
+              (-couponDiscount).toLocaleString('en-IN', { maximumFractionDigits: 2 }),
+            ]]
+          : []),
         ...(workshopPrice > 0 ? [['Workshop Add-on', workshopPrice.toLocaleString('en-IN', { maximumFractionDigits: 2 })]] : []),
         ...(aoaCourseBase > 0 ? [['AOA Course Add-on', aoaCourseBase.toLocaleString('en-IN', { maximumFractionDigits: 2 })]] : []),
         ...(lifeMembershipBase > 0 ? [['AOA Life Membership', lifeMembershipBase.toLocaleString('en-IN', { maximumFractionDigits: 2 })]] : []),
@@ -361,6 +369,14 @@ const PaymentStatusPage = () => {
                       {currency}{data.totalAmount?.toLocaleString('en-IN')}
                     </span>
                   </div>
+                  {data.couponDiscount > 0 && (
+                    <div className="flex justify-between py-2 border-b border-slate-100/50">
+                      <span className="text-slate-600">Coupon {data.couponCode || 'Applied'}</span>
+                      <span className="font-medium text-emerald-700">
+                        -{currency}{data.couponDiscount.toLocaleString('en-IN')}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex justify-between py-2">
                     <span className="text-slate-600">Payment Status</span>
                     <span className={`px-2.5 py-1 rounded-full text-[10px] font-medium ${

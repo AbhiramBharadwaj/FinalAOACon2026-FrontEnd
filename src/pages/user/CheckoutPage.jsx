@@ -32,6 +32,12 @@ const CheckoutPage = () => {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState('');
+  const [couponInput, setCouponInput] = useState('');
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [couponError, setCouponError] = useState('');
+  const [couponApplying, setCouponApplying] = useState(false);
+
+  const COUPON_ENABLED = true;
 
   const { user } = useAuth();
   const { setRegistration: setAppRegistration } = useApp();
@@ -46,6 +52,8 @@ const CheckoutPage = () => {
       const response = await registrationAPI.getMyRegistration();
       setRegistration(response.data);
       setAppRegistration(response.data);
+      setCouponInput(response.data?.couponCode || '');
+      setCouponApplied(Boolean(response.data?.couponDiscount));
     } catch (err) {
       setError('Registration not found. Please complete registration first.');
       setTimeout(() => navigate('/registration'), 2000);
@@ -78,6 +86,23 @@ const CheckoutPage = () => {
     setError('');
 
     try {
+      if (registration?.couponCode) {
+        const validation = await registrationAPI.validateCoupon();
+        const updated = validation.data?.registration || validation.data;
+        const couponValid = Boolean(validation.data?.couponValid);
+        if (updated) {
+          setRegistration(updated);
+          setAppRegistration(updated);
+          setCouponApplied(Boolean(updated?.couponDiscount));
+          setCouponInput(updated?.couponCode || '');
+        }
+        if (!couponValid) {
+          setError('Coupon code is no longer valid. Please review the updated total.');
+          setProcessing(false);
+          return;
+        }
+      }
+
       const scriptLoaded = await loadRazorpayScript();
       if (!scriptLoaded) throw new Error('Failed to load payment gateway');
 
@@ -176,6 +201,28 @@ const CheckoutPage = () => {
   const workshopDetail = registration?.selectedWorkshop
     ? getWorkshopDetail(registration.selectedWorkshop)
     : null;
+
+  const applyCoupon = async () => {
+    const entered = couponInput.trim().toUpperCase();
+    setCouponError('');
+    if (!entered) {
+      setCouponApplied(false);
+      setCouponError('Enter a coupon code.');
+      return;
+    }
+    try {
+      setCouponApplying(true);
+      const res = await registrationAPI.applyCoupon(entered);
+      setRegistration(res.data);
+      setAppRegistration(res.data);
+      setCouponApplied(Boolean(res.data?.couponDiscount));
+    } catch (err) {
+      setCouponApplied(false);
+      setCouponError(err?.response?.data?.message || 'Failed to apply coupon.');
+    } finally {
+      setCouponApplying(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -337,6 +384,44 @@ const CheckoutPage = () => {
 
           {}
           <section className="lg:col-span-1 space-y-4 lg:sticky lg:top-24">
+            {/* Coupon code section (comment out this block to disable coupon entry) */}
+            {COUPON_ENABLED && (
+              <div className="bg-white border border-slate-200 px-4 py-4 text-xs rounded-lg">
+                <h3 className="text-sm font-semibold text-slate-900 mb-2">
+                  Coupon code
+                </h3>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="text"
+                    value={couponInput}
+                    onChange={(e) => {
+                      setCouponInput(e.target.value.toUpperCase());
+                      setCouponApplied(false);
+                      setCouponError('');
+                    }}
+                    placeholder="Enter coupon code"
+                    className="flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#9c3253]/40"
+                  />
+                  <button
+                    type="button"
+                    onClick={applyCoupon}
+                    disabled={couponApplying}
+                    className="inline-flex items-center justify-center rounded-lg border border-[#9c3253] bg-[#9c3253] px-4 py-2 text-sm font-semibold text-white hover:bg-[#8a2b47] disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {couponApplying ? 'Applying...' : 'Apply'}
+                  </button>
+                </div>
+                {couponApplied && registration?.couponDiscount > 0 && (
+                  <p className="mt-2 text-xs text-emerald-700 font-medium">
+                    Coupon applied: -₹{registration.couponDiscount.toLocaleString()} on conference base.
+                  </p>
+                )}
+                {couponError && (
+                  <p className="mt-2 text-xs text-red-600 font-medium">{couponError}</p>
+                )}
+              </div>
+            )}
+
             <div className="bg-white border border-slate-200 px-4 py-4 text-xs">
               <h3 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
                 <CreditCard className="w-4 h-4 text-[#9c3253]" />
@@ -364,6 +449,14 @@ const CheckoutPage = () => {
                     ₹{(registration.basePrice ?? registration.packageBase ?? 0).toLocaleString()}
                   </span>
                 </div>
+                {registration.couponDiscount > 0 && (
+                  <div className="flex justify-between text-xs text-emerald-700">
+                    <span>
+                      Coupon{registration.couponCode ? ` ${registration.couponCode}` : ''}
+                    </span>
+                    <span>-₹{registration.couponDiscount.toLocaleString()}</span>
+                  </div>
+                )}
 
                 {registration.addWorkshop && (
                   <div className="flex justify-between text-xs text-[#ff8a1f] font-medium">

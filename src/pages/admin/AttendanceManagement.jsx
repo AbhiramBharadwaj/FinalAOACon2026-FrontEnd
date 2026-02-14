@@ -29,7 +29,7 @@ const AttendanceManagementPage = () => {
 
   const fetchAttendances = async () => {
     try {
-      const response = await fetch('https://api.aoacon2026.com/api/attendance', {
+      const response = await fetch('http://localhost:5050/api/attendance', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await response.json();
@@ -55,7 +55,7 @@ const AttendanceManagementPage = () => {
 
   const downloadQR = async (attendanceId) => {
     const link = document.createElement('a');
-    link.href = `https://api.aoacon2026.com/api/attendance/qr-download/${attendanceId}`;
+    link.href = `http://localhost:5050/api/attendance/qr-download/${attendanceId}`;
     link.download = 'QR.png';
     document.body.appendChild(link);
     link.click();
@@ -66,8 +66,8 @@ const AttendanceManagementPage = () => {
     setExporting(type);
     try {
       const endpoint = type === 'attended' 
-        ? 'https://api.aoacon2026.com/api/attendance/export-attended' 
-        : 'https://api.aoacon2026.com/api/attendance/export-not-attended';
+        ? 'http://localhost:5050/api/attendance/export-attended' 
+        : 'http://localhost:5050/api/attendance/export-not-attended';
       
       const response = await fetch(endpoint, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }

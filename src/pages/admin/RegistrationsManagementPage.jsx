@@ -289,6 +289,8 @@ const RegistrationsManagementPage = () => {
       'Workshop Price': reg.workshopPrice ?? '',
       'Combo Discount': reg.comboDiscount ?? '',
       GST: reg.gst ?? '',
+      'Coupon Code': reg.couponCode || '',
+      'Coupon Discount': reg.couponDiscount ?? '',
       Status: reg.paymentStatus || '',
       'Lifetime Membership ID': reg.lifetimeMembershipId || '',
       'Razorpay Order ID': reg.razorpayOrderId || '',
@@ -658,6 +660,9 @@ const RegistrationsManagementPage = () => {
                   Amount
                 </th>
                 <th className="px-3 py-2 text-left font-semibold text-slate-700">
+                  Coupon
+                </th>
+                <th className="px-3 py-2 text-left font-semibold text-slate-700">
                   Status
                 </th>
                 <th className="px-3 py-2 text-left font-semibold text-slate-700">
@@ -692,6 +697,9 @@ const RegistrationsManagementPage = () => {
                   </td>
                   <td className="px-3 py-2 font-mono text-[11px] text-slate-900">
                     ₹{reg.totalAmount?.toLocaleString()}
+                  </td>
+                  <td className="px-3 py-2 text-[11px] text-slate-700">
+                    {reg.couponCode ? `${reg.couponCode} (-₹${reg.couponDiscount?.toLocaleString() || 0})` : '—'}
                   </td>
                   <td className="px-3 py-2">{getStatusBadge(reg.paymentStatus)}</td>
                   <td className="px-3 py-2">
@@ -738,7 +746,7 @@ const RegistrationsManagementPage = () => {
               {filtered.length === 0 && (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={8}
                     className="px-3 py-6 text-center text-xs text-slate-500"
                   >
                     No registrations found
@@ -789,6 +797,12 @@ const RegistrationsManagementPage = () => {
                   <p className="text-[10px] text-slate-500">Amount</p>
                   <p className="font-mono text-[11px] text-slate-900">
                     ₹{reg.totalAmount?.toLocaleString()}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-slate-500">Coupon</p>
+                  <p className="text-[11px] text-slate-800">
+                    {reg.couponCode ? `${reg.couponCode} (-₹${reg.couponDiscount?.toLocaleString() || 0})` : '—'}
                   </p>
                 </div>
                 <div>
@@ -921,6 +935,11 @@ const RegistrationsManagementPage = () => {
                   <p className="text-[11px] text-slate-700">
                     Amount: ₹
                     {modalData.registration.totalAmount?.toLocaleString()}
+                  </p>
+                  <p className="text-[11px] text-slate-700">
+                    Coupon: {modalData.registration.couponCode
+                      ? `${modalData.registration.couponCode} (-₹${modalData.registration.couponDiscount?.toLocaleString() || 0})`
+                      : '—'}
                   </p>
                   <p className="text-[11px] text-slate-700 flex items-center gap-1">
                     Status: {getStatusBadge(modalData.registration.paymentStatus)}
