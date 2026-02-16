@@ -241,15 +241,23 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
             </div>
 
             <div className={`space-y-6 ${descriptionTextClass} text-slate-800`}>
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 <p className="font-semibold text-slate-900 text-[20px] sm:text-[22px]">
                   1. AOA‑Certified Course in Obstetric Critical Care
                 </p>
                 <p>
-                  An exclusive two‑day workshop on obstetric critical care, designed to empower
-                  practitioners with the clinical skills necessary to manage high‑risk obstetric
-                  cases in perioperative setups. The course will be held on 29th & 30th Oct 2026.
+                  A dedicated certificate course distinct from the pre‑conference workshops, designed to
+                  empower practitioners with clinical skills for high‑risk obstetric care. The course will
+                  be held on 29th & 30th Oct 2026.
                 </p>
+                
+                <Link
+                  to="/workshops/aoa-certificate-course"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-4 py-1.5 text-xs font-semibold text-amber-900 hover:bg-amber-100 transition-colors"
+                >
+                  View AOA Certified Course
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
 
               <div className="space-y-2">
