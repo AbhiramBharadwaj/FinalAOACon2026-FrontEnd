@@ -448,7 +448,7 @@ const RegistrationPage = () => {
                           <div>
                             <p className="font-medium text-purple-900">AOA Certified Course</p>
                             <p className="text-sm text-purple-700">
-                              Bundle price brings Conference + Course to ₹13,000 (AOA / Non-AOA only).
+                              Bundle price brings Conference + Course to ₹13,000 / ₹16,000 (AOA / Non-AOA only).
                             </p>
                             {isAoaMember && !hasCourseLocked && (
                               <p className="text-sm text-slate-500 mt-1">
