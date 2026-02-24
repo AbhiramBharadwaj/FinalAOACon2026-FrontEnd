@@ -91,13 +91,21 @@ const RegistrationsManagementPage = () => {
     WORKSHOP_LABELS[workshopId] || workshopId || '—';
 
   const workshopFilterOptions = useMemo(() => {
-    const keys = new Set(Object.keys(WORKSHOP_LABELS));
+    const byLabel = new Map();
     registrations.forEach((reg) => {
-      if (reg?.selectedWorkshop) keys.add(reg.selectedWorkshop);
+      if (!reg?.selectedWorkshop) return;
+      const id = reg.selectedWorkshop;
+      const label = getWorkshopLabel(id);
+      if (!byLabel.has(label)) {
+        byLabel.set(label, { key: label, label, ids: new Set() });
+      }
+      byLabel.get(label).ids.add(id);
     });
-    return Array.from(keys)
-      .filter(Boolean)
-      .map((key) => ({ key, label: getWorkshopLabel(key) }))
+    return Array.from(byLabel.values())
+      .map((option) => ({
+        ...option,
+        ids: Array.from(option.ids),
+      }))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [registrations]);
 
@@ -131,7 +139,12 @@ const RegistrationsManagementPage = () => {
           roleFilters.includes(r.userId?.role);
         const matchesWorkshop =
           workshopFilters.length === 0 ||
-          (r.selectedWorkshop && workshopFilters.includes(r.selectedWorkshop));
+          (r.selectedWorkshop &&
+            workshopFilterOptions.some(
+              (option) =>
+                workshopFilters.includes(option.key) &&
+                option.ids.includes(r.selectedWorkshop)
+            ));
         return (
           matchesSearch &&
           matchesPackage &&
@@ -148,6 +161,7 @@ const RegistrationsManagementPage = () => {
     statusFilters,
     roleFilters,
     workshopFilters,
+    workshopFilterOptions,
   ]);
 
   const fetchRegistrations = async () => {
