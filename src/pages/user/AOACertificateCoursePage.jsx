@@ -42,7 +42,7 @@ const AOACertificateCoursePage = () => {
               <p className="text-sm font-semibold tracking-wide uppercase text-slate-500">Key Details</p>
               <ul className="mt-3 space-y-2 text-base text-slate-800">
                 <li>Dates: 29th and 30th October 2026</li>
-                <li>Conference + AOA Certified Course bundle: Rs 13,000 + GST (AOA / Non-AOA)</li>
+                <li>Conference + AOA Certified Course bundle: Rs 13,000 / 16,000 + GST (AOA / Non-AOA)</li>
                 <li>Applicable only for practitioners (AOA and Non-AOA)</li>
                 <li>Limited to 40 participants</li>
                 <li>Conference registration is mandatory</li>

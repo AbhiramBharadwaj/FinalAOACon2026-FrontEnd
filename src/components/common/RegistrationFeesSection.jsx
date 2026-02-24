@@ -205,7 +205,7 @@ const RegistrationFeesSection = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <ul className="list-disc list-inside text-sm text-slate-800 space-y-1">
-                <li>Conference + AOA Certified Course bundle: Rs 13,000 + GST (AOA / Non-AOA)</li>
+                <li>Conference + AOA Certified Course bundle: Rs 13,000 / 16,000 + GST (AOA / Non-AOA)</li>
                 <li>Applicable only for practitioners (AOA and Non-AOA)</li>
                 <li>Limited to 40 participants</li>
                 <li>Conference registration is mandatory</li>
