@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import {
   Users,
   Search,
@@ -45,6 +45,16 @@ const roleFilterOptions = [
   { key: 'PGS', label: 'PGS' },
 ];
 
+const WORKSHOP_LABELS = {
+  'labour-analgesia': 'Labour Analgesia',
+  'critical-incidents': 'Critical Incidents in Obstetric Anaesthesia',
+  pocus: 'POCUS in Obstetric Anaesthesia',
+  'maternal-collapse': 'Maternal Resuscitation',
+  'critical-incidents-ob-anaesthesia': 'Critical Incidences in Obstetric Anaesthesia',
+  'pocus-regional-anaesthesia-obstetrics': 'POCUS in Obstetrics',
+  'maternal-resuscitation': 'Maternal Resuscitation',
+};
+
 const RegistrationsManagementPage = () => {
   const [registrations, setRegistrations] = useState([]);
   const [filtered, setFiltered] = useState([]);
@@ -53,6 +63,7 @@ const RegistrationsManagementPage = () => {
   const [packageFilters, setPackageFilters] = useState([]);
   const [statusFilters, setStatusFilters] = useState([]);
   const [roleFilters, setRoleFilters] = useState([]);
+  const [workshopFilters, setWorkshopFilters] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState(null);
@@ -75,6 +86,20 @@ const RegistrationsManagementPage = () => {
     const labels = getPackageLabels(registration);
     return labels.length ? `Conference + ${labels.join(' + ')}` : 'Conference Only';
   };
+
+  const getWorkshopLabel = (workshopId) =>
+    WORKSHOP_LABELS[workshopId] || workshopId || '—';
+
+  const workshopFilterOptions = useMemo(() => {
+    const keys = new Set(Object.keys(WORKSHOP_LABELS));
+    registrations.forEach((reg) => {
+      if (reg?.selectedWorkshop) keys.add(reg.selectedWorkshop);
+    });
+    return Array.from(keys)
+      .filter(Boolean)
+      .map((key) => ({ key, label: getWorkshopLabel(key) }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [registrations]);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -104,10 +129,26 @@ const RegistrationsManagementPage = () => {
         const matchesRole =
           roleFilters.length === 0 ||
           roleFilters.includes(r.userId?.role);
-        return matchesSearch && matchesPackage && matchesStatus && matchesRole;
+        const matchesWorkshop =
+          workshopFilters.length === 0 ||
+          (r.selectedWorkshop && workshopFilters.includes(r.selectedWorkshop));
+        return (
+          matchesSearch &&
+          matchesPackage &&
+          matchesStatus &&
+          matchesRole &&
+          matchesWorkshop
+        );
       })
     );
-  }, [searchTerm, registrations, packageFilters, statusFilters, roleFilters]);
+  }, [
+    searchTerm,
+    registrations,
+    packageFilters,
+    statusFilters,
+    roleFilters,
+    workshopFilters,
+  ]);
 
   const fetchRegistrations = async () => {
     try {
@@ -145,6 +186,12 @@ const RegistrationsManagementPage = () => {
     );
   };
 
+  const toggleWorkshopFilter = (key) => {
+    setWorkshopFilters((prev) =>
+      prev.includes(key) ? prev.filter((x) => x !== key) : [...prev, key]
+    );
+  };
+
   const clearPackageFilters = () => {
     setPackageFilters([]);
   };
@@ -155,6 +202,10 @@ const RegistrationsManagementPage = () => {
 
   const clearRoleFilters = () => {
     setRoleFilters([]);
+  };
+
+  const clearWorkshopFilters = () => {
+    setWorkshopFilters([]);
   };
 
   const toggleSelectAll = () => {
@@ -612,6 +663,40 @@ const RegistrationsManagementPage = () => {
                 })}
               </div>
             </div>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-[11px] font-medium text-slate-600">
+                  Workshop filter
+                </p>
+                {workshopFilters.length > 0 && (
+                  <button
+                    onClick={clearWorkshopFilters}
+                    className="text-[11px] text-slate-500 hover:underline"
+                  >
+                    Clear filters
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {workshopFilterOptions.map((option) => {
+                  const isActive = workshopFilters.includes(option.key);
+                  return (
+                    <button
+                      key={option.key}
+                      type="button"
+                      onClick={() => toggleWorkshopFilter(option.key)}
+                      className={`px-2.5 py-1 text-[11px] rounded-full border ${
+                        isActive
+                          ? 'bg-[#005aa9] text-white border-[#005aa9]'
+                          : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
           <div className="flex flex-wrap gap-2">
             <button
@@ -657,6 +742,9 @@ const RegistrationsManagementPage = () => {
                   Package
                 </th>
                 <th className="px-3 py-2 text-left font-semibold text-slate-700">
+                  Workshop
+                </th>
+                <th className="px-3 py-2 text-left font-semibold text-slate-700">
                   Amount
                 </th>
                 <th className="px-3 py-2 text-left font-semibold text-slate-700">
@@ -694,6 +782,11 @@ const RegistrationsManagementPage = () => {
                   </td>
                   <td className="px-3 py-2 text-[11px] text-slate-700">
                     {getRegistrationLabel(reg)}
+                  </td>
+                  <td className="px-3 py-2 text-[11px] text-slate-700">
+                    {reg.selectedWorkshop
+                      ? getWorkshopLabel(reg.selectedWorkshop)
+                      : '—'}
                   </td>
                   <td className="px-3 py-2 font-mono text-[11px] text-slate-900">
                     ₹{reg.totalAmount?.toLocaleString()}
@@ -746,7 +839,7 @@ const RegistrationsManagementPage = () => {
               {filtered.length === 0 && (
                 <tr>
                   <td
-                    colSpan={8}
+                    colSpan={9}
                     className="px-3 py-6 text-center text-xs text-slate-500"
                   >
                     No registrations found
@@ -791,6 +884,14 @@ const RegistrationsManagementPage = () => {
                   <p className="text-[10px] text-slate-500">Package</p>
                   <p className="text-[11px] text-slate-800">
                     {getRegistrationLabel(reg)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-slate-500">Workshop</p>
+                  <p className="text-[11px] text-slate-800">
+                    {reg.selectedWorkshop
+                      ? getWorkshopLabel(reg.selectedWorkshop)
+                      : '—'}
                   </p>
                 </div>
                 <div>
@@ -931,6 +1032,12 @@ const RegistrationsManagementPage = () => {
                   <p className="text-[11px] text-slate-700">
                     Package:{' '}
                     {getRegistrationLabel(modalData.registration)}
+                  </p>
+                  <p className="text-[11px] text-slate-700">
+                    Workshop:{' '}
+                    {modalData.registration.selectedWorkshop
+                      ? getWorkshopLabel(modalData.registration.selectedWorkshop)
+                      : '—'}
                   </p>
                   <p className="text-[11px] text-slate-700">
                     Amount: ₹
