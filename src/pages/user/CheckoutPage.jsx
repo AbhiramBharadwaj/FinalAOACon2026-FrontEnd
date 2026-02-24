@@ -23,7 +23,7 @@ import LoadingSpinner from '../../components/common/LoadingSpinner';
 const WORKSHOP_DETAILS = {
   'labour-analgesia': { name: 'Labour Analgesia' },
   'critical-incidents': { name: 'Critical Incidents in Obstetric Anaesthesia' },
-  pocus: { name: 'POCUS in Obstetric Anaesthesia' },
+  pocus: { name: 'POCUS in Obstetrics' },
   'maternal-collapse': { name: 'Maternal Resuscitation ' },
 };
 

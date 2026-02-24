@@ -201,7 +201,7 @@ const committees = [
       //   members: [{ name: 'Dr Sandhya', designation: 'Course Lead', image: PLACEHOLDER_IMAGE }],
       // },
       // {
-      //   role: 'POCUS in Obstetric Anaesthesia (1 day)',
+      //   role: 'POCUS in Obstetrics (1 day)',
       //   members: [{ name: 'Dr Praveen Kumar', designation: 'Course Lead', image: PLACEHOLDER_IMAGE }],
       // },
       // {

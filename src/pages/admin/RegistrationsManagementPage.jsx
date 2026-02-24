@@ -48,7 +48,7 @@ const roleFilterOptions = [
 const WORKSHOP_LABELS = {
   'labour-analgesia': 'Labour Analgesia',
   'critical-incidents': 'Critical Incidents in Obstetric Anaesthesia',
-  pocus: 'POCUS in Obstetric Anaesthesia',
+  pocus: 'POCUS in Obstetrics',
   'maternal-collapse': 'Maternal Resuscitation',
   'critical-incidents-ob-anaesthesia': 'Critical Incidences in Obstetric Anaesthesia',
   'pocus-regional-anaesthesia-obstetrics': 'POCUS in Obstetrics',

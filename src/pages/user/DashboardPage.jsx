@@ -36,7 +36,7 @@ const DashboardPage = () => {
   const WORKSHOP_LABELS = {
     'labour-analgesia': 'Labour Analgesia',
     'critical-incidents': 'Critical Incidents in Obstetric Anaesthesia',
-    pocus: 'POCUS in Obstetric Anaesthesia',
+    pocus: 'POCUS in Obstetrics',
     'maternal-collapse': 'Maternal Resuscitation ',
   };
   const isAbstractOpen = false;
