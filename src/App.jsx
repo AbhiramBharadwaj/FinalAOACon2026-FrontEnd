@@ -233,6 +233,7 @@ function App() {
                   <ConferenceDaysPage />
                 </ProtectedRoute>
               } />
+              <Route path="/abstract" element={<Navigate to="/abstract/rules" replace />} />
               <Route path="/abstract/rules" element={
                 <ProtectedRoute>
                   <AbstractRulesPage />

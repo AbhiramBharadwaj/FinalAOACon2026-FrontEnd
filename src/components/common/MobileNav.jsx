@@ -45,7 +45,7 @@ const MobileNav = () => {
     { label: 'Program Schedule', path: '/conference-days', icon: Calendar },
     { label: 'Registration Details', path: '/register-details', icon: FileText },
     { label: 'Registration', path: '/register', icon: FileText },
-    { label: 'Abstract', path: '/abstract', icon: FileText },
+    { label: 'Abstract', path: '/abstract/rules', icon: FileText },
     { label: 'Download', download: true, icon: Download },
     { label: 'Contact', path: '/contact', icon: Phone },
     { label: 'Gallery', path: '/gallery', icon: Image },

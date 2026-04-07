@@ -39,7 +39,7 @@ const DashboardPage = () => {
     pocus: 'POCUS in Obstetrics',
     'maternal-collapse': 'Maternal Resuscitation ',
   };
-  const isAbstractOpen = false;
+  const isAbstractOpen = true;
 
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
