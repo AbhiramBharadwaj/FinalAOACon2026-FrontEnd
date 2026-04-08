@@ -23,16 +23,13 @@ export const PAYMENT_STATUS = {
 };
 
 export const ABSTRACT_CATEGORIES = [
-  { value: 'CLINICAL_RESEARCH', label: 'Clinical Research' },
-  { value: 'CASE_STUDY', label: 'Case Study' },
-  { value: 'REVIEW_ARTICLE', label: 'Review Article' },
   { value: 'ORIGINAL_RESEARCH', label: 'Original Research' },
-  { value: 'EPIDEMIOLOGICAL_STUDY', label: 'Epidemiological Study' },
-  { value: 'SURGICAL_TECHNIQUE', label: 'Surgical Technique' },
-  { value: 'DRUG_TRIAL', label: 'Drug Trial' },
-  { value: 'DIAGNOSTIC_METHOD', label: 'Diagnostic Method' },
-  { value: 'PREVENTIVE_CARE', label: 'Preventive Care' },
-  { value: 'HEALTHCARE_POLICY', label: 'Healthcare Policy' }
+  { value: 'CLINICAL_AUDIT_QUALITY_IMPROVEMENT', label: 'Clinical Audit / Quality Improvement' },
+  { value: 'CASE_REPORT_CASE_SERIES', label: 'Case Report / Case Series' },
+  { value: 'REVIEW_EDUCATIONAL_POSTER', label: 'Review / Educational Poster' },
+  { value: 'INNOVATIONS_IN_LABOUR_ANALGESIA_OBSTETRIC_ANAESTHESIA', label: 'Innovations in Labour Analgesia / Obstetric Anaesthesia' },
+  { value: 'PATIENT_SAFETY_IN_OBSTETRIC_ANAESTHESIA', label: 'Patient Safety in Obstetric Anaesthesia' },
+  { value: 'SIMULATION_TRAINING_INITIATIVES', label: 'Simulation / Training Initiatives' },
 ];
 
 export const ABSTRACT_STATUS = {
