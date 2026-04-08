@@ -110,8 +110,8 @@ const AbstractRulesPage = () => {
 
           <section className="rounded-2xl border border-slate-200 bg-white p-5 space-y-2">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">Abstract Structure</h2>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-md border border-slate-200 p-4 bg-slate-50">
+            <div className="grid gap-6 md:grid-cols-2 pt-2">
+              <div>
                 <h3 className="text-sm font-semibold text-slate-900 mb-2">Research Abstracts</h3>
                 <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
                   <li>Background</li>
@@ -120,7 +120,7 @@ const AbstractRulesPage = () => {
                   <li>Conclusion</li>
                 </ul>
               </div>
-              <div className="rounded-md border border-slate-200 p-4 bg-slate-50">
+              <div>
                 <h3 className="text-sm font-semibold text-slate-900 mb-2">Case Reports</h3>
                 <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
                   <li>Introduction</li>
