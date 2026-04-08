@@ -20,48 +20,56 @@ const AbstractRulesPage = () => {
       <Header />
 
       <div className="mx-auto max-w-5xl px-4 lg:px-6 py-6 lg:py-10 pb-20">
-        <div className="bg-white border border-slate-200 rounded-lg shadow-sm p-5 lg:p-8 space-y-6">
-          <div className="space-y-2">
-            <h1 className="text-lg lg:text-2xl font-semibold text-slate-900">
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+          <div className="border-b border-slate-200 bg-gradient-to-r from-[#0f3d7a] via-[#005aa9] to-[#0a7a86] px-5 py-6 lg:px-8 lg:py-8 text-white">
+            <div className="space-y-2">
+              <div className="inline-flex items-center rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/90">
+                AOACON 2026 • Shivamogga
+              </div>
+              <h1 className="text-xl lg:text-3xl font-bold tracking-tight">
               GUIDELINES FOR E-POSTER PRESENTATION
-            </h1>
-            <p className="text-sm text-slate-600">
-              ASSOCIATION OF OBSTETRIC ANAESTHESIOLOGISTS OF INDIA, ANNUAL CONFERENCE
-              (AOACON 2026, SHIVAMOGGA)
-            </p>
+              </h1>
+              <p className="text-sm lg:text-base text-white/85 max-w-3xl">
+                ASSOCIATION OF OBSTETRIC ANAESTHESIOLOGISTS OF INDIA, ANNUAL CONFERENCE
+                (AOACON 2026, SHIVAMOGGA)
+              </p>
+            </div>
           </div>
 
-          <section className="space-y-2">
+          <div className="p-5 lg:p-8 space-y-6">
+          <section className="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-5 space-y-3">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">Important Notes</h2>
-            <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
+            <ul className="list-disc pl-5 space-y-2 text-sm text-slate-700">
               <li>Please note that all paper presentations during the Annual AOA Conference are e-posters only.</li>
               <li>Top six e-posters will be selected for the podium presentation on Day 2 of the conference from 7:30 AM to 8:30 AM in the Main Hall.</li>
               <li>Please keep a 6-minute PowerPoint presentation ready for the podium round, followed by 2 minutes of questions from the judges.</li>
-              <li>During the podium presentation, only the presenter&apos;s name should appear. The name of the institute, guide, and similar identifiers must not be disclosed.</li>
+              <li><strong>During the podium presentation, only the presenter&apos;s name should appear. The name of the institute, guide, and similar identifiers must not be disclosed.</strong></li>
               <li>Please do not leave the hall after your presentation. A group photograph of all presenters with the judges will be taken.</li>
             </ul>
           </section>
 
-          <section className="space-y-2">
-            <h2 className="text-sm lg:text-base font-semibold text-slate-900">Important Dates</h2>
-            <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
-              <li>Last date for abstract submission: 10th October, 2026</li>
-              <li>Last date for final e-poster PDF submission by accepted authors: 15th October, 2026</li>
-            </ul>
-          </section>
+          <div className="grid gap-4 md:grid-cols-2">
+            <section className="rounded-2xl border border-rose-200 bg-rose-50 p-5 space-y-2">
+              <h2 className="text-sm lg:text-base font-semibold text-slate-900">Important Dates</h2>
+              <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
+                <li>Last date for abstract submission: <strong>10th October, 2026</strong></li>
+                <li>Last date for final e-poster PDF submission by accepted authors: <strong>15th October, 2026</strong></li>
+              </ul>
+            </section>
 
-          <section className="space-y-2">
-            <h2 className="text-sm lg:text-base font-semibold text-slate-900">Enquiries / Paper Related Queries</h2>
-            <div className="rounded-md border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700 flex items-center gap-3">
-              <Phone className="w-4 h-4 text-slate-900 flex-shrink-0" />
-              <div>
-                <div className="font-semibold text-slate-900">Dr. Swathi Hegde</div>
-                <div>Phone: 9986444568</div>
+            <section className="rounded-2xl border border-sky-200 bg-sky-50 p-5 space-y-2">
+              <h2 className="text-sm lg:text-base font-semibold text-slate-900">Enquiries / Paper Related Queries</h2>
+              <div className="rounded-xl border border-sky-200 bg-white p-3 text-sm text-slate-700 flex items-center gap-3">
+                <Phone className="w-4 h-4 text-slate-900 flex-shrink-0" />
+                <div>
+                  <div className="font-semibold text-slate-900">Dr. Swathi Hegde</div>
+                  <div>Phone: 9986444568</div>
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
+          </div>
 
-          <section className="space-y-2">
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 space-y-2">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">Eligibility</h2>
             <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
               <li>E-poster submissions are invited from anaesthesiologists, obstetric anaesthesiology trainees, postgraduate students, fellows, and researchers.</li>
@@ -70,7 +78,7 @@ const AbstractRulesPage = () => {
             </ul>
           </section>
 
-          <section className="space-y-2">
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 space-y-2">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">Categories for Submission</h2>
             <p className="text-sm text-slate-600">Authors may submit posters under the following categories:</p>
             <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
@@ -87,7 +95,7 @@ const AbstractRulesPage = () => {
             </p>
           </section>
 
-          <section className="space-y-2">
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 space-y-2">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">Abstract Submission Guidelines</h2>
             <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
               <li>Abstracts must be submitted through the conference website submission portal.</li>
@@ -100,7 +108,7 @@ const AbstractRulesPage = () => {
             </ul>
           </section>
 
-          <section className="space-y-2">
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 space-y-2">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">Abstract Structure</h2>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="rounded-md border border-slate-200 p-4 bg-slate-50">
@@ -109,7 +117,6 @@ const AbstractRulesPage = () => {
                   <li>Background</li>
                   <li>Methods</li>
                   <li>Results</li>
-                  <li>Discussion</li>
                   <li>Conclusion</li>
                 </ul>
               </div>
@@ -119,12 +126,13 @@ const AbstractRulesPage = () => {
                   <li>Introduction</li>
                   <li>Case description</li>
                   <li>Learning points</li>
+                  <li>Discussion</li>
                 </ul>
               </div>
             </div>
           </section>
 
-          <section className="space-y-2">
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 space-y-2">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">E-Poster Format Requirements</h2>
             <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
               <li>File format: PDF</li>
@@ -154,7 +162,7 @@ const AbstractRulesPage = () => {
             </div>
           </section>
 
-          <section className="space-y-2">
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 space-y-2">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">Recommended Poster Structure</h2>
             <ol className="list-decimal pl-5 space-y-1 text-sm text-slate-700">
               <li>Title and authors</li>
@@ -168,7 +176,7 @@ const AbstractRulesPage = () => {
             </ol>
           </section>
 
-          <section className="space-y-2">
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 space-y-2">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">Design Guidelines</h2>
             <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
               <li>Use clear headings and bullet points.</li>
@@ -178,16 +186,16 @@ const AbstractRulesPage = () => {
             </ul>
           </section>
 
-          <section className="space-y-2">
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 space-y-2">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">Submission of E-Poster</h2>
             <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
-              <li>Accepted authors must upload the final e-poster PDF before the deadline of 15th October, 2026.</li>
+              <li>Accepted authors must upload the final e-poster PDF before the deadline of <strong>15th October, 2026</strong>.</li>
               <li>Late submissions may not be included in the conference display.</li>
               <li>Posters will be displayed on digital screens during the conference.</li>
             </ul>
           </section>
 
-          <section className="space-y-2">
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 space-y-2">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">Presentation Format</h2>
             <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
               <li>Authors may be required to give a brief 3 to 5 minute presentation followed by 2 minutes of discussion during the moderated e-poster session.</li>
@@ -195,7 +203,7 @@ const AbstractRulesPage = () => {
             </ul>
           </section>
 
-          <section className="space-y-2">
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 space-y-2">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">Judging Criteria</h2>
             <p className="text-sm text-slate-600">E-posters will be evaluated by a panel of judges based on:</p>
             <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
@@ -208,23 +216,23 @@ const AbstractRulesPage = () => {
             </ul>
           </section>
 
-          <section className="space-y-2">
+          <section className="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50 p-5 space-y-3">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900 flex items-center gap-2">
               <Trophy className="w-4 h-4" />
               Awards
             </h2>
             <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
               <li>Top six e-posters will be selected for podium presentation on Day 2.</li>
-              <li>Every e-poster presenter should keep a 6-minute PowerPoint presentation ready. During the podium presentation, only the presenter&apos;s name should appear. The institute and guide details must not be disclosed.</li>
-              <li>1st Prize: Best Research / Audit Paper - Dr. Sunanda Gupta Gold Medal + complimentary conference registration for AOA 2027</li>
-              <li>2nd Prize: Cash Reward Rs. 8000/-</li>
-              <li>3rd Prize: Cash Reward Rs. 5000/-</li>
+              <li><strong>During the podium presentation, only the presenter&apos;s name should appear. The institute and guide details must not be disclosed.</strong></li>
+              <li><strong>1st Prize:</strong> Best Research / Audit Paper - Dr. Sunanda Gupta Gold Medal + complimentary conference registration for AOA 2027</li>
+              <li><strong>2nd Prize:</strong> Cash Reward Rs. 8000/-</li>
+              <li><strong>3rd Prize:</strong> Cash Reward Rs. 5000/-</li>
               <li>Best Case Report: Cash Reward Rs. 5000/-</li>
               <li>Awards will be announced and presented during the valedictory session of the conference.</li>
             </ul>
           </section>
 
-          <section className="space-y-2">
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 space-y-2">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">Ethical Requirements</h2>
             <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
               <li>Research involving human participants must have Institutional Ethics Committee approval.</li>
@@ -233,7 +241,7 @@ const AbstractRulesPage = () => {
             </ul>
           </section>
 
-          <section className="space-y-2">
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 space-y-2">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">Acknowledgement</h2>
             <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
               <li>By proceeding, you confirm that the submission follows the conference e-poster guidelines.</li>
@@ -265,6 +273,7 @@ const AbstractRulesPage = () => {
               Proceed to Upload
               <ArrowRight className="w-4 h-4" />
             </button>
+          </div>
           </div>
         </div>
       </div>
