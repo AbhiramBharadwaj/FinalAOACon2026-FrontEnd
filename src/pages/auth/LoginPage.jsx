@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, LogIn } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { authAPI } from '../../utils/api';
@@ -19,6 +19,7 @@ const LoginPage = () => {
 
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleChange = (e) => {
     setFormData({
@@ -36,10 +37,13 @@ const LoginPage = () => {
     try {
       const response = await authAPI.login(formData);
       const { token, user } = response.data;
+      const redirectTo = location.state?.from;
 
       login(token, user);
       if (user?.isProfileComplete === false) {
         navigate('/profile');
+      } else if (redirectTo) {
+        navigate(redirectTo);
       } else {
         navigate('/dashboard');
       }

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Upload, ArrowRight, Phone, Trophy } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import ePosterTemplate from '../../files/E-Poster-Template.pptx';
@@ -8,10 +9,20 @@ import ePosterTemplate from '../../files/E-Poster-Template.pptx';
 const AbstractRulesPage = () => {
   const [acceptedRules, setAcceptedRules] = useState(false);
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   const handleProceed = () => {
     if (acceptedRules) {
-      navigate('/abstract/upload');
+      if (isAuthenticated) {
+        navigate('/abstract/upload');
+        return;
+      }
+
+      navigate('/login', {
+        state: {
+          from: '/abstract/upload',
+        },
+      });
     }
   };
 

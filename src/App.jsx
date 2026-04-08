@@ -234,11 +234,7 @@ function App() {
                 </ProtectedRoute>
               } />
               <Route path="/abstract" element={<Navigate to="/abstract/rules" replace />} />
-              <Route path="/abstract/rules" element={
-                <ProtectedRoute>
-                  <AbstractRulesPage />
-                </ProtectedRoute>
-              } />
+              <Route path="/abstract/rules" element={<AbstractRulesPage />} />
               <Route path="/abstract/upload" element={
                 <ProtectedRoute>
                   <AbstractUploadPage />
