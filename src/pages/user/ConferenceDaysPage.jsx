@@ -20,7 +20,7 @@ const ConferenceDaysPage = () => {
             <Calendar className="w-7 h-7 text-[#9c3253]" />
           </div>
           <h1 className="mt-4 text-2xl lg:text-3xl font-semibold text-slate-900">
-            Program Schedule
+            Scientific program
           </h1>
           <p className="mt-2 text-sm lg:text-base text-slate-600">
             Coming soon. We’ll share the full agenda closer to the conference dates.
