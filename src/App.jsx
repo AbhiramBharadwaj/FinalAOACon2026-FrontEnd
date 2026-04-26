@@ -228,11 +228,7 @@ function App() {
                   <AccommodationCheckoutPage />
                 </ProtectedRoute>
               } />
-              <Route path="/conference-days" element={
-                <ProtectedRoute>
-                  <ConferenceDaysPage />
-                </ProtectedRoute>
-              } />
+              <Route path="/conference-days" element={<ConferenceDaysPage />} />
               <Route path="/abstract" element={<Navigate to="/abstract/rules" replace />} />
               <Route path="/abstract/rules" element={<AbstractRulesPage />} />
               <Route path="/abstract/upload" element={
