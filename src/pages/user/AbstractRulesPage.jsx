@@ -115,7 +115,7 @@ const AbstractRulesPage = () => {
               <li>Authors: full names with institutional affiliations.</li>
               <li>The presenting author should be clearly indicated.</li>
               <li>Do not include tables or images in the abstract.</li>
-              <li>Abstract file format: MS Word (.doc or .docx).</li>
+              <li>Abstract file format: PDF or MS Word (.pdf, .doc, or .docx).</li>
             </ul>
           </section>
 

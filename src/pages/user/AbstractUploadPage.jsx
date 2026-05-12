@@ -65,15 +65,16 @@ const AbstractUploadPage = () => {
     if (!file) return;
 
     const allowedMimeTypes = new Set([
+      'application/pdf',
       'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     ]);
-    const allowedExtensions = new Set(['doc', 'docx']);
+    const allowedExtensions = new Set(['pdf', 'doc', 'docx']);
     const fileExtension = file.name.split('.').pop()?.toLowerCase();
     const isAllowedType = allowedMimeTypes.has(file.type) || allowedExtensions.has(fileExtension);
 
     if (!isAllowedType) {
-      setErrors(prev => ({ ...prev, file: 'Please upload an MS Word file (.doc or .docx)' }));
+      setErrors(prev => ({ ...prev, file: 'Please upload a PDF or MS Word file (.pdf, .doc, or .docx)' }));
       return;
     }
 
@@ -484,14 +485,14 @@ const AbstractUploadPage = () => {
                           id="abstract-file"
                           name="abstract-file"
                           type="file"
-                          accept=".doc,.docx"
+                          accept=".pdf,.doc,.docx"
                           onChange={(e) => handleFileChange(e.target.files[0])}
                           className="sr-only"
                         />
                       </label>
                       <p className="text-slate-500 mt-2 text-sm">or drag & drop</p>
                     </div>
-                    <p className="text-sm text-slate-500 mt-2">Max 10MB • .doc or .docx only</p>
+                    <p className="text-sm text-slate-500 mt-2">Max 10MB • .pdf, .doc, or .docx only</p>
                   </>
                 )}
               </div>
