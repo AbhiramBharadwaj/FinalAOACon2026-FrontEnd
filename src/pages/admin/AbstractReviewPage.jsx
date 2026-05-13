@@ -130,12 +130,13 @@ const AbstractReviewPage = () => {
 
   const exportToCSV = () => {
     const headers = [
-      'Submission Number', 'Title', 'Authors', 'Category', 'Submitter Name',
+      'Submission Number', 'Registration Number', 'Title', 'Authors', 'Category', 'Submitter Name',
       'Submitter Email', 'Status', 'Submission Date', 'Review Comments'
     ];
 
     const csvData = filteredAbstracts.map(abstract => [
       abstract.submissionNumber,
+      abstract.registration?.registrationNumber || '',
       abstract.title,
       abstract.authors,
       getCategoryLabel(abstract.category),
@@ -407,6 +408,12 @@ const AbstractReviewPage = () => {
                         <span className="font-medium">{selectedAbstract.submissionNumber}</span>
                       </div>
                       <div className="flex justify-between">
+                        <span className="text-slate-600">Registration #</span>
+                        <span className="font-medium">
+                          {selectedAbstract.registration?.registrationNumber || 'Not available'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
                         <span className="text-slate-600">Category</span>
                         <span className="font-medium">{getCategoryLabel(selectedAbstract.category)}</span>
                       </div>
@@ -433,7 +440,9 @@ const AbstractReviewPage = () => {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-600">Email</span>
-                        <span className="font-medium truncate max-w-[200px]">{selectedAbstract.userId?.email}</span>
+                        <span className="font-medium max-w-[280px] text-right break-all">
+                          {selectedAbstract.userId?.email || 'Not available'}
+                        </span>
                       </div>
                     </div>
                   </div>
