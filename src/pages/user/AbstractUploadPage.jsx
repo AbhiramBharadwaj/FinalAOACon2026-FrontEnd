@@ -31,15 +31,26 @@ const AbstractUploadPage = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState('');
   const [dragActive, setDragActive] = useState(false);
   
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { setAbstract } = useApp();
   const navigate = useNavigate();
 
   useEffect(() => {
     checkExistingAbstract();
   }, []);
+
+  useEffect(() => {
+    if (existingAbstract?.status === 'REJECTED') {
+      setFormData({
+        title: existingAbstract.title || '',
+        authors: existingAbstract.authors || '',
+        category: existingAbstract.category || ''
+      });
+    }
+  }, [existingAbstract]);
 
   const checkExistingAbstract = async () => {
     try {
@@ -122,7 +133,7 @@ const AbstractUploadPage = () => {
       newErrors.category = 'Category is required';
     }
 
-    if (!abstractFile && !existingAbstract) {
+    if (!abstractFile) {
       newErrors.file = 'Abstract file is required';
     }
 
@@ -132,10 +143,18 @@ const AbstractUploadPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (existingAbstract && existingAbstract.status !== 'REJECTED') {
+      setErrors({
+        general: 'You have already submitted an abstract. You can resubmit only after rejection.'
+      });
+      return;
+    }
     
     if (!validateForm()) return;
 
     setSubmitting(true);
+    setSuccessMessage('');
 
     try {
       const submitData = new FormData();
@@ -149,12 +168,10 @@ const AbstractUploadPage = () => {
 
       const response = await abstractAPI.submit(submitData);
       setAbstract(response.data.abstract);
-      
-      navigate('/dashboard', { 
-        state: { 
-          message: 'Abstract submitted successfully! You will be notified about the review status.' 
-        }
-      });
+      setExistingAbstract(response.data.abstract);
+      setAbstractFile(null);
+      setErrors({});
+      setSuccessMessage('Abstract submitted successfully. You will receive updates by email once it is approved or rejected.');
     } catch (error) {
       setErrors({ 
         general: error.response?.data?.message || 'Failed to submit abstract. Please try again.' 
@@ -169,6 +186,10 @@ const AbstractUploadPage = () => {
     setErrors(prev => ({ ...prev, file: '' }));
   };
 
+  const handleBackNavigation = () => {
+    navigate(isAuthenticated ? '/dashboard' : '/abstract/rules');
+  };
+
   const getStatusColor = (status) => {
     const colors = {
       PENDING: 'bg-[#ff8a1f]/20 text-[#ff8a1f] border-[#ff8a1f]/30',
@@ -177,6 +198,9 @@ const AbstractUploadPage = () => {
     };
     return colors[status] || 'bg-slate-500/20 text-slate-500 border-slate-400/30';
   };
+
+  const submissionHistory = [...(existingAbstract?.submissionHistory || [])]
+    .sort((a, b) => (b.attemptNumber || 0) - (a.attemptNumber || 0));
 
   if (loading) {
     return (
@@ -191,7 +215,9 @@ const AbstractUploadPage = () => {
     );
   }
 
-  if (existingAbstract) {
+  const isRejectedAbstract = existingAbstract?.status === 'REJECTED';
+
+  if (existingAbstract && !isRejectedAbstract) {
     return (
       <div className="min-h-screen bg-cover bg-center bg-no-repeat relative"
         style={{
@@ -202,9 +228,15 @@ const AbstractUploadPage = () => {
         <Header />
         
         <div className="relative z-10 max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 space-y-4 pb-20">
+          {successMessage && (
+            <div className="p-3 border border-emerald-300/60 bg-emerald-50 text-emerald-700 text-sm rounded-xl">
+              {successMessage}
+            </div>
+          )}
+
           <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-xl px-4 py-3 flex items-center mb-4">
             <button
-              onClick={() => navigate('/abstract/rules')}
+              onClick={handleBackNavigation}
               className="p-2 text-slate-200 hover:text-white rounded-lg hover:bg-slate-100/50 transition-colors -m-2"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -278,6 +310,37 @@ const AbstractUploadPage = () => {
                   </div>
                 </div>
               )}
+
+              {submissionHistory.length > 0 && (
+                <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-xl p-4 lg:p-6">
+                  <h3 className="text-sm font-semibold text-slate-900 mb-3">Submission History</h3>
+                  <div className="space-y-3">
+                    {submissionHistory.map((attempt) => (
+                      <div key={`attempt-${attempt.attemptNumber}-${attempt.submittedAt}`} className="p-3 border border-slate-200 rounded-lg bg-slate-50/70">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-xs font-semibold text-slate-900">
+                            Attempt #{attempt.attemptNumber || '-'}
+                          </p>
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${getStatusColor(attempt.finalStatus || 'PENDING')}`}>
+                            {attempt.finalStatus || 'PENDING'}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-600 mt-1">
+                          {attempt.title}
+                        </p>
+                        <p className="text-[11px] text-slate-500 mt-1">
+                          Submitted: {attempt.submittedAt ? new Date(attempt.submittedAt).toLocaleString('en-IN') : '-'}
+                        </p>
+                        {attempt.reviewComments && (
+                          <p className="text-[11px] text-amber-700 mt-1">
+                            Review: {attempt.reviewComments}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </section>
 
             <section className="lg:col-span-1 lg:sticky lg:top-4 space-y-4">
@@ -339,7 +402,7 @@ const AbstractUploadPage = () => {
       <div className="relative z-10 max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 space-y-4 pb-20">
         <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-xl px-4 py-3 flex items-center mb-4">
           <button
-            onClick={() => navigate('/abstract/rules')}
+            onClick={handleBackNavigation}
             className="p-2 text-slate-200 hover:text-white rounded-lg hover:bg-slate-100/50 transition-colors -m-2"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -353,6 +416,52 @@ const AbstractUploadPage = () => {
         {errors.general && (
           <div className="p-3 border border-red-400/50 bg-red-500/10 text-red-500 text-sm rounded-xl backdrop-blur-sm">
             {errors.general}
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="p-3 border border-emerald-300/60 bg-emerald-50 text-emerald-700 text-sm rounded-xl">
+            {successMessage}
+          </div>
+        )}
+
+        {isRejectedAbstract && (
+          <div className="p-4 border border-red-300/60 bg-red-50 text-red-700 rounded-xl">
+            <p className="font-semibold text-sm">Your previous abstract was rejected. Please submit a revised abstract.</p>
+            {existingAbstract?.reviewComments && (
+              <p className="text-sm mt-2">
+                Reason for rejection: {existingAbstract.reviewComments}
+              </p>
+            )}
+          </div>
+        )}
+
+        {isRejectedAbstract && submissionHistory.length > 0 && (
+          <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-xl p-4 lg:p-6">
+            <h3 className="text-sm font-semibold text-slate-900 mb-3">Submission History</h3>
+            <div className="space-y-3">
+              {submissionHistory.map((attempt) => (
+                <div key={`attempt-form-${attempt.attemptNumber}-${attempt.submittedAt}`} className="p-3 border border-slate-200 rounded-lg bg-slate-50/70">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-xs font-semibold text-slate-900">
+                      Attempt #{attempt.attemptNumber || '-'}
+                    </p>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${getStatusColor(attempt.finalStatus || 'PENDING')}`}>
+                      {attempt.finalStatus || 'PENDING'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 mt-1">{attempt.title}</p>
+                  <p className="text-[11px] text-slate-500 mt-1">
+                    Submitted: {attempt.submittedAt ? new Date(attempt.submittedAt).toLocaleString('en-IN') : '-'}
+                  </p>
+                  {attempt.reviewComments && (
+                    <p className="text-[11px] text-amber-700 mt-1">
+                      Review: {attempt.reviewComments}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
@@ -513,7 +622,7 @@ const AbstractUploadPage = () => {
                 ) : (
                   <>
                     <Upload className="w-4 h-4" />
-                    Submit E-Poster Abstract
+                    {isRejectedAbstract ? 'Resubmit E-Poster Abstract' : 'Submit E-Poster Abstract'}
                   </>
                 )}
               </button>

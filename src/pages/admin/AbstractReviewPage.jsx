@@ -98,6 +98,21 @@ const AbstractReviewPage = () => {
     return categoryObj ? categoryObj.label : category;
   };
 
+  const getSubmissionHistory = (abstract) =>
+    [...(abstract?.submissionHistory || [])].sort(
+      (a, b) => (b.attemptNumber || 0) - (a.attemptNumber || 0)
+    );
+
+  const getCurrentAttemptNumber = (abstract) => {
+    const latestAttempt = getSubmissionHistory(abstract)[0];
+    return latestAttempt?.attemptNumber || 1;
+  };
+
+  const getLatestSubmittedAt = (abstract) => {
+    const latestAttempt = getSubmissionHistory(abstract)[0];
+    return latestAttempt?.submittedAt || abstract?.createdAt;
+  };
+
   const handleReview = (abstract) => {
     setSelectedAbstract(abstract);
     setReviewData({
@@ -131,7 +146,7 @@ const AbstractReviewPage = () => {
   const exportToCSV = () => {
     const headers = [
       'Submission Number', 'Registration Number', 'Title', 'Authors', 'Category', 'Submitter Name',
-      'Submitter Email', 'Status', 'Submission Date', 'Review Comments'
+      'Submitter Email', 'Attempt Number', 'Status', 'Submission Date', 'Review Comments'
     ];
 
     const csvData = filteredAbstracts.map(abstract => [
@@ -142,8 +157,9 @@ const AbstractReviewPage = () => {
       getCategoryLabel(abstract.category),
       abstract.userId?.name,
       abstract.userId?.email,
+      getCurrentAttemptNumber(abstract),
       abstract.status,
-      new Date(abstract.createdAt).toLocaleDateString(),
+      new Date(getLatestSubmittedAt(abstract)).toLocaleDateString(),
       abstract.reviewComments || ''
     ]);
 
@@ -296,7 +312,7 @@ const AbstractReviewPage = () => {
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs mb-2">
                       <div>
-                        <span className="text-slate-500">#{abstract.submissionNumber}</span>
+                        <span className="text-slate-500">#{abstract.submissionNumber} • Attempt {getCurrentAttemptNumber(abstract)}</span>
                       </div>
                       <div className="text-right">
                         <span className="font-medium">{getCategoryLabel(abstract.category)}</span>
@@ -304,7 +320,7 @@ const AbstractReviewPage = () => {
                     </div>
                     <div className="flex items-center justify-between text-xs mb-2">
                       <span className="text-slate-500">{abstract.userId?.name}</span>
-                      <span className="text-slate-500">{new Date(abstract.createdAt).toLocaleDateString()}</span>
+                      <span className="text-slate-500">{new Date(getLatestSubmittedAt(abstract)).toLocaleDateString()}</span>
                     </div>
                     <button
                       onClick={() => handleReview(abstract)}
@@ -336,6 +352,7 @@ const AbstractReviewPage = () => {
                       <tr key={abstract._id} className="hover:bg-slate-50/50">
                         <td className="px-4 py-3 whitespace-nowrap">
                           <div className="text-xs font-medium text-slate-900">{abstract.submissionNumber}</div>
+                          <div className="text-[10px] text-slate-500">Attempt {getCurrentAttemptNumber(abstract)}</div>
                         </td>
                         <td className="px-4 py-3">
                           <div className="text-xs font-medium text-slate-900 line-clamp-2 max-w-[300px]">{abstract.title}</div>
@@ -350,7 +367,7 @@ const AbstractReviewPage = () => {
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">{getStatusBadge(abstract.status)}</td>
                         <td className="px-4 py-3 whitespace-nowrap text-xs text-slate-600">
-                          {new Date(abstract.createdAt).toLocaleDateString()}
+                          {new Date(getLatestSubmittedAt(abstract)).toLocaleDateString()}
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
                           <button
@@ -408,6 +425,10 @@ const AbstractReviewPage = () => {
                         <span className="font-medium">{selectedAbstract.submissionNumber}</span>
                       </div>
                       <div className="flex justify-between">
+                        <span className="text-slate-600">Attempt #</span>
+                        <span className="font-medium">{getCurrentAttemptNumber(selectedAbstract)}</span>
+                      </div>
+                      <div className="flex justify-between">
                         <span className="text-slate-600">Registration #</span>
                         <span className="font-medium">
                           {selectedAbstract.registration?.registrationNumber || 'Not available'}
@@ -423,7 +444,7 @@ const AbstractReviewPage = () => {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-600">Submitted</span>
-                        <span>{new Date(selectedAbstract.createdAt).toLocaleDateString()}</span>
+                        <span>{new Date(getLatestSubmittedAt(selectedAbstract)).toLocaleDateString()}</span>
                       </div>
                     </div>
                   </div>
@@ -545,6 +566,29 @@ const AbstractReviewPage = () => {
                           Reviewed: {new Date(selectedAbstract.reviewedAt).toLocaleString()}
                         </p>
                       )}
+                    </div>
+                  )}
+
+                  {getSubmissionHistory(selectedAbstract).length > 0 && (
+                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                      <h4 className="font-medium text-slate-900 mb-3 text-[13px]">Submission History</h4>
+                      <div className="space-y-2">
+                        {getSubmissionHistory(selectedAbstract).map((attempt) => (
+                          <div key={`attempt-${attempt.attemptNumber}-${attempt.submittedAt}`} className="p-3 bg-white rounded-lg border border-slate-200">
+                            <div className="flex items-center justify-between gap-2">
+                              <p className="text-xs font-semibold text-slate-900">Attempt #{attempt.attemptNumber || '-'}</p>
+                              {getStatusBadge(attempt.finalStatus || 'PENDING')}
+                            </div>
+                            <p className="text-[11px] text-slate-600 mt-1 line-clamp-2">{attempt.title}</p>
+                            <p className="text-[11px] text-slate-500 mt-1">
+                              Submitted: {attempt.submittedAt ? new Date(attempt.submittedAt).toLocaleString() : '-'}
+                            </p>
+                            {attempt.reviewComments && (
+                              <p className="text-[11px] text-amber-700 mt-1">Review: {attempt.reviewComments}</p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
