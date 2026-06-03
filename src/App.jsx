@@ -41,6 +41,8 @@ import LoadingSpinner from './components/common/LoadingSpinner';
 import QrScanner from './pages/admin/QrScanner';
 import AttendanceManagementPage from './pages/admin/AttendanceManagement';
 import OfficeBearersPage from './pages/user/OfficeBearersPage';
+import MaintenancePage from './pages/MaintenancePage';
+import { siteMode } from './config/siteMode';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -130,6 +132,10 @@ const ScrollToTop = () => {
 };
 
 function App() {
+  if (siteMode.maintenance) {
+    return <MaintenancePage />;
+  }
+
   return (
     <AuthProvider>
       <AppProvider>
