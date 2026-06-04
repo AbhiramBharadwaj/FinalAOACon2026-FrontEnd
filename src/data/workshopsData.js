@@ -10,7 +10,7 @@ export const WORKSHOPS = [
   },
   {
     slug: 'critical-incidents-ob-anaesthesia',
-    name: 'Critical Incidences in Obstetric Anaesthesia',
+    name: 'Critical Incidents in Obstetric Anaesthesia',
     mentor: 'Dr Sunanda Gupta',
     coordinators: ['Dr Manokanth Madapu', 'Dr Anjeleena Gupta', 'Dr Gita Nath'],
     accent: 'from-[#8b5cf6] to-[#ec4899]',

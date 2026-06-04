@@ -50,7 +50,7 @@ const WORKSHOP_LABELS = {
   'critical-incidents': 'Critical Incidents in Obstetric Anaesthesia',
   pocus: 'POCUS in Obstetrics',
   'maternal-collapse': 'Maternal Resuscitation',
-  'critical-incidents-ob-anaesthesia': 'Critical Incidences in Obstetric Anaesthesia',
+  'critical-incidents-ob-anaesthesia': 'Critical Incidents in Obstetric Anaesthesia',
   'pocus-regional-anaesthesia-obstetrics': 'POCUS in Obstetrics',
   'maternal-resuscitation': 'Maternal Resuscitation',
 };
