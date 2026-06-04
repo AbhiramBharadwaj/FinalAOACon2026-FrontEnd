@@ -63,7 +63,7 @@ const PROGRAM_HALLS = [
       {
         id: 'hall-c-day-1',
         dayLabel: 'Day 1',
-        displayDate: 'Friday, 30-10-2026',
+        displayDate: 'Saturday, 31-10-2026',
         images: [{ src: hallCDay1, alt: 'Hall C Day 1 scientific program flyer' }],
       },
     ],
