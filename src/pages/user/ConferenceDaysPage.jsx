@@ -15,7 +15,7 @@ const PROGRAM_HALLS = [
     id: 'hall-a',
     name: 'Hall A',
     accent: 'from-[#9a6d1f] via-[#d5a63f] to-[#f0d38b]',
-    summary: 'Day-wise scientific program flyers for Hall A.',
+    summary: 'Day-wise scientific programme for Hall A.',
     days: [
       {
         id: 'hall-a-day-1',
@@ -38,7 +38,7 @@ const PROGRAM_HALLS = [
     id: 'hall-b',
     name: 'Hall B',
     accent: 'from-[#7b2f46] via-[#b24462] to-[#e49b6c]',
-    summary: 'Day-wise scientific program flyers for Hall B.',
+    summary: 'Day-wise scientific programme for Hall B.',
     days: [
       {
         id: 'hall-b-day-1',
@@ -58,7 +58,7 @@ const PROGRAM_HALLS = [
     id: 'hall-c',
     name: 'Hall C',
     accent: 'from-[#334155] via-[#475569] to-[#94a3b8]',
-    summary: 'Day-wise scientific program flyers for Hall C.',
+    summary: 'Day-wise scientific programme for Hall C.',
     days: [
       {
         id: 'hall-c-day-1',
