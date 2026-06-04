@@ -12,7 +12,7 @@ import ashwiniImg from '../../images/OrganizingComittee/Ashwini.png';
 const targetDate = new Date('2026-10-30T09:00:00+05:30');
 const workshopPreviewCards = [
   { title: 'Labour Analgesia', accent: 'border-t-4 border-t-amber-400' },
-  { title: 'Critical Incidences in Obstetric Anaesthesia', accent: 'border-t-4 border-t-rose-400' },
+  { title: 'Critical Incidents in Obstetric Anaesthesia', accent: 'border-t-4 border-t-rose-400' },
   { title: 'POCUS in Obstetrics', accent: 'border-t-4 border-t-sky-400' },
   { title: 'Maternal Resuscitation', accent: 'border-t-4 border-t-emerald-400' },
 ];
