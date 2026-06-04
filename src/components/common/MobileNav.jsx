@@ -41,6 +41,7 @@ const MobileNav = () => {
     // { label: 'National Faculty', path: '/faculty/national', icon: Users },
     // { label: 'International Faculty', path: '/faculty/international', icon: Users },
     { label: 'Venue', path: '/venue', icon: MapPin },
+    { label: 'Scientific Program', path: '/conference-days', icon: Calendar },
     { label: 'Workshops', path: '/workshops', icon: Stethoscope },
     { label: 'Registration Details', path: '/register-details', icon: FileText },
     { label: 'Registration', path: '/register', icon: FileText },
