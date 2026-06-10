@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Upload, ArrowRight, Phone, Trophy } from 'lucide-react';
+import { Upload, ArrowRight, Phone, Trophy, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import ePosterTemplate from '../../files/E-Poster-Template.pptx';
+import abstractAnnouncementImage from '../../images/Abstract/abstract-announcement.jpeg';
 
 const AbstractRulesPage = () => {
   const [acceptedRules, setAcceptedRules] = useState(false);
+  const [showAnnouncement, setShowAnnouncement] = useState(true);
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
@@ -26,9 +28,43 @@ const AbstractRulesPage = () => {
     }
   };
 
+  const announcementModal = showAnnouncement ? (
+    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-slate-950/45 px-3 py-6 backdrop-blur-md sm:px-6">
+      <div
+        className="absolute inset-0"
+        onClick={() => setShowAnnouncement(false)}
+        aria-hidden="true"
+      />
+
+      <div className="relative z-[81] max-h-full w-full max-w-3xl overflow-hidden border border-white/25 bg-white shadow-[0_24px_80px_rgba(15,23,42,0.35)]">
+        <div className="sticky top-0 z-10 flex items-center justify-end border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur-sm sm:px-6">
+          <button
+            type="button"
+            onClick={() => setShowAnnouncement(false)}
+            className="inline-flex items-center gap-2 border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+          >
+            <X className="h-4 w-4" />
+            Cancel
+          </button>
+        </div>
+
+        <div className="max-h-[calc(100vh-7rem)] overflow-y-auto bg-[#f6f1e8] p-3 sm:p-5">
+          <figure className="overflow-hidden border border-[#ded2bd] bg-white p-2 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
+            <img
+              src={abstractAnnouncementImage}
+              alt="Abstract submission announcement"
+              className="w-full object-contain"
+            />
+          </figure>
+        </div>
+      </div>
+    </div>
+  ) : null;
+
   return (
     <div className="min-h-screen bg-slate-50">
       <Header />
+      {announcementModal}
 
       <div className="mx-auto max-w-5xl px-4 lg:px-6 py-6 lg:py-10 pb-20">
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
