@@ -46,6 +46,7 @@ const NAV_ITEMS = [
       { label: 'Workshops', path: '/workshops', icon: Stethoscope },
       { label: 'AOA Certified Course', path: '/workshops/aoa-certificate-course', icon: Award },
       { label: 'Abstract', path: '/abstract/rules', icon: FileText },
+      { label: 'Award Video Competition', path: '/video/rules', icon: Award },
       { label: 'Contact', path: '/contact', icon: User },
       { label: 'Gallery', path: '/gallery', icon: Image },
     ],

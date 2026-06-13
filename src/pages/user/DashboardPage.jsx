@@ -6,6 +6,7 @@ import {
   Mail,
   Award,
   CheckCircle,
+  AlertCircle,
   Clock,
   ArrowLeft,
   Hotel,
@@ -17,6 +18,7 @@ import {
   Download,
   Star,
   Plus,
+  Video,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
@@ -27,6 +29,7 @@ import {
   feedbackAPI,
   API_BASE_URL,
   userAPI,
+  videoAPI,
 } from '../../utils/api';
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
@@ -40,12 +43,14 @@ const DashboardPage = () => {
     'maternal-collapse': 'Maternal Resuscitation ',
   };
   const isAbstractOpen = true;
+  const isVideoCompetitionOpen = true;
 
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     registration: null,
     accommodations: [],
     abstract: null,
+    videoSubmission: null,
     feedback: null,
   });
   const [profile, setProfile] = useState(null);
@@ -56,6 +61,7 @@ const DashboardPage = () => {
     setRegistration,
     setAccommodationBookings,
     setAbstract,
+    setVideoSubmission,
     setFeedback,
   } = useApp();
   const navigate = useNavigate();
@@ -65,6 +71,7 @@ const DashboardPage = () => {
     { key: 'registration', label: 'Registration', short: 'Reg' },
     { key: 'accommodation', label: 'Accommodation', short: 'Stay' },
     { key: 'abstract', label: 'Abstract', short: 'Abs' },
+    { key: 'video', label: 'Video', short: 'Vid' },
     { key: 'feedback', label: 'Feedback', short: 'Fb' },
   ];
 
@@ -131,8 +138,40 @@ const DashboardPage = () => {
     );
   };
 
+  const getReviewStatusBadge = (status) => {
+    const map = {
+      PENDING: {
+        color: 'bg-[#ff8a1f]/20 text-[#ff8a1f] border border-[#ff8a1f]/30',
+        icon: Clock,
+      },
+      APPROVED: {
+        color: 'bg-[#7cb342]/20 text-[#7cb342] border border-[#7cb342]/30',
+        icon: CheckCircle,
+      },
+      REJECTED: {
+        color: 'bg-red-500/20 text-red-500 border border-red-400/30',
+        icon: AlertCircle,
+      },
+    };
+    const badge = map[status] || { color: 'bg-slate-500/20 text-slate-500 border border-slate-400/30', icon: Clock };
+    const Icon = badge.icon;
+    return (
+      <span className={`inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-[10px] font-medium ${badge.color}`}>
+        <Icon className="w-3 h-3" />
+        {status}
+      </span>
+    );
+  };
+
   const abstractFileUrl = stats.abstract?.filePath
     ? `${API_BASE_URL}/${stats.abstract.filePath}`
+    : null;
+  const getAssetUrl = (filePath) => {
+    if (!filePath) return null;
+    return /^https?:\/\//i.test(filePath) ? filePath : `${API_BASE_URL}/${filePath}`;
+  };
+  const videoSubmissionUrl = stats.videoSubmission?.filePath
+    ? getAssetUrl(stats.videoSubmission.filePath)
     : null;
   const profileRole = profile?.role || user?.role;
   const isProfileComplete = !!profile?.isProfileComplete;
@@ -141,6 +180,7 @@ const DashboardPage = () => {
     registration: !!stats.registration,
     accommodation: stats.accommodations.length > 0,
     abstract: !!stats.abstract,
+    video: !!stats.videoSubmission,
     feedback: !!stats.feedback,
   };
   const completedCount = steps.reduce(
@@ -183,6 +223,12 @@ const DashboardPage = () => {
         const abstractResponse = await abstractAPI.getMyAbstract();
         setStats((prev) => ({ ...prev, abstract: abstractResponse.data }));
         setAbstract(abstractResponse.data);
+      } catch {}
+
+      try {
+        const videoResponse = await videoAPI.getMyVideo();
+        setStats((prev) => ({ ...prev, videoSubmission: videoResponse.data }));
+        setVideoSubmission(videoResponse.data);
       } catch {}
 
       try {
@@ -308,7 +354,7 @@ const DashboardPage = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
           {!stats.registration && (
             <button
               onClick={() => navigate('/registration')}
@@ -338,6 +384,17 @@ const DashboardPage = () => {
             <p className="font-semibold text-slate-900">Abstract</p>
             <p className="text-[11px] text-slate-600">
               {isAbstractOpen ? 'Submit' : 'Coming soon'}
+            </p>
+          </button>
+          <button
+            onClick={() => navigate('/video/rules')}
+            disabled={!isProfileComplete || !isVideoCompetitionOpen}
+            className="group bg-white/90 backdrop-blur-xl border border-[#5a189a]/30 rounded-2xl px-3 py-3 text-center text-xs sm:text-sm hover:border-[#5a189a]/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Video className="w-5 h-5 mx-auto mb-2 text-[#5a189a] group-hover:scale-110 transition-transform" />
+            <p className="font-semibold text-slate-900">Award Video</p>
+            <p className="text-[11px] text-slate-600">
+              {isVideoCompetitionOpen ? 'Upload' : 'Coming soon'}
             </p>
           </button>
           <button
@@ -665,7 +722,21 @@ const DashboardPage = () => {
                     </div>
                   </div>
                 )}
-                {!stats.registration && !stats.accommodations.length && !stats.abstract && (
+                {stats.videoSubmission && (
+                  <div className="flex items-center rounded-xl bg-[#5a189a]/5 px-3 py-3 border border-[#5a189a]/20">
+                    <Video className="w-4 h-4 text-[#5a189a] mr-3 flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="font-medium text-slate-900 truncate">
+                        {stats.videoSubmission.title}
+                      </p>
+                      <p className="text-[11px] text-slate-600/80">
+                        {stats.videoSubmission.status} •{' '}
+                        {new Date(stats.videoSubmission.createdAt).toLocaleDateString('en-IN')}
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {!stats.registration && !stats.accommodations.length && !stats.abstract && !stats.videoSubmission && (
                   <p className="text-[11px] text-slate-600/80 text-center py-4">
                     No recent activity yet.
                   </p>
@@ -686,7 +757,7 @@ const DashboardPage = () => {
                   <div className="space-y-3 text-xs sm:text-sm">
                     <div className="flex items-center justify-between">
                       <span className="text-slate-600/90">Status</span>
-                      {getStatusBadge(stats.abstract.status)}
+                      {getReviewStatusBadge(stats.abstract.status)}
                     </div>
                     <p className="font-medium text-slate-900 truncate">{stats.abstract.title}</p>
                     <p className="text-[11px] text-slate-600/80">
@@ -733,6 +804,70 @@ const DashboardPage = () => {
                   <button
                     disabled
                     className="w-full rounded-xl bg-[#7cb342] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold opacity-60 cursor-not-allowed"
+                  >
+                    Coming soon
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-2xl px-4 py-4 sm:px-5 sm:py-5">
+              <h3 className="text-sm font-semibold mb-3 flex items-center gap-2 text-slate-900">
+                <Video className="w-4 h-4 text-[#5a189a]" />
+                Award Video Competition
+              </h3>
+              {isVideoCompetitionOpen ? (
+                stats.videoSubmission ? (
+                  <div className="space-y-3 text-xs sm:text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-600/90">Status</span>
+                      {getReviewStatusBadge(stats.videoSubmission.status)}
+                    </div>
+                    <p className="font-medium text-slate-900 truncate">{stats.videoSubmission.title}</p>
+                    <p className="text-[11px] text-slate-600/80">
+                      #{stats.videoSubmission.submissionNumber}
+                    </p>
+                    <button
+                      onClick={() => navigate('/video/upload')}
+                      className="mt-2 w-full rounded-xl bg-[#5a189a] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#4b147f]"
+                    >
+                      View submission
+                    </button>
+                    {videoSubmissionUrl && (
+                      <a
+                        href={videoSubmissionUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="block w-full text-center rounded-xl border border-[#5a189a]/40 text-[#5a189a] px-4 py-2 text-xs sm:text-sm font-semibold hover:bg-[#5a189a]/10"
+                      >
+                        View uploaded video
+                      </a>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Video className="w-10 h-10 text-[#5a189a]/60 mx-auto mb-3" />
+                    <p className="text-xs sm:text-sm text-slate-600 mb-2">
+                      No video submitted.
+                    </p>
+                    <button
+                      onClick={() => navigate('/video/rules')}
+                      disabled={!isProfileComplete}
+                      className="w-full rounded-xl bg-[#5a189a] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#4b147f] disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      Submit video
+                    </button>
+                  </div>
+                )
+              ) : (
+                <div className="text-center py-8">
+                  <Video className="w-10 h-10 text-[#5a189a]/60 mx-auto mb-3" />
+                  <p className="text-xs sm:text-sm text-slate-600 mb-2">
+                    Award video competition opens soon.
+                  </p>
+                  <button
+                    disabled
+                    className="w-full rounded-xl bg-[#5a189a] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold opacity-60 cursor-not-allowed"
                   >
                     Coming soon
                   </button>

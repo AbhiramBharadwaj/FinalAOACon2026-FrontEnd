@@ -16,6 +16,8 @@ import AccommodationCheckoutPage from './pages/user/AccommodationCheckoutPage';
 import ConferenceDaysPage from './pages/user/ConferenceDaysPage';
 import AbstractRulesPage from './pages/user/AbstractRulesPage';
 import AbstractUploadPage from './pages/user/AbstractUploadPage';
+import VideoRulesPage from './pages/user/VideoRulesPage';
+import VideoUploadPage from './pages/user/VideoUploadPage';
 import FeedbackPage from './pages/user/FeedbackPage';
 import RegistrationFeesPage from './pages/user/RegistrationFeesPage';
 import CommitteePage from './pages/user/CommitteePage';
@@ -33,6 +35,7 @@ import UsersManagementPage from './pages/admin/UsersManagementPage';
 import AccommodationManagementPage from './pages/admin/AccommodationManagementPage';
 import PaymentsManagementPage from './pages/admin/PaymentsManagementPage';
 import AbstractReviewPage from './pages/admin/AbstractReviewPage';
+import VideoConferencingPage from './pages/admin/VideoConferencingPage';
 import FeedbackViewerPage from './pages/admin/FeedbackViewerPage';
 import ManualRegistrationsPage from './pages/admin/ManualRegistrationsPage';
 import CounterManagementPage from './pages/admin/CounterManagementPage';
@@ -242,6 +245,13 @@ function App() {
                   <AbstractUploadPage />
                 </ProtectedRoute>
               } />
+              <Route path="/video" element={<Navigate to="/video/rules" replace />} />
+              <Route path="/video/rules" element={<VideoRulesPage />} />
+              <Route path="/video/upload" element={
+                <ProtectedRoute>
+                  <VideoUploadPage />
+                </ProtectedRoute>
+              } />
               <Route path="/feedback" element={
                 <ProtectedRoute>
                   <FeedbackPage />
@@ -287,6 +297,11 @@ function App() {
               <Route path="/admin/abstracts" element={
                 <AdminRoute>
                   <AbstractReviewPage />
+                </AdminRoute>
+              } />
+              <Route path="/admin/video-conferencing" element={
+                <AdminRoute>
+                  <VideoConferencingPage />
                 </AdminRoute>
               } />
               <Route path="/admin/feedback" element={

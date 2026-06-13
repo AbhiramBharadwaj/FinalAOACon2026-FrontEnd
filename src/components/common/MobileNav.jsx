@@ -14,6 +14,7 @@ import {
   LogOut,
   Image,
   Stethoscope,
+  Award,
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -46,6 +47,7 @@ const MobileNav = () => {
     { label: 'Registration Details', path: '/register-details', icon: FileText },
     { label: 'Registration', path: '/register', icon: FileText },
     { label: 'Abstract', path: '/abstract/rules', icon: FileText },
+    { label: 'Award Video Competition', path: '/video/rules', icon: Award },
     { label: 'Download', download: true, icon: Download },
     { label: 'Contact', path: '/contact', icon: Phone },
     { label: 'Gallery', path: '/gallery', icon: Image },

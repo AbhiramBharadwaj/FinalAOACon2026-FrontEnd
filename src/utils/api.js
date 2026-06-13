@@ -93,6 +93,16 @@ export const abstractAPI = {
   review: (id, data) => api.put(`/abstract/review/${id}`, data),
 };
 
+export const videoAPI = {
+  submit: (formData, config = {}) => api.post('/video/submit', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    ...config,
+  }),
+  getMyVideo: () => api.get('/video/my-video'),
+  getAll: (params) => api.get('/video/all', { params }),
+  review: (id, data) => api.put(`/video/review/${id}`, data),
+};
+
 export const feedbackAPI = {
   submit: (data) => api.post('/feedback/submit', data),
   getMyFeedback: () => api.get('/feedback/my-feedback'),

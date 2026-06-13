@@ -6,12 +6,14 @@ const initialState = {
   registration: null,
   accommodationBookings: [],
   abstract: null,
+  videoSubmission: null,
   feedback: null,
   stepperProgress: {
     registration: false,
     accommodation: false,
     conferenceDays: false,
     abstractUpload: false,
+    videoSubmission: false,
     feedback: false
   }
 };
@@ -43,6 +45,15 @@ const appReducer = (state, action) => {
         stepperProgress: {
           ...state.stepperProgress,
           abstractUpload: !!action.payload
+        }
+      };
+    case 'SET_VIDEO_SUBMISSION':
+      return {
+        ...state,
+        videoSubmission: action.payload,
+        stepperProgress: {
+          ...state.stepperProgress,
+          videoSubmission: !!action.payload
         }
       };
     case 'SET_FEEDBACK':
@@ -84,6 +95,10 @@ export const AppProvider = ({ children }) => {
     dispatch({ type: 'SET_ABSTRACT', payload: abstract });
   };
 
+  const setVideoSubmission = (videoSubmission) => {
+    dispatch({ type: 'SET_VIDEO_SUBMISSION', payload: videoSubmission });
+  };
+
   const setFeedback = (feedback) => {
     dispatch({ type: 'SET_FEEDBACK', payload: feedback });
   };
@@ -104,6 +119,7 @@ export const AppProvider = ({ children }) => {
     setRegistration,
     setAccommodationBookings,
     setAbstract,
+    setVideoSubmission,
     setFeedback,
     updateStepperProgress,
     resetAppState
