@@ -9,6 +9,7 @@ import {
   Upload,
   Users,
   Video,
+  X,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';

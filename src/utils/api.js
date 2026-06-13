@@ -98,7 +98,16 @@ export const videoAPI = {
     headers: { 'Content-Type': 'multipart/form-data' },
     ...config,
   }),
-  getMyVideo: () => api.get('/video/my-video'),
+  getMyVideo: async () => {
+    try {
+      return await api.get('/video/my-video');
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return { data: null };
+      }
+      throw error;
+    }
+  },
   getAll: (params) => api.get('/video/all', { params }),
   review: (id, data) => api.put(`/video/review/${id}`, data),
 };
