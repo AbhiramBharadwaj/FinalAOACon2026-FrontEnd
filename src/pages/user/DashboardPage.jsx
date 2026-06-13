@@ -175,12 +175,13 @@ const DashboardPage = () => {
     : null;
   const profileRole = profile?.role || user?.role;
   const isProfileComplete = !!profile?.isProfileComplete;
+  const hasVideoSubmission = !!stats.videoSubmission;
   const stepCompletion = {
     profile: isProfileComplete,
     registration: !!stats.registration,
     accommodation: stats.accommodations.length > 0,
     abstract: !!stats.abstract,
-    video: !!stats.videoSubmission,
+    video: hasVideoSubmission,
     feedback: !!stats.feedback,
   };
   const completedCount = steps.reduce(
@@ -387,14 +388,18 @@ const DashboardPage = () => {
             </p>
           </button>
           <button
-            onClick={() => navigate('/video/rules')}
+            onClick={() => navigate(hasVideoSubmission ? '/video/upload' : '/video/rules')}
             disabled={!isProfileComplete || !isVideoCompetitionOpen}
             className="group bg-white/90 backdrop-blur-xl border border-[#5a189a]/30 rounded-2xl px-3 py-3 text-center text-xs sm:text-sm hover:border-[#5a189a]/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Video className="w-5 h-5 mx-auto mb-2 text-[#5a189a] group-hover:scale-110 transition-transform" />
             <p className="font-semibold text-slate-900">Award Video</p>
             <p className="text-[11px] text-slate-600">
-              {isVideoCompetitionOpen ? 'Upload' : 'Coming soon'}
+              {!isVideoCompetitionOpen
+                ? 'Coming soon'
+                : hasVideoSubmission
+                  ? 'View submission'
+                  : 'Upload'}
             </p>
           </button>
           <button
