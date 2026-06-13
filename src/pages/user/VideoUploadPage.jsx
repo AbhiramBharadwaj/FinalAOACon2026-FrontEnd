@@ -172,8 +172,19 @@ const VideoUploadPage = () => {
       setErrors({});
       setSuccessMessage('Video submitted successfully. Review updates will appear here once the admin completes evaluation.');
     } catch (error) {
+      const isProxyUploadLimitError =
+        !error.response &&
+        (
+          error.message === 'Network Error' ||
+          /access control|cors|load/i.test(error.message || '')
+        );
+
       setErrors({
-        general: error.response?.data?.message || 'Failed to submit video. Please try again.',
+        general:
+          error.response?.data?.message ||
+          (isProxyUploadLimitError
+            ? 'Upload was rejected by the deployed API server before the application could process it. This is usually a server/proxy upload size limit issue, not a form error.'
+            : 'Failed to submit video. Please try again.'),
       });
     } finally {
       setSubmitting(false);
