@@ -84,7 +84,7 @@ const VideoRulesPage = () => {
               <h2 className="mb-3 text-sm font-semibold text-slate-900 lg:text-base">Competition Snapshot</h2>
               <ul className="list-disc space-y-2 pl-5 text-sm text-slate-700">
                 <li>Open to all delegates, including PGs and fellows.</li>
-                <li>Upload one 5-minute video in the field of obstetric anaesthesia, obstetric analgesia, or obstetric critical care.</li>
+                <li>Upload a 5 min video of you performing any preocedure related to obstetric anaesthesia, analgesia and critical care.</li>
                 <li>The best two videos will be recognised and showcased during the main conference.</li>
                 <li>Conference registration is mandatory for submission.</li>
               </ul>
