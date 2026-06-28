@@ -87,7 +87,7 @@ const AbstractRulesPage = () => {
           <section className="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 p-5 space-y-3">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">Important Notes</h2>
             <ul className="list-disc pl-5 space-y-2 text-sm text-slate-700">
-              <li>Please note that all paper presentations during the Annual AOA Conference are e-posters only.</li>
+              <li>Please note that all categories of presentations in AOACON are to be presented in the form of e-posters only. (Single Slide Power Point Format)</li>
               <li>Top six e-posters will be selected for the podium presentation on Day 2 of the conference from 7:30 AM to 8:30 AM in the Main Hall.</li>
               <li>Please keep a 6-minute PowerPoint presentation ready for the podium round, followed by 2 minutes of questions from the judges.</li>
               <li><strong>During the podium presentation, only the presenter&apos;s name should appear. The name of the institute, guide, and similar identifiers must not be disclosed.</strong></li>
