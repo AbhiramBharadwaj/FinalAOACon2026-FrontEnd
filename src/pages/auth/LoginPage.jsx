@@ -64,11 +64,11 @@ const LoginPage = () => {
       <div className="absolute inset-0 bg-slate-950/72" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.10),transparent_38%)]" />
 
-      <div className="relative z-10 bg-white">
+      <div className="relative z-30 bg-white">
         <Header />
       </div>
 
-      <div className="relative z-10 flex min-h-[calc(100vh-64px)] items-start justify-center px-3 pb-24 pt-4 sm:px-4 sm:py-10 md:items-center">
+      <div className="relative z-0 flex min-h-[calc(100vh-64px)] items-start justify-center px-3 pb-24 pt-4 sm:px-4 sm:py-10 md:items-center">
         <div className="w-full max-w-sm">
           <div className="overflow-hidden rounded-[28px] border border-white/20 bg-white/96 shadow-[0_24px_70px_rgba(15,23,42,0.28)] backdrop-blur-xl">
             <div className="px-5 pb-3 pt-5 sm:px-7 sm:pt-6">
