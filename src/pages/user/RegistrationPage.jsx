@@ -179,7 +179,7 @@ const RegistrationPage = () => {
       <div className="absolute inset-0 bg-white/70 pt-20 sm:pt-24" />
       <Header />
 
-      <div className="relative z-10 container mx-auto px-4 lg:px-6 py-6 lg:py-10 space-y-6 pb-20 max-w-6xl">
+      <div className="relative z-10 container mx-auto px-4 lg:px-6 py-6 lg:py-10 space-y-6 pb-28 lg:pb-20 max-w-6xl">
         <div className="bg-white/95 backdrop-blur-xl border border-white/40 px-4 py-4 rounded-lg">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
@@ -614,19 +614,21 @@ const RegistrationPage = () => {
               </div>
 
               {}
-              <button
-                type="submit"
-                disabled={submitting}
-                className="w-full inline-flex items-center justify-center gap-2 border border-[#9c3253] bg-[#9c3253] px-4 py-3 text-sm font-semibold text-white hover:bg-[#8a2b47] disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-              >
-                {submitting ? (
-                  <LoadingSpinner size="sm" />
-                ) : existingRegistration ? (
-                  <>Continue to payment <ArrowRight className="w-4 h-4" /></>
-                ) : (
-                  <>Proceed to payment <ArrowRight className="w-4 h-4" /></>
-                )}
-              </button>
+              <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-6px_20px_rgba(15,23,42,0.14)] backdrop-blur-lg lg:static lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-none">
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="mx-auto flex w-full max-w-6xl items-center justify-center gap-2 border border-[#9c3253] bg-[#9c3253] px-4 py-3 text-sm font-semibold text-white hover:bg-[#8a2b47] disabled:cursor-not-allowed disabled:opacity-60 transition-colors"
+                >
+                  {submitting ? (
+                    <LoadingSpinner size="sm" />
+                  ) : existingRegistration ? (
+                    <>Continue to payment <ArrowRight className="w-4 h-4" /></>
+                  ) : (
+                    <>Proceed to payment <ArrowRight className="w-4 h-4" /></>
+                  )}
+                </button>
+              </div>
             </form>
           </section>
 
