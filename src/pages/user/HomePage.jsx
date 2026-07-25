@@ -409,8 +409,6 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
       </section>
 
       {}
-      
-
       <Footer />
     </div>
   );

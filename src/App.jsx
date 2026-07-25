@@ -28,6 +28,7 @@ import HomePage from './pages/user/HomePage';
 import WorkshopsPage from './pages/user/WorkshopsPage';
 import WorkshopDetailPage from './pages/user/WorkshopDetailPage';
 import AOACertificateCoursePage from './pages/user/AOACertificateCoursePage';
+import DownloadsPage from './pages/user/DownloadsPage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import RegistrationsManagementPage from './pages/admin/RegistrationsManagementPage';
@@ -170,6 +171,7 @@ function App() {
               <Route path="/gallery" element={
                   <GalleryPage />
               } />
+              <Route path="/downloads" element={<DownloadsPage />} />
               <Route path="/workshops" element={
                   <WorkshopsPage />
               } />

@@ -60,7 +60,7 @@ const PRIMARY_LINKS_TOP = [
 ];
 
 const PRIMARY_LINKS_BOTTOM = [
-  { label: 'Download', download: true, icon: Download },
+  { label: 'Download', path: '/downloads', icon: Download },
   { label: 'Registration', path: '/register-details', icon: User },
   { label: 'Dashboard', path: '/dashboard', icon: User },
 ];
@@ -372,14 +372,13 @@ const Header = () => {
                 </div>
               ))}
 
-              <a
-                href={brochurePdf}
-                download="AOA CON BROCHURE ANNOUNCEMENT.pdf"
+              <Link
+                to="/downloads"
                 className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-white border-b-2 border-transparent transition-colors duration-200"
               >
                 <Download className="w-4 h-4 text-white hover:text-yellow-900 transition-colors" />
                 <span>Download</span>
-              </a>
+              </Link>
               <Link
                 to="/register-details"
                 className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-white border-b-2 border-transparent transition-colors duration-200"

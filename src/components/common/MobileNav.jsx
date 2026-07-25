@@ -48,7 +48,7 @@ const MobileNav = () => {
     { label: 'Registration', path: '/register', icon: FileText },
     { label: 'Abstract', path: '/abstract/rules', icon: FileText },
     { label: 'Award Video Competition', path: '/video/rules', icon: Award },
-    { label: 'Download', download: true, icon: Download },
+    { label: 'Download', path: '/downloads', icon: Download },
     { label: 'Contact', path: '/contact', icon: Phone },
     { label: 'Gallery', path: '/gallery', icon: Image },
   ];

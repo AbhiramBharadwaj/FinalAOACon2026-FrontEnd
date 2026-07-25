@@ -6,6 +6,7 @@ import MobileNav from '../../components/common/MobileNav';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import { useAuth } from '../../contexts/AuthContext';
 import { userAPI, API_BASE_URL } from '../../utils/api';
+import bonafideCertificateTemplate from '../../files/AOACON2026_Bonafide_Certificate.docx';
 
 const ProfilePage = () => {
   const [profile, setProfile] = useState(null);
@@ -530,12 +531,24 @@ const ProfilePage = () => {
                 <div className="flex items-center gap-2 mb-2">
                   <FileText className="w-4 h-4 text-[#7cb342]" />
                   <p className="text-xs font-semibold text-slate-900">
-                    Recommendation letter (PDF, max 5MB)
+                    Bonafide Certificate (PDF, max 5MB)
                   </p>
                 </div>
+                <p className="text-xs text-slate-600 mb-2">
+                  Download the template, have it completed and signed by your Head of Department,
+                  then upload the completed certificate as a PDF.
+                </p>
+                <a
+                  href={bonafideCertificateTemplate}
+                  download="AOACON2026_Bonafide_Certificate.docx"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-[#9c3253] hover:text-[#8a2b47] underline underline-offset-2"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  Download Bonafide Certificate Template (DOCX)
+                </a>
                 {profile?.collegeLetter ? (
-                  <div className="text-xs text-slate-700 flex items-center justify-between gap-2">
-                    <span>Letter uploaded</span>
+                  <div className="mt-3 text-xs text-slate-700 flex items-center justify-between gap-2">
+                    <span>Certificate uploaded</span>
                     <a
                       href={`${API_BASE_URL}/${profile.collegeLetter}`}
                       target="_blank"
@@ -546,7 +559,7 @@ const ProfilePage = () => {
                     </a>
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-600">Upload signed letter from your institution.</p>
+                  <p className="mt-3 text-xs text-slate-600">No completed certificate uploaded yet.</p>
                 )}
                 <label className="inline-flex items-center mt-3 px-4 py-2 rounded border border-[#9c3253] text-[#9c3253] text-xs font-medium bg-[#9c3253]/5 hover:bg-[#9c3253]/10 cursor-pointer transition-colors">
                   {collegeLetterUploading ? 'Uploading...' : profile?.collegeLetter ? 'Replace PDF' : 'Choose PDF file'}
