@@ -17,14 +17,12 @@ import {
   MapPin,
   Download,
   Star,
-  Plus,
   Video,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
 import {
   registrationAPI,
-  accommodationAPI,
   abstractAPI,
   feedbackAPI,
   API_BASE_URL,
@@ -48,7 +46,6 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     registration: null,
-    accommodations: [],
     abstract: null,
     videoSubmission: null,
     feedback: null,
@@ -59,7 +56,6 @@ const DashboardPage = () => {
   const { user, updateUser } = useAuth();
   const {
     setRegistration,
-    setAccommodationBookings,
     setAbstract,
     setVideoSubmission,
     setFeedback,
@@ -69,7 +65,6 @@ const DashboardPage = () => {
   const steps = [
     { key: 'profile', label: 'Profile', short: 'Profile' },
     { key: 'registration', label: 'Registration', short: 'Reg' },
-    { key: 'accommodation', label: 'Accommodation', short: 'Stay' },
     { key: 'abstract', label: 'Abstract', short: 'Abs' },
     { key: 'video', label: 'Video', short: 'Vid' },
     { key: 'feedback', label: 'Feedback', short: 'Fb' },
@@ -179,7 +174,6 @@ const DashboardPage = () => {
   const stepCompletion = {
     profile: isProfileComplete,
     registration: !!stats.registration,
-    accommodation: stats.accommodations.length > 0,
     abstract: !!stats.abstract,
     video: hasVideoSubmission,
     feedback: !!stats.feedback,
@@ -212,12 +206,6 @@ const DashboardPage = () => {
         const regResponse = await registrationAPI.getMyRegistration();
         setStats((prev) => ({ ...prev, registration: regResponse.data }));
         setRegistration(regResponse.data);
-      } catch {}
-
-      try {
-        const accResponse = await accommodationAPI.getMyBookings();
-        setStats((prev) => ({ ...prev, accommodations: accResponse.data }));
-        setAccommodationBookings(accResponse.data);
       } catch {}
 
       try {
@@ -351,7 +339,7 @@ const DashboardPage = () => {
         {}
         {!isProfileComplete && (
           <div className="bg-amber-50 border border-amber-200 text-amber-800 text-xs px-3 py-2 rounded-xl">
-            Complete your profile to unlock registration, accommodation, abstract submission, and feedback.
+            Complete your profile to unlock registration, abstract submission, and feedback.
           </div>
         )}
 
@@ -369,12 +357,11 @@ const DashboardPage = () => {
           )}
           <button
             onClick={() => navigate('/accommodation')}
-            disabled={!isProfileComplete}
-            className="group bg-white/90 backdrop-blur-xl border border-[#ff8a1f]/30 rounded-2xl px-3 py-3 text-center text-xs sm:text-sm hover:border-[#ff8a1f]/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="group bg-white/90 backdrop-blur-xl border border-[#ff8a1f]/30 rounded-2xl px-3 py-3 text-center text-xs sm:text-sm hover:border-[#ff8a1f]/50 transition-all"
           >
             <Hotel className="w-5 h-5 mx-auto mb-2 text-[#ff8a1f] group-hover:scale-110 transition-transform" />
             <p className="font-semibold text-slate-900">Stay</p>
-            <p className="text-[11px] text-slate-600">Book hotel</p>
+            <p className="text-[11px] text-slate-600">View hotels</p>
           </button>
           <button
             onClick={() => navigate('/abstract/rules')}
@@ -621,61 +608,30 @@ const DashboardPage = () => {
                 <h2 className="text-sm font-semibold flex items-center gap-2 text-slate-900">
                   <Hotel className="w-4 h-4 text-[#ff8a1f]" />
                   Accommodation
-                  <span className="text-[11px] font-normal text-slate-600/80">
-                    ({stats.accommodations.length})
-                  </span>
                 </h2>
                 <button
                   onClick={() => navigate('/accommodation')}
-                  disabled={!isProfileComplete}
-                  className="text-[11px] sm:text-xs font-medium text-[#ff8a1f] hover:text-[#e67e22] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="text-[11px] sm:text-xs font-medium text-[#ff8a1f] hover:text-[#e67e22]"
                 >
-                  View all
+                  View directory
                 </button>
               </div>
 
-              {stats.accommodations.length > 0 ? (
-                <div className="space-y-3 text-xs sm:text-sm">
-                  {stats.accommodations.slice(0, 3).map((booking) => (
-                    <div key={booking._id} className="rounded-xl bg-[#ff8a1f]/5 px-3 py-3 border border-[#ff8a1f]/20">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <p className="font-medium text-slate-900 truncate">
-                          {booking.accommodationId?.name || 'Hotel Booking'}
-                        </p>
-                        {getStatusBadge(booking.paymentStatus)}
-                      </div>
-                      <p className="text-[11px] text-slate-600/80 mb-1">
-                        Check-in: {new Date(booking.checkInDate).toLocaleDateString('en-IN')}
-                      </p>
-                      <div className="flex items-center justify-between text-[11px] text-slate-900">
-                        <span>{booking.numberOfGuests} guest{booking.numberOfGuests > 1 ? 's' : ''}</span>
-                        <span className="font-semibold text-[#ff8a1f]">
-                          ₹{booking.totalAmount?.toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                  {stats.accommodations.length > 3 && (
-                    <p className="text-center text-[11px] text-slate-600/80 pt-1">
-                      +{stats.accommodations.length - 3} more bookings
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <div className="text-center py-10 rounded-xl bg-[#ff8a1f]/5 border border-[#ff8a1f]/20">
-                  <Hotel className="w-10 h-10 text-[#ff8a1f]/50 mx-auto mb-3" />
-                  <p className="text-sm text-slate-600 mb-2">
-                    No accommodation booked yet.
-                  </p>
-                  <button
-                    onClick={() => navigate('/accommodation')}
-                    disabled={!isProfileComplete}
-                    className="inline-flex items-center justify-center rounded-xl bg-[#ff8a1f] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#e67e22] disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Book stay
-                  </button>
-                </div>
-              )}
+              <div className="text-center py-8 rounded-xl bg-[#ff8a1f]/5 border border-[#ff8a1f]/20">
+                <Hotel className="w-10 h-10 text-[#ff8a1f]/60 mx-auto mb-3" />
+                <p className="text-sm font-medium text-slate-900 mb-1">
+                  Hotels and lodging near SIMS
+                </p>
+                <p className="mx-auto max-w-md text-[11px] leading-5 text-slate-600 mb-4">
+                  Browse the accommodation directory and contact the property directly for availability, reservations and payment.
+                </p>
+                <button
+                  onClick={() => navigate('/accommodation')}
+                  className="inline-flex items-center justify-center rounded-xl bg-[#ff8a1f] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#e67e22]"
+                >
+                  View hotels and lodging
+                </button>
+              </div>
             </div>
 
             {}
@@ -695,20 +651,6 @@ const DashboardPage = () => {
                       <p className="text-[11px] text-slate-600/80">
                         {stats.registration.paymentStatus} •{' '}
                         {new Date(stats.registration.updatedAt).toLocaleDateString('en-IN')}
-                      </p>
-                    </div>
-                  </div>
-                )}
-                {stats.accommodations[0] && (
-                  <div className="flex items-center rounded-xl bg-[#ff8a1f]/5 px-3 py-3 border border-[#ff8a1f]/20">
-                    <Hotel className="w-4 h-4 text-[#ff8a1f] mr-3 flex-shrink-0" />
-                    <div className="min-w-0">
-                      <p className="font-medium text-slate-900 truncate">
-                        {stats.accommodations[0].accommodationId?.name}
-                      </p>
-                      <p className="text-[11px] text-slate-600/80">
-                        Booking created •{' '}
-                        {new Date(stats.accommodations[0].createdAt).toLocaleDateString('en-IN')}
                       </p>
                     </div>
                   </div>
@@ -741,7 +683,7 @@ const DashboardPage = () => {
                     </div>
                   </div>
                 )}
-                {!stats.registration && !stats.accommodations.length && !stats.abstract && !stats.videoSubmission && (
+                {!stats.registration && !stats.abstract && !stats.videoSubmission && (
                   <p className="text-[11px] text-slate-600/80 text-center py-4">
                     No recent activity yet.
                   </p>
@@ -919,9 +861,9 @@ const DashboardPage = () => {
               </div>
               <div>
                 <p className="text-lg sm:text-xl font-semibold text-[#ff8a1f]">
-                  {stats.accommodations.length}
+                  11
                 </p>
-                <p className="text-[11px] text-slate-600">Stays booked</p>
+                <p className="text-[11px] text-slate-600">Listed stays</p>
               </div>
             </div>
           </section>

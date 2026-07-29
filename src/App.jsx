@@ -11,8 +11,6 @@ import RegistrationPage from './pages/user/RegistrationPage';
 import CheckoutPage from './pages/user/CheckoutPage';
 import PaymentStatusPage from './pages/user/PaymentStatusPage';
 import AccommodationListPage from './pages/user/AccommodationListPage';
-import AccommodationDetailPage from './pages/user/AccommodationDetailPage';
-import AccommodationCheckoutPage from './pages/user/AccommodationCheckoutPage';
 import ConferenceDaysPage from './pages/user/ConferenceDaysPage';
 import AbstractRulesPage from './pages/user/AbstractRulesPage';
 import AbstractUploadPage from './pages/user/AbstractUploadPage';
@@ -224,21 +222,9 @@ function App() {
                   <PaymentStatusPage />
                 </ProtectedRoute>
               } />
-              <Route path="/accommodation" element={
-                <ProtectedRoute>
-                  <AccommodationListPage />
-                </ProtectedRoute>
-              } />
-              <Route path="/accommodation/:id" element={
-                <ProtectedRoute>
-                  <AccommodationDetailPage />
-                </ProtectedRoute>
-              } />
-              <Route path="/accommodation/checkout" element={
-                <ProtectedRoute>
-                  <AccommodationCheckoutPage />
-                </ProtectedRoute>
-              } />
+              <Route path="/accommodation" element={<AccommodationListPage />} />
+              <Route path="/accommodation/checkout" element={<Navigate to="/accommodation" replace />} />
+              <Route path="/accommodation/:id" element={<Navigate to="/accommodation" replace />} />
               <Route path="/conference-days" element={<ConferenceDaysPage />} />
               <Route path="/abstract" element={<Navigate to="/abstract/rules" replace />} />
               <Route path="/abstract/rules" element={<AbstractRulesPage />} />
