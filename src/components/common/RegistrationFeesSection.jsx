@@ -207,7 +207,7 @@ const RegistrationFeesSection = () => {
               <ul className="list-disc list-inside text-sm text-slate-800 space-y-1">
                 <li>Conference + AOA Certified Course bundle: Rs 13,000 / 16,000 + GST (AOA / Non-AOA)</li>
                 <li>Applicable only for practitioners (AOA and Non-AOA)</li>
-                <li>Limited to 40 participants</li>
+                <li>Limited to 50 participants</li>
                 <li>Conference registration is mandatory</li>
                 <li>No spot registration</li>
               </ul>
@@ -238,7 +238,7 @@ const RegistrationFeesSection = () => {
           <h3 className="text-base font-semibold text-slate-900 mb-3">Notes</h3>
           <ul className="list-disc list-inside text-sm text-slate-900 space-y-1">
             <li>Conference registration is mandatory for workshop registration.</li>
-            <li>Workshops and AOA Certified Course registrations are limited to 40 participants each.</li>
+            <li>Workshops are limited to 40 participants each, and the AOA Certified Course is limited to 50 participants.</li>
             <li>PGs and Fellows must submit a valid Bonafide Certificate issued by the Head of the Department.</li>
             <li>GST applicable as per rules.</li>
             <li>Accompanying person fee: Rs 7,000 + GST.</li>
