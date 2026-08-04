@@ -238,7 +238,7 @@ const RegistrationFeesSection = () => {
           <h3 className="text-base font-semibold text-slate-900 mb-3">Notes</h3>
           <ul className="list-disc list-inside text-sm text-slate-900 space-y-1">
             <li>Conference registration is mandatory for workshop registration.</li>
-            <li>Workshops are limited to 40 participants each, and the AOA Certified Course is limited to 50 participants.</li>
+            <li>The AOA Certified Course is limited to 50 participants.</li>
             <li>PGs and Fellows must submit a valid Bonafide Certificate issued by the Head of the Department.</li>
             <li>GST applicable as per rules.</li>
             <li>Accompanying person fee: Rs 7,000 + GST.</li>
