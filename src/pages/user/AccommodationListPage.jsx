@@ -217,9 +217,22 @@ const AccommodationListPage = () => (
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <aside className="flex items-start gap-3 border-b border-slate-200 py-5 text-sm leading-6 text-slate-600">
           <Info className="mt-1 h-4 w-4 shrink-0 text-[#005aa9]" aria-hidden="true" />
-          <p>
-            Distances are approximate road-distance groups from SIMS and may vary with the selected route. AOACON does not manage bookings or collect accommodation payments.
-          </p>
+          <div className="flex-1 sm:flex sm:items-start sm:justify-between sm:gap-8">
+            <p>
+              Distances are approximate road-distance groups from SIMS and may vary with the selected route. AOACON does not manage bookings or collect accommodation payments.
+            </p>
+            <div className="mt-3 shrink-0 sm:mt-0">
+              <p className="font-semibold text-slate-900">Accommodation contact</p>
+              <p>Dr Praveen S</p>
+              <a
+                href="tel:+919901028977"
+                className="inline-flex items-center gap-1.5 font-medium text-[#005aa9] underline decoration-blue-200 underline-offset-4 hover:text-[#00467f]"
+              >
+                <Phone className="h-3.5 w-3.5" aria-hidden="true" />
+                9901028977
+              </a>
+            </div>
+          </div>
         </aside>
 
         {accommodationGroups.map((group) => (
