@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import logo from '../../images/logo.png'
+import logo from '../../images/logo.png';
 import {
   Home,
   Users,
@@ -39,7 +39,7 @@ const Sidebar = () => {
     { icon: ClipboardList, label: 'Manual Registrations', path: '/admin/manual-registrations' },
     { icon: Hash, label: 'Counter', path: '/admin/counter' },
     { icon: QrCodeIcon, label: 'Scanner', path: '/admin/scanner' },
-    { icon: ListChecksIcon, label: 'Attendence', path: '/admin/check/attendance' },
+    { icon: ListChecksIcon, label: 'Attendance', path: '/admin/check/attendance' },
   ];
 
   const handleLogout = () => {
@@ -49,14 +49,13 @@ const Sidebar = () => {
 
   const isActive = (path) => location.pathname === path;
 
-  const sidebarWidth = isCollapsed ? 'w-18 lg:w-18' : 'w-64 lg:w-64'; 
-
   return (
     <>
       {}
       <button
         onClick={() => setIsMobileOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 bg-[#005aa9] text-white rounded-xl shadow-lg"
+        className="fixed left-4 top-4 z-50 rounded-xl bg-[#073b4c] p-2.5 text-white shadow-lg lg:hidden"
+        aria-label="Open admin navigation"
       >
         <Menu className="w-5 h-5" />
       </button>
@@ -76,20 +75,28 @@ const Sidebar = () => {
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
           lg:translate-x-0 transition-transform duration-300 ease-in-out
           ${isCollapsed ? 'w-20' : 'w-64'}
-          bg-slate-950 text-slate-100 flex flex-col shadow-xl lg:shadow-none
+          bg-[#062f3d] text-slate-100 flex flex-col shadow-xl lg:shadow-none
         `}
       >
         {}
-        <div className="flex items-center justify-between px-4 py-4 border-b border-slate-800">
-          <div className="flex items-center gap-3">
-           <img src={logo} width={100} alt="" />
-            {}
+        <div className="flex min-h-[82px] items-center justify-between border-b border-white/10 px-4 py-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white p-1.5 shadow-sm">
+              <img src={logo} className="h-full w-full object-contain" alt="AOA CON" />
+            </div>
+            {!isCollapsed && (
+              <div className="min-w-0">
+                <p className="truncate text-sm font-bold text-white">AOA CON 2026</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#62e6cf]">Admin console</p>
+              </div>
+            )}
           </div>
 
           {}
           <button
             onClick={() => setIsCollapsed((v) => !v)}
-            className="hidden lg:inline-flex items-center justify-center p-2 rounded-xl hover:bg-slate-800 transition-colors"
+            className="hidden items-center justify-center rounded-xl p-2 transition-colors hover:bg-white/10 lg:inline-flex"
+            aria-label={isCollapsed ? 'Expand navigation' : 'Collapse navigation'}
           >
             <Menu className="w-4 h-4 text-slate-300" />
           </button>
@@ -104,7 +111,8 @@ const Sidebar = () => {
         </div>
 
         {}
-        <nav className="flex-1 px-2.5 py-4 space-y-1 overflow-y-auto">
+        <nav className="flex-1 space-y-1 overflow-y-auto px-2.5 py-4">
+          {!isCollapsed && <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Workspace</p>}
           {menuItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
@@ -117,12 +125,12 @@ const Sidebar = () => {
                   setIsMobileOpen(false);
                 }}
                 className={`
-                  w-full flex items-center rounded-2xl px-2.5 py-2.5 mb-0.5 text-left text-sm
+                  w-full flex items-center rounded-xl px-2.5 py-2 mb-0.5 text-left text-sm
                   transition-all duration-200
                   ${
                     active
-                      ? 'bg-gradient-to-r from-[#005aa9] to-sky-500 text-white shadow-md'
-                      : 'text-slate-300 hover:bg-slate-900 hover:text-white'
+                      ? 'bg-[#22c1a6] text-[#073b4c] shadow-lg shadow-black/10'
+                      : 'text-slate-300 hover:bg-white/[0.07] hover:text-white'
                   }
                 `}
               >
@@ -130,11 +138,11 @@ const Sidebar = () => {
                   className={`
                     flex items-center justify-center
                     ${isCollapsed ? 'w-9 h-9' : 'w-8 h-8'}
-                    rounded-xl border
+                    rounded-lg
                     ${
                       active
-                        ? 'border-white/40 bg-white/10'
-                        : 'border-slate-700 bg-slate-900'
+                        ? 'bg-[#073b4c]/10'
+                        : 'bg-white/[0.06]'
                     }
                   `}
                 >
@@ -145,7 +153,7 @@ const Sidebar = () => {
                   />
                 </div>
                 {!isCollapsed && (
-                  <span className="ml-3 font-medium truncate">{item.label}</span>
+                  <span className="ml-3 truncate font-semibold">{item.label}</span>
                 )}
               </button>
             );
@@ -153,10 +161,10 @@ const Sidebar = () => {
         </nav>
 
         {}
-        <div className="border-t border-slate-800 px-3 py-4">
+        <div className="border-t border-white/10 px-3 py-4">
           {!isCollapsed && (
-            <div className="mb-3 px-1">
-              <p className="text-sm font-medium text-slate-100">
+            <div className="mb-3 rounded-xl bg-white/[0.05] px-3 py-3">
+              <p className="text-sm font-semibold text-slate-100">
                 {admin?.name || 'Administrator'}
               </p>
               <p className="text-xs text-slate-400 truncate">
@@ -168,14 +176,14 @@ const Sidebar = () => {
             onClick={handleLogout}
             className={`
               w-full flex items-center rounded-2xl px-2.5 py-2 text-sm
-              text-slate-300 hover:text-red-400 hover:bg-slate-900 transition-all
+              text-slate-300 hover:text-rose-300 hover:bg-white/[0.06] transition-all
             `}
           >
             <div
               className={`
                 flex items-center justify-center
                 ${isCollapsed ? 'w-9 h-9' : 'w-8 h-8'}
-                rounded-xl border border-slate-700 bg-slate-900
+                rounded-lg bg-white/[0.06]
               `}
             >
               <LogOut className={`${isCollapsed ? 'w-5 h-5' : 'w-4 h-4'}`} />
