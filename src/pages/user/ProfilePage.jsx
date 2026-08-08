@@ -77,6 +77,9 @@ const ProfilePage = () => {
     if (!isValidIndianPhone(profileForm.phone)) {
       return 'Please enter a valid 10-digit phone number.';
     }
+    if (!/^\d{4,10}$/.test(profileForm.pincode.trim())) {
+      return 'Please enter a valid pincode containing 4-10 digits.';
+    }
     return '';
   };
 
