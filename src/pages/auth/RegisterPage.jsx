@@ -38,6 +38,14 @@ const RegisterPage = () => {
     });
   };
 
+  const handlePhoneChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      phone: normalizeIndianPhone(e.target.value).slice(0, 10),
+    }));
+    setErrors((prev) => ({ ...prev, phone: '' }));
+  };
+
   const selectCategory = (role) => {
     setSelectedRole(role);
     setFormData(prev => ({ ...prev, role }));
@@ -57,7 +65,7 @@ const RegisterPage = () => {
     if (!formData.phone.trim()) {
       newErrors.phone = 'Phone is required';
     } else if (!isValidIndianPhone(formData.phone)) {
-      newErrors.phone = 'Enter a valid 10-digit phone number, with or without +91';
+      newErrors.phone = 'Enter a valid 10-digit phone number';
     }
     if (!formData.password) newErrors.password = 'Password is required';
     if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
@@ -235,31 +243,31 @@ const RegisterPage = () => {
                       <label htmlFor="phone" className="block text-xs font-medium text-slate-700 mb-1">
                         Phone *
                       </label>
-                      <div className="relative">
-                        <Phone className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+                      <div
+                        className={`flex overflow-hidden border bg-white/70 focus-within:ring-1 ${
+                          errors.phone
+                            ? 'border-red-300 focus-within:ring-red-500'
+                            : 'border-slate-300 focus-within:border-[#9c3253] focus-within:ring-[#9c3253]'
+                        }`}
+                      >
+                        <span className="inline-flex items-center gap-1.5 border-r border-slate-300 bg-slate-50 px-2.5 text-sm text-slate-600">
+                          <Phone className="h-4 w-4 text-slate-400" />
+                          +91
+                        </span>
                         <input
                           id="phone"
                           name="phone"
                           type="tel"
-                          inputMode="tel"
+                          inputMode="numeric"
                           autoComplete="tel"
                           required
                           value={formData.phone}
-                          onChange={handleChange}
-                          className={`block w-full pl-9 pr-3 py-2.5 text-sm border ${
-                            errors.phone 
-                              ? 'border-red-300 focus:ring-red-500 focus:border-red-500' 
-                              : 'border-slate-300 focus:ring-[#9c3253] focus:border-[#9c3253]'
-                          } bg-white/70 placeholder:text-slate-400 text-slate-900 focus:outline-none focus:ring-1`}
-                          placeholder="+91 98765 43210"
+                          onChange={handlePhoneChange}
+                          className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+                          placeholder="9876543210"
                         />
                       </div>
                       {errors.phone && <p className="text-red-600 text-xs mt-1">{errors.phone}</p>}
-                      {!errors.phone && (
-                        <p className="text-slate-500 text-[11px] mt-1">
-                          Enter 9876543210 or +91 98765 43210
-                        </p>
-                      )}
                     </div>
                   </div>
 

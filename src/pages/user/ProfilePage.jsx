@@ -75,7 +75,7 @@ const ProfilePage = () => {
     const missingField = requiredFields.find((field) => !hasValue(profileForm[field.key]));
     if (missingField) return `Please enter ${missingField.label}.`;
     if (!isValidIndianPhone(profileForm.phone)) {
-      return 'Please enter a valid 10-digit phone number, with or without +91.';
+      return 'Please enter a valid 10-digit phone number.';
     }
     return '';
   };
@@ -117,7 +117,10 @@ const ProfilePage = () => {
 
   const handleProfileChange = (event) => {
     const { name, value } = event.target;
-    setProfileForm((prev) => ({ ...prev, [name]: value }));
+    setProfileForm((prev) => ({
+      ...prev,
+      [name]: name === 'phone' ? normalizeIndianPhone(value).slice(0, 10) : value,
+    }));
   };
 
   const handleCollegeLetterChange = async (event) => {
@@ -313,21 +316,23 @@ const ProfilePage = () => {
                 <label className="block text-xs font-medium text-slate-700 mb-1" htmlFor="profile-phone">
                   Phone *
                 </label>
-                <input
-                  id="profile-phone"
-                  name="phone"
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  value={profileForm.phone}
-                  onChange={handleProfileChange}
-                  required
-                  className="block w-full px-3 py-2 text-xs border border-slate-300 bg-white/70 focus:outline-none focus:ring-1 focus:ring-[#9c3253]"
-                  placeholder="+91 98765 43210"
-                />
-                <p className="mt-1 text-[11px] text-slate-500">
-                  Enter 9876543210 or +91 98765 43210
-                </p>
+                <div className="flex overflow-hidden border border-slate-300 bg-white/70 focus-within:border-[#9c3253] focus-within:ring-1 focus-within:ring-[#9c3253]">
+                  <span className="inline-flex items-center border-r border-slate-300 bg-slate-50 px-3 text-xs text-slate-600">
+                    +91
+                  </span>
+                  <input
+                    id="profile-phone"
+                    name="phone"
+                    type="tel"
+                    inputMode="numeric"
+                    autoComplete="tel"
+                    value={profileForm.phone}
+                    onChange={handleProfileChange}
+                    required
+                    className="min-w-0 flex-1 bg-transparent px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none"
+                    placeholder="9876543210"
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1" htmlFor="profile-gender">
