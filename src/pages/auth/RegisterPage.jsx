@@ -8,6 +8,7 @@ import LoadingSpinner from '../../components/common/LoadingSpinner';
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import logo from '../../images/main-logo.png';
+import { isValidIndianPhone, normalizeIndianPhone } from '../../utils/phone';
 
 const RegisterPage = () => {
   const [step, setStep] = useState(1);
@@ -53,7 +54,11 @@ const RegisterPage = () => {
 
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.email.trim()) newErrors.email = 'Email is required';
-    if (!formData.phone.trim()) newErrors.phone = 'Phone is required';
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone is required';
+    } else if (!isValidIndianPhone(formData.phone)) {
+      newErrors.phone = 'Enter a valid 10-digit phone number, with or without +91';
+    }
     if (!formData.password) newErrors.password = 'Password is required';
     if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
 
@@ -72,7 +77,7 @@ const RegisterPage = () => {
       const submitData = {
         name: formData.name.trim(),
         email: formData.email.trim(),
-        phone: formData.phone.trim(),
+        phone: normalizeIndianPhone(formData.phone),
         password: formData.password,
         role: formData.role
       };
@@ -236,6 +241,8 @@ const RegisterPage = () => {
                           id="phone"
                           name="phone"
                           type="tel"
+                          inputMode="tel"
+                          autoComplete="tel"
                           required
                           value={formData.phone}
                           onChange={handleChange}
@@ -244,10 +251,15 @@ const RegisterPage = () => {
                               ? 'border-red-300 focus:ring-red-500 focus:border-red-500' 
                               : 'border-slate-300 focus:ring-[#9c3253] focus:border-[#9c3253]'
                           } bg-white/70 placeholder:text-slate-400 text-slate-900 focus:outline-none focus:ring-1`}
-                          placeholder="9876543210"
+                          placeholder="+91 98765 43210"
                         />
                       </div>
                       {errors.phone && <p className="text-red-600 text-xs mt-1">{errors.phone}</p>}
+                      {!errors.phone && (
+                        <p className="text-slate-500 text-[11px] mt-1">
+                          Enter 9876543210 or +91 98765 43210
+                        </p>
+                      )}
                     </div>
                   </div>
 

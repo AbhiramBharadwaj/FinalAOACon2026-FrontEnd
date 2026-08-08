@@ -6,6 +6,7 @@ import MobileNav from '../../components/common/MobileNav';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import { useAuth } from '../../contexts/AuthContext';
 import { userAPI, API_BASE_URL } from '../../utils/api';
+import { isValidIndianPhone, normalizeIndianPhone } from '../../utils/phone';
 import bonafideCertificateTemplate from '../../files/AOACON2026_Bonafide_Certificate.docx';
 
 const ProfilePage = () => {
@@ -72,7 +73,11 @@ const ProfilePage = () => {
     }
 
     const missingField = requiredFields.find((field) => !hasValue(profileForm[field.key]));
-    return missingField ? `Please enter ${missingField.label}.` : '';
+    if (missingField) return `Please enter ${missingField.label}.`;
+    if (!isValidIndianPhone(profileForm.phone)) {
+      return 'Please enter a valid 10-digit phone number, with or without +91.';
+    }
+    return '';
   };
 
   useEffect(() => {
@@ -159,7 +164,10 @@ const ProfilePage = () => {
         return;
       }
 
-      const response = await userAPI.updateProfile(profileForm);
+      const response = await userAPI.updateProfile({
+        ...profileForm,
+        phone: normalizeIndianPhone(profileForm.phone),
+      });
       const updatedUser = response.data.user;
       setProfile(updatedUser);
       setProfileForm({
@@ -309,12 +317,17 @@ const ProfilePage = () => {
                   id="profile-phone"
                   name="phone"
                   type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
                   value={profileForm.phone}
                   onChange={handleProfileChange}
                   required
                   className="block w-full px-3 py-2 text-xs border border-slate-300 bg-white/70 focus:outline-none focus:ring-1 focus:ring-[#9c3253]"
-                  placeholder="9876543210"
+                  placeholder="+91 98765 43210"
                 />
+                <p className="mt-1 text-[11px] text-slate-500">
+                  Enter 9876543210 or +91 98765 43210
+                </p>
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1" htmlFor="profile-gender">
