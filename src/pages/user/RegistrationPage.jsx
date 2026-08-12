@@ -468,7 +468,12 @@ const RegistrationPage = () => {
                             ₹{aoaAddOn.priceWithoutGST.toLocaleString()}
                           </p>
                           <p className="text-sm text-purple-500">
-                            {50 - (pricing?.meta?.aoaCourseCount || 0)} seats left
+                            {Math.max(
+                              0,
+                              (pricing?.meta?.aoaCourseLimit ?? 50) -
+                                (pricing?.meta?.aoaCourseCount ?? 0)
+                            )}{' '}
+                            seats left
                           </p>
                         </div>
                       </label>
