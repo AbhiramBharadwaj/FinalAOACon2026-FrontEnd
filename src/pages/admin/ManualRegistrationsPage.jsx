@@ -11,6 +11,12 @@ const workshopOptions = [
   { value: 'maternal-collapse', label: 'Maternal Collapse' },
 ];
 
+const todayForInput = () => {
+  const now = new Date();
+  const local = new Date(now.getTime() - now.getTimezoneOffset() * 60_000);
+  return local.toISOString().slice(0, 10);
+};
+
 const ManualRegistrationsPage = () => {
   const [form, setForm] = useState({
     name: '',
@@ -34,7 +40,16 @@ const ManualRegistrationsPage = () => {
     addAoaCourse: false,
     addLifeMembership: false,
     bookingPhase: 'EARLY_BIRD',
-    utr: '',
+    couponCode: '',
+    paymentMethod: 'RAZORPAY',
+    razorpayPaymentId: '',
+    razorpayOrderId: '',
+    paymentReference: '',
+    paymentDate: todayForInput(),
+    amountReceived: '',
+    paymentNotes: '',
+    manualRegistrationNotes: '',
+    confirmPaymentReceived: false,
     preferredRegistrationNumber: '',
     rangeStart: 1,
     rangeEnd: 14,
@@ -102,6 +117,7 @@ const ManualRegistrationsPage = () => {
           addWorkshop: form.addWorkshop,
           addAoaCourse: form.addAoaCourse,
           addLifeMembership: form.addLifeMembership,
+          couponCode: form.couponCode,
         });
         if (isActive) {
           setQuote(response.data);
@@ -121,7 +137,20 @@ const ManualRegistrationsPage = () => {
     return () => {
       isActive = false;
     };
-  }, [form.role, form.bookingPhase, form.addWorkshop, form.addAoaCourse, form.addLifeMembership]);
+  }, [
+    form.role,
+    form.bookingPhase,
+    form.addWorkshop,
+    form.addAoaCourse,
+    form.addLifeMembership,
+    form.couponCode,
+  ]);
+
+  useEffect(() => {
+    if (quote?.totalAmount != null) {
+      setForm((previous) => ({ ...previous, amountReceived: String(quote.totalAmount) }));
+    }
+  }, [quote?.totalAmount]);
 
   const availableOptions = useMemo(() => {
     if (!availability?.availableNumbers?.length) return [];
@@ -143,7 +172,7 @@ const ManualRegistrationsPage = () => {
       };
       const response = await adminAPI.createManualRegistration(payload);
       setMessage(
-        `Created registration ${response.data?.registration?.registrationNumber || ''} successfully.`
+        `Created ${response.data?.registration?.registrationNumber || ''}. Payment recorded; confirmation email ${response.data?.emailDelivery?.paymentEmailSent ? 'sent' : 'needs retry'}.`
       );
       await fetchAvailability();
     } catch (err) {
@@ -395,10 +424,10 @@ const ManualRegistrationsPage = () => {
                       </select>
                     )}
                     <input
-                      name="utr"
-                      value={form.utr}
+                      name="couponCode"
+                      value={form.couponCode}
                       onChange={handleChange}
-                      placeholder="UTR / Transaction ID (optional)"
+                      placeholder="Coupon code (optional)"
                       className={`${inputClass} sm:col-span-2`}
                     />
                   </div>
@@ -408,14 +437,115 @@ const ManualRegistrationsPage = () => {
                     ) : quoteError ? (
                       <span className="text-red-600">{quoteError}</span>
                     ) : (
-                      <div className="flex items-center justify-between">
-                        <span>Final Amount (incl. GST + fee)</span>
-                        <span className="font-semibold">
-                          INR {Number(quote?.totalAmount || 0).toLocaleString('en-IN')}
-                        </span>
+                      <div className="space-y-1">
+                        {quote?.couponDiscount > 0 && (
+                          <div className="flex items-center justify-between text-emerald-700">
+                            <span>Coupon {quote.couponCode}</span>
+                            <span>- INR {Number(quote.couponDiscount).toLocaleString('en-IN')}</span>
+                          </div>
+                        )}
+                        <div className="flex items-center justify-between font-semibold">
+                          <span>Final Amount (incl. GST + fee)</span>
+                          <span>INR {Number(quote?.totalAmount || 0).toLocaleString('en-IN')}</span>
+                        </div>
+                        {quote?.aoaCourseAvailability && (
+                          <div className={quote.aoaCourseAvailability.available ? 'text-slate-500' : 'text-red-600'}>
+                            AOA Course: {quote.aoaCourseAvailability.remaining} of{' '}
+                            {quote.aoaCourseAvailability.capacity} seats remaining
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h2 className="text-lg font-semibold text-slate-900">Payment Received</h2>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <select
+                      name="paymentMethod"
+                      value={form.paymentMethod}
+                      onChange={handleChange}
+                      className={inputClass}
+                      required
+                    >
+                      <option value="RAZORPAY">Razorpay</option>
+                      <option value="UPI">UPI</option>
+                      <option value="BANK_TRANSFER">Bank Transfer</option>
+                      <option value="CASH">Cash</option>
+                      <option value="OTHER">Other</option>
+                    </select>
+                    <input
+                      name="paymentDate"
+                      type="date"
+                      value={form.paymentDate}
+                      onChange={handleChange}
+                      className={inputClass}
+                      required
+                    />
+                    <input
+                      name="razorpayPaymentId"
+                      value={form.razorpayPaymentId}
+                      onChange={handleChange}
+                      placeholder={`Razorpay Payment ID${form.paymentMethod === 'RAZORPAY' ? '' : ' (optional)'}`}
+                      className={inputClass}
+                      required={form.paymentMethod === 'RAZORPAY'}
+                    />
+                    <input
+                      name="razorpayOrderId"
+                      value={form.razorpayOrderId}
+                      onChange={handleChange}
+                      placeholder="Razorpay Order ID (optional)"
+                      className={inputClass}
+                    />
+                    {form.paymentMethod !== 'RAZORPAY' && (
+                      <input
+                        name="paymentReference"
+                        value={form.paymentReference}
+                        onChange={handleChange}
+                        placeholder={form.paymentMethod === 'CASH' ? 'Receipt/reference (optional)' : 'UTR / reference number'}
+                        className={`${inputClass} sm:col-span-2`}
+                        required={form.paymentMethod !== 'CASH'}
+                      />
+                    )}
+                    <input
+                      name="amountReceived"
+                      type="number"
+                      value={form.amountReceived}
+                      onChange={handleChange}
+                      placeholder="Amount received"
+                      className={inputClass}
+                      min="0"
+                      required
+                    />
+                    <input
+                      name="paymentNotes"
+                      value={form.paymentNotes}
+                      onChange={handleChange}
+                      placeholder={form.paymentMethod === 'CASH' ? 'Cash receipt/details (required)' : 'Payment notes (optional)'}
+                      className={inputClass}
+                      required={form.paymentMethod === 'CASH'}
+                    />
+                    <textarea
+                      name="manualRegistrationNotes"
+                      value={form.manualRegistrationNotes}
+                      onChange={handleChange}
+                      placeholder="Internal registration notes (optional)"
+                      className="border border-slate-200 rounded-xl px-3 py-2 text-sm sm:col-span-2"
+                      rows={3}
+                    />
+                  </div>
+                  <label className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+                    <input
+                      type="checkbox"
+                      name="confirmPaymentReceived"
+                      checked={form.confirmPaymentReceived}
+                      onChange={handleChange}
+                      className="mt-0.5"
+                      required
+                    />
+                    I have checked and confirmed that the exact payment shown above was received.
+                  </label>
                 </div>
 
                 <div className="space-y-3">
@@ -470,7 +600,7 @@ const ManualRegistrationsPage = () => {
 
                 <button
                   type="submit"
-                  disabled={submitting}
+                  disabled={submitting || quoteLoading || Boolean(quoteError) || !form.confirmPaymentReceived}
                   className="w-full bg-[#005aa9] text-white rounded-xl py-3 font-semibold hover:bg-[#004684] transition-colors"
                 >
                   {submitting ? 'Creating...' : 'Create Manual Registration'}
