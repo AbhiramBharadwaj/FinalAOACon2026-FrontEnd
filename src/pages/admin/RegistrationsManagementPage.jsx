@@ -26,12 +26,10 @@ import Sidebar from '../../components/admin/Sidebar';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
 const packageFilterOptions = [
-  { key: 'Conference Only', label: 'Conference Only' },
-  { key: 'Conference + Workshop', label: 'Conference + Workshop' },
-  { key: 'Conference + AOA Certified Course', label: 'Conference + AOA Certified Course' },
-  { key: 'Conference + AOA Life Membership', label: 'Conference + AOA Life Membership' },
-  { key: 'Conference + Workshop + AOA Life Membership', label: 'Conference + Workshop + AOA Life Membership' },
-  { key: 'Conference + AOA Certified Course + AOA Life Membership', label: 'Conference + AOA Certified Course + AOA Life Membership' },
+  { key: 'CONFERENCE_ONLY', label: 'Conference only' },
+  { key: 'WORKSHOP', label: 'Workshop' },
+  { key: 'AOA_COURSE', label: 'AOA Certified Course' },
+  { key: 'LIFE_MEMBERSHIP', label: 'AOA Life Membership' },
 ];
 
 const statusFilterOptions = [
@@ -87,6 +85,20 @@ const RegistrationsManagementPage = () => {
     return labels.length ? `Conference + ${labels.join(' + ')}` : 'Conference Only';
   };
 
+  const matchesRegistrationChoice = (registration, choice) => {
+    if (!choice) return true;
+    if (choice === 'CONFERENCE_ONLY') {
+      return !registration.addWorkshop && !registration.selectedWorkshop &&
+        !registration.addAoaCourse && !registration.addLifeMembership;
+    }
+    if (choice === 'WORKSHOP') {
+      return Boolean(registration.addWorkshop || registration.selectedWorkshop);
+    }
+    if (choice === 'AOA_COURSE') return Boolean(registration.addAoaCourse);
+    if (choice === 'LIFE_MEMBERSHIP') return Boolean(registration.addLifeMembership);
+    return true;
+  };
+
   const getWorkshopLabel = (workshopId) =>
     WORKSHOP_LABELS[workshopId] || workshopId || '—';
 
@@ -121,12 +133,17 @@ const RegistrationsManagementPage = () => {
     packageFilters.length + statusFilters.length + roleFilters.length + workshopFilters.length;
 
   const filterCounts = useMemo(() => {
-    const packages = new Map();
+    const packages = new Map(
+      packageFilterOptions.map((option) => [
+        option.key,
+        registrations.filter((registration) =>
+          matchesRegistrationChoice(registration, option.key)
+        ).length,
+      ])
+    );
     const statuses = new Map();
     const roles = new Map();
     registrations.forEach((registration) => {
-      const packageLabel = getRegistrationLabel(registration);
-      packages.set(packageLabel, (packages.get(packageLabel) || 0) + 1);
       if (registration.paymentStatus) {
         statuses.set(
           registration.paymentStatus,
@@ -164,11 +181,11 @@ const RegistrationsManagementPage = () => {
   }, [registrations]);
 
   const selectedPackage = packageFilters[0] || '';
-  const workshopFilterDisabled = Boolean(selectedPackage) && !selectedPackage.includes('Workshop');
+  const workshopFilterDisabled = selectedPackage !== 'WORKSHOP';
 
   const handlePackageFilterChange = (value) => {
     setPackageFilters(value ? [value] : []);
-    if (value && !value.includes('Workshop')) setWorkshopFilters([]);
+    if (value !== 'WORKSHOP') setWorkshopFilters([]);
   };
 
   useEffect(() => {
@@ -190,9 +207,7 @@ const RegistrationsManagementPage = () => {
           r.registrationNumber?.toLowerCase().includes(q) ||
           r.userId?.name?.toLowerCase().includes(q) ||
           r.userId?.email?.toLowerCase().includes(q);
-        const matchesPackage =
-          packageFilters.length === 0 ||
-          packageFilters.includes(getRegistrationLabel(r));
+        const matchesPackage = matchesRegistrationChoice(r, packageFilters[0]);
         const matchesStatus =
           statusFilters.length === 0 ||
           statusFilters.includes(r.paymentStatus);
@@ -641,13 +656,13 @@ const RegistrationsManagementPage = () => {
               </div>
             </div>
             <div>
-              <label className="mb-1.5 block text-[11px] font-semibold text-slate-700">Package</label>
+              <label className="mb-1.5 block text-[11px] font-semibold text-slate-700">Registration choice</label>
               <select
                 value={packageFilters[0] || ''}
                 onChange={(event) => handlePackageFilterChange(event.target.value)}
                 className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#005aa9]/40"
               >
-                <option value="">All packages ({registrations.length})</option>
+                <option value="">All registrations ({registrations.length})</option>
                 {packageFilterOptions.map((option) => (
                   <option key={option.key} value={option.key}>
                     {option.label} ({filterCounts.packages.get(option.key) || 0})
@@ -695,7 +710,7 @@ const RegistrationsManagementPage = () => {
               >
                 <option value="">
                   {workshopFilterDisabled
-                    ? 'Not applicable for selected package'
+                    ? 'Select Workshop above first'
                     : `All workshops (${workshopFilterOptions.reduce((total, option) => total + option.count, 0)})`}
                 </option>
                 {workshopFilterOptions.map((option) => (
@@ -706,7 +721,7 @@ const RegistrationsManagementPage = () => {
               </select>
               {workshopFilterDisabled && (
                 <p className="mt-1 text-[10px] text-slate-500">
-                  Workshop is available only with a workshop package.
+                  Choose Workshop under Registration choice to filter individual workshops.
                 </p>
               )}
             </div>
