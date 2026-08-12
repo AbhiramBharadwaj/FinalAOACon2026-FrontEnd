@@ -18,6 +18,8 @@ import {
   Stethoscope,
   CreditCard,
   FileText,
+  CalendarDays,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { adminAPI } from '../../utils/api';
 import Sidebar from '../../components/admin/Sidebar';
@@ -89,6 +91,36 @@ const RegistrationsManagementPage = () => {
 
   const getWorkshopLabel = (workshopId) =>
     WORKSHOP_LABELS[workshopId] || workshopId || '—';
+
+  const formatRegistrationDate = (value) => {
+    if (!value) return { date: 'Not available', time: '' };
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return { date: 'Not available', time: '' };
+    return {
+      date: date.toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      }),
+      time: date.toLocaleTimeString('en-IN', {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+    };
+  };
+
+  const registrationStats = useMemo(
+    () => ({
+      total: registrations.length,
+      shown: filtered.length,
+      paid: registrations.filter((registration) => registration.paymentStatus === 'PAID').length,
+      pending: registrations.filter((registration) => registration.paymentStatus === 'PENDING').length,
+    }),
+    [registrations, filtered.length]
+  );
+
+  const activeFilterCount =
+    packageFilters.length + statusFilters.length + roleFilters.length + workshopFilters.length;
 
   const workshopFilterOptions = useMemo(() => {
     const byLabel = new Map();
@@ -219,6 +251,14 @@ const RegistrationsManagementPage = () => {
   };
 
   const clearWorkshopFilters = () => {
+    setWorkshopFilters([]);
+  };
+
+  const clearAllFilters = () => {
+    setSearchTerm('');
+    setPackageFilters([]);
+    setStatusFilters([]);
+    setRoleFilters([]);
     setWorkshopFilters([]);
   };
 
@@ -551,26 +591,62 @@ const RegistrationsManagementPage = () => {
             </button>
           </div>
         )}
-        <div className="mb-4">
+        <div className="mb-5">
           <h1 className="text-lg sm:text-xl font-semibold text-slate-900 flex items-center gap-2">
             <Users className="w-5 h-5 text-[#005aa9]" />
             Registrations
           </h1>
           <p className="text-xs sm:text-sm text-slate-600">
-            {filtered.length} of {registrations.length} records
+            View attendees, payment status, packages and registration dates.
           </p>
         </div>
 
+        <div className="mb-5 grid grid-cols-2 gap-3 xl:grid-cols-4">
+          {[
+            { label: 'All registrations', value: registrationStats.total, tone: 'border-blue-200 bg-blue-50 text-blue-700' },
+            { label: 'Currently shown', value: registrationStats.shown, tone: 'border-cyan-200 bg-cyan-50 text-cyan-700' },
+            { label: 'Paid', value: registrationStats.paid, tone: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
+            { label: 'Payment pending', value: registrationStats.pending, tone: 'border-amber-200 bg-amber-50 text-amber-700' },
+          ].map((item) => (
+            <div key={item.label} className={`rounded-xl border p-3 ${item.tone}`}>
+              <p className="text-[11px] font-medium uppercase tracking-wide opacity-80">{item.label}</p>
+              <p className="mt-1 text-2xl font-bold">{item.value.toLocaleString('en-IN')}</p>
+            </div>
+          ))}
+        </div>
+
         {}
-        <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-3">
-            <div className="max-w-xs">
+        <div className="mb-5 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <span className="rounded-lg bg-[#005aa9]/10 p-2 text-[#005aa9]">
+                <SlidersHorizontal className="h-4 w-4" />
+              </span>
+              <div>
+                <h2 className="text-sm font-semibold text-slate-900">Find registrations</h2>
+                <p className="text-[11px] text-slate-500">Search or select one or more filters below.</p>
+              </div>
+            </div>
+            {(activeFilterCount > 0 || searchTerm) && (
+              <button
+                type="button"
+                onClick={clearAllFilters}
+                className="rounded-lg border border-slate-200 px-3 py-1.5 text-[11px] font-medium text-slate-600 hover:bg-slate-50"
+              >
+                Clear all {activeFilterCount > 0 ? `(${activeFilterCount})` : ''}
+              </button>
+            )}
+          </div>
+          <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+          <div className="space-y-4">
+            <div className="max-w-md">
+              <label className="mb-1.5 block text-[11px] font-semibold text-slate-700">Search attendee</label>
               <div className="relative">
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search name / email / reg no"
+                  placeholder="Name, email or registration number"
                   className="w-full pl-8 pr-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#005aa9]/40"
                 />
               </div>
@@ -578,7 +654,7 @@ const RegistrationsManagementPage = () => {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <p className="text-[11px] font-medium text-slate-600">
-                  Package filter
+                  Filter by package
                 </p>
                 {packageFilters.length > 0 && (
                   <button
@@ -612,7 +688,7 @@ const RegistrationsManagementPage = () => {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <p className="text-[11px] font-medium text-slate-600">
-                  Status filter
+                  Filter by payment status
                 </p>
                 {statusFilters.length > 0 && (
                   <button
@@ -646,7 +722,7 @@ const RegistrationsManagementPage = () => {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <p className="text-[11px] font-medium text-slate-600">
-                  Role filter
+                  Filter by attendee type
                 </p>
                 {roleFilters.length > 0 && (
                   <button
@@ -680,7 +756,7 @@ const RegistrationsManagementPage = () => {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <p className="text-[11px] font-medium text-slate-600">
-                  Workshop filter
+                  Filter by workshop
                 </p>
                 {workshopFilters.length > 0 && (
                   <button
@@ -728,12 +804,13 @@ const RegistrationsManagementPage = () => {
               Download Excel
             </button>
           </div>
+          </div>
         </div>
 
         {}
-        <div className="hidden md:block bg-white border border-slate-200 rounded-xl overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead className="bg-slate-50">
+        <div className="hidden md:block bg-white border border-slate-200 rounded-xl overflow-x-auto shadow-sm">
+          <table className="w-full min-w-[1450px] text-xs">
+            <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
                 <th className="px-3 py-2 w-8">
                   <input
@@ -747,10 +824,13 @@ const RegistrationsManagementPage = () => {
                   />
                 </th>
                 <th className="px-3 py-2 text-left font-semibold text-slate-700">
-                  Participant
+                  Attendee
                 </th>
                 <th className="px-3 py-2 text-left font-semibold text-slate-700">
-                  Reg #
+                  Registration No.
+                </th>
+                <th className="px-3 py-2 text-left font-semibold text-slate-700">
+                  Registered on
                 </th>
                 <th className="px-3 py-2 text-left font-semibold text-slate-700">
                   Package
@@ -773,8 +853,10 @@ const RegistrationsManagementPage = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {filtered.map((reg) => (
-                <tr key={reg._id} className="hover:bg-slate-50/60">
+              {filtered.map((reg, index) => {
+                const registered = formatRegistrationDate(reg.createdAt);
+                return (
+                <tr key={reg._id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'} hover:bg-blue-50/50`}>
                   <td className="px-3 py-2">
                     <input
                       type="checkbox"
@@ -793,6 +875,15 @@ const RegistrationsManagementPage = () => {
                   </td>
                   <td className="px-3 py-2 font-mono text-[12px] font-semibold text-[#005aa9]">
                     {reg.registrationNumber}
+                  </td>
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <div className="flex items-start gap-1.5 text-slate-700">
+                      <CalendarDays className="mt-0.5 h-3.5 w-3.5 text-[#005aa9]" />
+                      <div>
+                        <div className="text-[11px] font-medium">{registered.date}</div>
+                        <div className="text-[10px] text-slate-500">{registered.time}</div>
+                      </div>
+                    </div>
                   </td>
                   <td className="px-3 py-2 text-[11px] text-slate-700">
                     {getRegistrationLabel(reg)}
@@ -849,11 +940,11 @@ const RegistrationsManagementPage = () => {
                     </div>
                   </td>
                 </tr>
-              ))}
+              );})}
               {filtered.length === 0 && (
                 <tr>
                   <td
-                    colSpan={9}
+                    colSpan={10}
                     className="px-3 py-6 text-center text-xs text-slate-500"
                   >
                     No registrations found
@@ -866,7 +957,9 @@ const RegistrationsManagementPage = () => {
 
         {}
         <div className="md:hidden space-y-3">
-          {filtered.map((reg) => (
+          {filtered.map((reg) => {
+            const registered = formatRegistrationDate(reg.createdAt);
+            return (
             <div
               key={reg._id}
               className="bg-white border border-slate-200 rounded-xl p-3 text-xs"
@@ -889,10 +982,15 @@ const RegistrationsManagementPage = () => {
               </div>
               <div className="grid grid-cols-2 gap-2 mb-2">
                 <div>
-                  <p className="text-[10px] text-slate-500">Reg #</p>
+                  <p className="text-[10px] text-slate-500">Registration No.</p>
                   <p className="font-mono text-[11px] font-semibold text-[#005aa9]">
                     {reg.registrationNumber}
                   </p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-slate-500">Registered on</p>
+                  <p className="text-[11px] font-medium text-slate-800">{registered.date}</p>
+                  <p className="text-[10px] text-slate-500">{registered.time}</p>
                 </div>
                 <div>
                   <p className="text-[10px] text-slate-500">Package</p>
@@ -963,7 +1061,7 @@ const RegistrationsManagementPage = () => {
                 </button>
               </div>
             </div>
-          ))}
+          );})}
         </div>
       </div>
 
@@ -1061,6 +1159,13 @@ const RegistrationsManagementPage = () => {
                     Coupon: {modalData.registration.couponCode
                       ? `${modalData.registration.couponCode} (-₹${modalData.registration.couponDiscount?.toLocaleString() || 0})`
                       : '—'}
+                  </p>
+                  <p className="text-[11px] text-slate-700">
+                    Registered on:{' '}
+                    <span className="font-medium">
+                      {formatRegistrationDate(modalData.registration.createdAt).date}{' '}
+                      {formatRegistrationDate(modalData.registration.createdAt).time}
+                    </span>
                   </p>
                   <p className="text-[11px] text-slate-700 flex items-center gap-1">
                     Status: {getStatusBadge(modalData.registration.paymentStatus)}
