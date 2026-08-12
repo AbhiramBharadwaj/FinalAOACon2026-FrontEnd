@@ -765,7 +765,7 @@ const RegistrationsManagementPage = () => {
                   <td className="px-3 py-2 text-[11px] text-slate-700">
                     {reg.selectedWorkshop
                       ? getWorkshopLabel(reg.selectedWorkshop)
-                      : '—'}
+                      : 'CONFERENCE ONLY'}
                   </td>
                   <td className="px-3 py-2 font-mono text-[11px] text-slate-900">
                     ₹{reg.totalAmount?.toLocaleString()}
@@ -877,7 +877,7 @@ const RegistrationsManagementPage = () => {
                   <p className="text-[11px] text-slate-800">
                     {reg.selectedWorkshop
                       ? getWorkshopLabel(reg.selectedWorkshop)
-                      : '—'}
+                      : 'CONFERENCE ONLY'}
                   </p>
                 </div>
                 <div>
@@ -1023,7 +1023,7 @@ const RegistrationsManagementPage = () => {
                     Workshop:{' '}
                     {modalData.registration.selectedWorkshop
                       ? getWorkshopLabel(modalData.registration.selectedWorkshop)
-                      : '—'}
+                      : 'CONFERENCE ONLY'}
                   </p>
                   <p className="text-[11px] text-slate-700">
                     Amount: ₹
