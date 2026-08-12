@@ -54,7 +54,7 @@ const Sidebar = () => {
       {}
       <button
         onClick={() => setIsMobileOpen(true)}
-        className="fixed left-4 top-4 z-50 rounded-xl bg-[#073b4c] p-2.5 text-white shadow-lg lg:hidden"
+        className="fixed right-4 top-4 z-50 rounded-xl bg-[#073b4c] p-2.5 text-white shadow-lg lg:hidden"
         aria-label="Open admin navigation"
       >
         <Menu className="w-5 h-5" />

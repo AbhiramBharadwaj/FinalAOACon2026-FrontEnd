@@ -30,10 +30,8 @@ const packageFilterOptions = [
   { key: 'Conference + Workshop', label: 'Conference + Workshop' },
   { key: 'Conference + AOA Certified Course', label: 'Conference + AOA Certified Course' },
   { key: 'Conference + AOA Life Membership', label: 'Conference + AOA Life Membership' },
-  { key: 'Conference + Workshop + AOA Certified Course', label: 'Conference + Workshop + AOA Certified Course' },
   { key: 'Conference + Workshop + AOA Life Membership', label: 'Conference + Workshop + AOA Life Membership' },
   { key: 'Conference + AOA Certified Course + AOA Life Membership', label: 'Conference + AOA Certified Course + AOA Life Membership' },
-  { key: 'Conference + Workshop + AOA Certified Course + AOA Life Membership', label: 'Conference + Workshop + AOA Certified Course + AOA Life Membership' },
 ];
 
 const statusFilterOptions = [
@@ -122,6 +120,29 @@ const RegistrationsManagementPage = () => {
   const activeFilterCount =
     packageFilters.length + statusFilters.length + roleFilters.length + workshopFilters.length;
 
+  const filterCounts = useMemo(() => {
+    const packages = new Map();
+    const statuses = new Map();
+    const roles = new Map();
+    registrations.forEach((registration) => {
+      const packageLabel = getRegistrationLabel(registration);
+      packages.set(packageLabel, (packages.get(packageLabel) || 0) + 1);
+      if (registration.paymentStatus) {
+        statuses.set(
+          registration.paymentStatus,
+          (statuses.get(registration.paymentStatus) || 0) + 1
+        );
+      }
+      if (registration.userId?.role) {
+        roles.set(
+          registration.userId.role,
+          (roles.get(registration.userId.role) || 0) + 1
+        );
+      }
+    });
+    return { packages, statuses, roles };
+  }, [registrations]);
+
   const workshopFilterOptions = useMemo(() => {
     const byLabel = new Map();
     registrations.forEach((reg) => {
@@ -129,9 +150,10 @@ const RegistrationsManagementPage = () => {
       const id = reg.selectedWorkshop;
       const label = getWorkshopLabel(id);
       if (!byLabel.has(label)) {
-        byLabel.set(label, { key: label, label, ids: new Set() });
+        byLabel.set(label, { key: label, label, ids: new Set(), count: 0 });
       }
       byLabel.get(label).ids.add(id);
+      byLabel.get(label).count += 1;
     });
     return Array.from(byLabel.values())
       .map((option) => ({
@@ -140,6 +162,14 @@ const RegistrationsManagementPage = () => {
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [registrations]);
+
+  const selectedPackage = packageFilters[0] || '';
+  const workshopFilterDisabled = Boolean(selectedPackage) && !selectedPackage.includes('Workshop');
+
+  const handlePackageFilterChange = (value) => {
+    setPackageFilters(value ? [value] : []);
+    if (value && !value.includes('Workshop')) setWorkshopFilters([]);
+  };
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -614,12 +644,14 @@ const RegistrationsManagementPage = () => {
               <label className="mb-1.5 block text-[11px] font-semibold text-slate-700">Package</label>
               <select
                 value={packageFilters[0] || ''}
-                onChange={(event) => setPackageFilters(event.target.value ? [event.target.value] : [])}
+                onChange={(event) => handlePackageFilterChange(event.target.value)}
                 className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#005aa9]/40"
               >
-                <option value="">All packages</option>
+                <option value="">All packages ({registrations.length})</option>
                 {packageFilterOptions.map((option) => (
-                  <option key={option.key} value={option.key}>{option.label}</option>
+                  <option key={option.key} value={option.key}>
+                    {option.label} ({filterCounts.packages.get(option.key) || 0})
+                  </option>
                 ))}
               </select>
             </div>
@@ -630,9 +662,11 @@ const RegistrationsManagementPage = () => {
                 onChange={(event) => setStatusFilters(event.target.value ? [event.target.value] : [])}
                 className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#005aa9]/40"
               >
-                <option value="">All statuses</option>
+                <option value="">All statuses ({registrations.length})</option>
                 {statusFilterOptions.map((option) => (
-                  <option key={option.key} value={option.key}>{option.label}</option>
+                  <option key={option.key} value={option.key}>
+                    {option.label} ({filterCounts.statuses.get(option.key) || 0})
+                  </option>
                 ))}
               </select>
             </div>
@@ -643,9 +677,11 @@ const RegistrationsManagementPage = () => {
                 onChange={(event) => setRoleFilters(event.target.value ? [event.target.value] : [])}
                 className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#005aa9]/40"
               >
-                <option value="">All attendee types</option>
+                <option value="">All attendee types ({registrations.length})</option>
                 {roleFilterOptions.map((option) => (
-                  <option key={option.key} value={option.key}>{option.label}</option>
+                  <option key={option.key} value={option.key}>
+                    {option.label} ({filterCounts.roles.get(option.key) || 0})
+                  </option>
                 ))}
               </select>
             </div>
@@ -654,13 +690,25 @@ const RegistrationsManagementPage = () => {
               <select
                 value={workshopFilters[0] || ''}
                 onChange={(event) => setWorkshopFilters(event.target.value ? [event.target.value] : [])}
-                className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#005aa9]/40"
+                disabled={workshopFilterDisabled}
+                className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#005aa9]/40 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
               >
-                <option value="">All workshops</option>
+                <option value="">
+                  {workshopFilterDisabled
+                    ? 'Not applicable for selected package'
+                    : `All workshops (${workshopFilterOptions.reduce((total, option) => total + option.count, 0)})`}
+                </option>
                 {workshopFilterOptions.map((option) => (
-                  <option key={option.key} value={option.key}>{option.label}</option>
+                  <option key={option.key} value={option.key}>
+                    {option.label} ({option.count})
+                  </option>
                 ))}
               </select>
+              {workshopFilterDisabled && (
+                <p className="mt-1 text-[10px] text-slate-500">
+                  Workshop is available only with a workshop package.
+                </p>
+              )}
             </div>
           </div>
           <div className="mt-3 flex flex-wrap justify-end gap-2 border-t border-slate-100 pt-3">
