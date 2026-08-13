@@ -5,6 +5,7 @@ import MobileNav from '../../components/common/MobileNav';
 import Footer from '../../components/common/Footer';
 import ProgrammeFlyer from '../../components/common/ProgrammeFlyer';
 import { WORKSHOPS } from '../../data/workshopsData';
+import criticalIncidentsProgramme from '../../images/Workshops/critical-incidents-obstetric-anaesthesia-programme.jpg';
 import labourAnalgesiaProgramme from '../../images/Workshops/labour-analgesia-programme.jpg';
 import maternalResuscitationProgramme from '../../images/Workshops/maternal-resuscitation-programme.jpg';
 import pocusProgrammePage1 from '../../images/Workshops/pocus-programme-page-1.jpg';
@@ -13,6 +14,9 @@ import pocusProgrammePage2 from '../../images/Workshops/pocus-programme-page-2.j
 const WORKSHOP_PROGRAMMES = {
   'labour-analgesia': [
     { src: labourAnalgesiaProgramme, alt: 'Labour Analgesia Workshop full-day programme' },
+  ],
+  'critical-incidents-ob-anaesthesia': [
+    { src: criticalIncidentsProgramme, alt: 'Critical Incidents in Obstetric Anaesthesia Workshop full-day programme' },
   ],
   'pocus-regional-anaesthesia-obstetrics': [
     { src: pocusProgrammePage1, alt: 'Obstetric Point-of-Care Ultrasound programme page 1' },
