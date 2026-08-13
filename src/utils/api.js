@@ -140,6 +140,7 @@ export const adminAPI = {
   getRegistrationCounter: () => api.get('/admin/counters/registration-number'),
   updateRegistrationCounter: (seq) => api.put('/admin/counters/registration-number', { seq }),
   resendRegistrationEmail: (id) => api.post(`/admin/registrations/${id}/resend-email`),
+  addLifeMembership: (id) => api.post(`/admin/registrations/${id}/life-membership`),
 };
 
 export default api;

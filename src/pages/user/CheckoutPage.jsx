@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
-import { registrationAPI, paymentAPI, attendanceAPI } from '../../utils/api';
+import { registrationAPI, paymentAPI, attendanceAPI, userAPI } from '../../utils/api';
 import Header from '../../components/common/Header';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
@@ -39,7 +39,7 @@ const CheckoutPage = () => {
 
   const COUPON_ENABLED = true;
 
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const { setRegistration: setAppRegistration } = useApp();
   const navigate = useNavigate();
 
@@ -118,11 +118,20 @@ const CheckoutPage = () => {
         order_id: orderId,
         handler: async (response) => {
           try {
-            await paymentAPI.verifyPayment({
+            const verification = await paymentAPI.verifyPayment({
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
             });
+
+            if (verification.data?.membershipStatus === 'ACTIVE') {
+              try {
+                const profileRes = await userAPI.getMe();
+                updateUser(profileRes.data?.user || profileRes.data);
+              } catch (profileError) {
+                console.error('Profile refresh failed after membership activation:', profileError);
+              }
+            }
 
             try {
               await attendanceAPI.generateQr(registration._id);

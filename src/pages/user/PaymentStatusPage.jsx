@@ -377,6 +377,14 @@ const PaymentStatusPage = () => {
                       </span>
                     </div>
                   )}
+                  {data.membershipStatus === 'ACTIVE' && data.lifetimeMembershipId && (
+                    <div className="flex justify-between py-2 border-b border-slate-100/50">
+                      <span className="text-slate-600">AOA Membership ID</span>
+                      <span className="font-semibold text-purple-700">
+                        {data.lifetimeMembershipId}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex justify-between py-2">
                     <span className="text-slate-600">Payment Status</span>
                     <span className={`px-2.5 py-1 rounded-full text-[10px] font-medium ${

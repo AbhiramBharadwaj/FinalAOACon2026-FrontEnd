@@ -71,6 +71,7 @@ const RegistrationsManagementPage = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
   const [resendingId, setResendingId] = useState(null);
+  const [upgradingId, setUpgradingId] = useState(null);
 
   const getPackageLabels = (registration) => {
     const labels = [];
@@ -517,6 +518,42 @@ const RegistrationsManagementPage = () => {
     }
   };
 
+  const canAddLifeMembership = (registration) =>
+    registration?.paymentStatus === 'PAID' &&
+    registration?.userId?.role === 'NON_AOA' &&
+    !registration?.addLifeMembership;
+
+  const handleAddLifeMembership = async (registration) => {
+    if (!canAddLifeMembership(registration)) return;
+    const confirmed = window.confirm(
+      `Add AOA Life Membership to ${registration.registrationNumber}? The attendee will need to pay the additional balance.`
+    );
+    if (!confirmed) return;
+
+    try {
+      setUpgradingId(registration._id);
+      const res = await adminAPI.addLifeMembership(registration._id);
+      const updated = res.data?.registration;
+      if (updated) {
+        setRegistrations((prev) => prev.map((item) => item._id === updated._id ? updated : item));
+        if (modalData?.registration?._id === updated._id) {
+          setModalData((prev) => ({ ...prev, registration: updated }));
+        }
+      }
+      setDeleteNotice({
+        type: 'success',
+        message: `Life membership added. Additional balance: ₹${Number(res.data?.balanceDue || 0).toLocaleString('en-IN')}.`,
+      });
+    } catch (err) {
+      setDeleteNotice({
+        type: 'error',
+        message: err.response?.data?.message || 'Failed to add AOA Life Membership.',
+      });
+    } finally {
+      setUpgradingId(null);
+    }
+  };
+
   const getStatusBadge = (status) => {
     const colors = {
       PAID: 'bg-emerald-100 text-emerald-700 border-emerald-200',
@@ -866,6 +903,16 @@ const RegistrationsManagementPage = () => {
                         <Mail className="w-3 h-3" />
                         {resendingId === reg._id ? 'Sending' : 'Resend'}
                       </button>
+                      {canAddLifeMembership(reg) && (
+                        <button
+                          onClick={() => handleAddLifeMembership(reg)}
+                          disabled={upgradingId === reg._id}
+                          className="inline-flex items-center gap-1 px-2 py-1 text-[11px] rounded-lg border border-purple-200 text-purple-700 hover:bg-purple-50 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          <Award className="w-3 h-3" />
+                          {upgradingId === reg._id ? 'Adding' : 'Add membership'}
+                        </button>
+                      )}
                       <button
                         onClick={() => handleDeleteRegistration(reg)}
                         disabled={deletingId === reg._id}
@@ -988,6 +1035,16 @@ const RegistrationsManagementPage = () => {
                   <Mail className="w-3 h-3" />
                   {resendingId === reg._id ? 'Sending' : 'Resend'}
                 </button>
+                {canAddLifeMembership(reg) && (
+                  <button
+                    onClick={() => handleAddLifeMembership(reg)}
+                    disabled={upgradingId === reg._id}
+                    className="flex-1 inline-flex items-center justify-center gap-1 px-2 py-1 text-[11px] rounded-lg border border-purple-200 text-purple-700 hover:bg-purple-50 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <Award className="w-3 h-3" />
+                    {upgradingId === reg._id ? 'Adding' : 'Membership'}
+                  </button>
+                )}
                 <button
                   onClick={() => handleDeleteRegistration(reg)}
                   disabled={deletingId === reg._id}

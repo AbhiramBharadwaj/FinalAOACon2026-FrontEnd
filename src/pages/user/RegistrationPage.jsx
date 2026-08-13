@@ -131,9 +131,10 @@ const RegistrationPage = () => {
   const workshopAddOn = pricing?.addOns?.workshop;
   const aoaAddOn = pricing?.addOns?.aoaCourse;
   const lifeMembershipAddOn = pricing?.addOns?.lifeMembership;
-  const isPaidRegistration = existingRegistration?.paymentStatus === 'PAID';
   const paidSoFar = existingRegistration?.totalPaid || 0;
-  const isAoaMember = user?.role && user.role.toLowerCase().includes('aoa');
+  const isPaidRegistration = paidSoFar > 0;
+  const isMembershipLocked = existingRegistration?.membershipStatus === 'ACTIVE';
+  const isAoaMember = user?.role === 'AOA';
   const hasWorkshopLocked = isPaidRegistration && existingRegistration?.addWorkshop;
   const hasCourseLocked = isPaidRegistration && existingRegistration?.addAoaCourse;
   const isWorkshopSelectionLocked = isPaidRegistration && existingRegistration?.addWorkshop;
@@ -495,14 +496,14 @@ const RegistrationPage = () => {
                               setFormData((prev) => ({
                                 ...prev,
                                 addLifeMembership:
-                                  isPaidRegistration && existingRegistration?.addLifeMembership
+                                  isMembershipLocked
                                     ? true
                                     : e.target.checked,
                               }))
                             }
                             disabled={
                               lifeMembershipAddOn.priceWithoutGST <= 0 ||
-                              (isPaidRegistration && existingRegistration?.addLifeMembership)
+                              isMembershipLocked
                             }
                             className="mt-0.5 h-4 w-4 text-[#ff8a1f] border-slate-300"
                           />
