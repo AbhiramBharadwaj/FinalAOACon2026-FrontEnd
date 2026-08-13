@@ -1,9 +1,17 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Award, Clock3, Users2 } from 'lucide-react';
+import { ArrowLeft, Users2 } from 'lucide-react';
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import Footer from '../../components/common/Footer';
+import ProgrammeFlyer from '../../components/common/ProgrammeFlyer';
 import { CERTIFICATE_COURSE_COORDINATORS } from '../../data/workshopsData';
+import criticalCareProgrammePage1 from '../../images/Workshops/critical-care-course-programme-page-1.jpg';
+import criticalCareProgrammePage2 from '../../images/Workshops/critical-care-course-programme-page-2.jpg';
+
+const COURSE_PROGRAMME = [
+  { src: criticalCareProgrammePage1, alt: 'AOA Certified Obstetric Critical Care Course programme day 1' },
+  { src: criticalCareProgrammePage2, alt: 'AOA Certified Obstetric Critical Care Course programme day 2' },
+];
 
 const AOACertificateCoursePage = () => {
   const navigate = useNavigate();
@@ -73,19 +81,11 @@ const AOACertificateCoursePage = () => {
           </div>
         </section>
 
-        <section className="mt-6 rounded-2xl border border-indigo-200 bg-gradient-to-r from-indigo-50 to-sky-50 p-6 sm:p-7 shadow-sm">
-          <p className="text-base font-semibold text-indigo-900 flex items-center gap-2">
-            <Clock3 className="w-4 h-4" />
-            Coming Soon
-          </p>
-          <p className="mt-3 text-base text-slate-700 leading-relaxed">
-            Complete course structure, eligibility details, learning objectives, and certificate criteria will be announced here shortly.
-          </p>
-          <p className="mt-3 text-base font-medium text-slate-800 flex items-center gap-2">
-            <Award className="w-4 h-4 text-indigo-700" />
-            Stay tuned for official module release.
-          </p>
-        </section>
+        <ProgrammeFlyer
+          title="AOA Certified Course in Obstetric Critical Care"
+          images={COURSE_PROGRAMME}
+          accent="from-[#4f46a5] via-[#6158c7] to-[#f59e0b]"
+        />
       </div>
 
       <Footer />

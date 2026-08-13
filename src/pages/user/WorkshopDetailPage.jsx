@@ -3,13 +3,32 @@ import { ArrowLeft, GraduationCap, Users2, Clock3 } from 'lucide-react';
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import Footer from '../../components/common/Footer';
+import ProgrammeFlyer from '../../components/common/ProgrammeFlyer';
 import { WORKSHOPS } from '../../data/workshopsData';
+import labourAnalgesiaProgramme from '../../images/Workshops/labour-analgesia-programme.jpg';
+import maternalResuscitationProgramme from '../../images/Workshops/maternal-resuscitation-programme.jpg';
+import pocusProgrammePage1 from '../../images/Workshops/pocus-programme-page-1.jpg';
+import pocusProgrammePage2 from '../../images/Workshops/pocus-programme-page-2.jpg';
+
+const WORKSHOP_PROGRAMMES = {
+  'labour-analgesia': [
+    { src: labourAnalgesiaProgramme, alt: 'Labour Analgesia Workshop full-day programme' },
+  ],
+  'pocus-regional-anaesthesia-obstetrics': [
+    { src: pocusProgrammePage1, alt: 'Obstetric Point-of-Care Ultrasound programme page 1' },
+    { src: pocusProgrammePage2, alt: 'Obstetric Point-of-Care Ultrasound programme page 2' },
+  ],
+  'maternal-resuscitation': [
+    { src: maternalResuscitationProgramme, alt: 'Maternal Collapse and Resuscitation Workshop programme' },
+  ],
+};
 
 const WorkshopDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
 
   const workshop = WORKSHOPS.find((item) => item.slug === slug);
+  const programmeImages = WORKSHOP_PROGRAMMES[slug];
 
   if (!workshop) {
     return (
@@ -83,15 +102,23 @@ const WorkshopDetailPage = () => {
           </div>
         </section>
 
-        <section className="mt-5 rounded-2xl border border-violet-200 bg-gradient-to-r from-violet-50 to-fuchsia-50 p-5 sm:p-6 shadow-sm">
-          <p className="text-sm font-semibold text-violet-900 flex items-center gap-2">
-            <Clock3 className="w-4 h-4" />
-            Detailed Workshop Content Coming Soon
-          </p>
-          <p className="mt-2 text-sm text-slate-700 leading-relaxed">
-            Full agenda, station-wise topics, case discussions, and session timelines will be published here soon.
-          </p>
-        </section>
+        {programmeImages ? (
+          <ProgrammeFlyer
+            title={workshop.name}
+            images={programmeImages}
+            accent={workshop.accent}
+          />
+        ) : (
+          <section className="mt-5 rounded-2xl border border-violet-200 bg-gradient-to-r from-violet-50 to-fuchsia-50 p-5 sm:p-6 shadow-sm">
+            <p className="text-sm font-semibold text-violet-900 flex items-center gap-2">
+              <Clock3 className="w-4 h-4" />
+              Detailed Workshop Content Coming Soon
+            </p>
+            <p className="mt-2 text-sm text-slate-700 leading-relaxed">
+              Full agenda, station-wise topics, case discussions, and session timelines will be published here soon.
+            </p>
+          </section>
+        )}
       </div>
 
       <Footer />
