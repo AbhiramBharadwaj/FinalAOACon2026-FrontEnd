@@ -109,7 +109,7 @@ const RegistrationFeesSection = () => {
           <section className="space-y-3 rounded-2xl border border-pink-200 bg-white p-4 sm:p-5 shadow-sm">
             <div>
               <h3 className="text-lg font-semibold text-[#a21d71]">EARLY BIRD</h3>
-              <p className="text-sm font-semibold text-slate-700">UP TO 15TH AUGUST 2026</p>
+              <p className="text-sm font-semibold text-slate-700">UP TO 31ST AUGUST 2026</p>
             </div>
             <div className="w-full overflow-x-auto">
               <table className="w-full text-sm border-collapse min-w-[680px]">
@@ -139,7 +139,7 @@ const RegistrationFeesSection = () => {
           <section className="space-y-3 rounded-2xl border border-pink-200 bg-white p-4 sm:p-5 shadow-sm">
             <div>
               <h3 className="text-lg font-semibold text-[#a21d71]">REGULAR</h3>
-              <p className="text-sm font-semibold text-slate-700">16TH AUGUST 2026 - 15TH OCTOBER 2026</p>
+              <p className="text-sm font-semibold text-slate-700">1ST SEPTEMBER 2026 - 15TH OCTOBER 2026</p>
             </div>
             <div className="w-full overflow-x-auto">
               <table className="w-full text-sm border-collapse min-w-[680px]">
