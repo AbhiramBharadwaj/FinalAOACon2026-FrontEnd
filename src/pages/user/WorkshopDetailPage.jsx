@@ -4,7 +4,12 @@ import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import Footer from '../../components/common/Footer';
 import ProgrammeFlyer from '../../components/common/ProgrammeFlyer';
+import WorkshopFlyerModal from '../../components/common/WorkshopFlyerModal';
 import { WORKSHOPS } from '../../data/workshopsData';
+import criticalIncidentsFlyer from '../../images/Announcements/Critical Incedents in obstetric anaesthesia.jpeg';
+import labourAnalgesiaFlyer from '../../images/Announcements/Labour Analgesia.jpeg';
+import maternalResuscitationFlyer from '../../images/Announcements/Maternal Rescuiation.jpeg';
+import pocusObstetricFlyer from '../../images/Announcements/POCUS Obstetric.jpeg';
 import criticalIncidentsProgramme from '../../images/Workshops/critical-incidents-obstetric-anaesthesia-programme.jpg';
 import labourAnalgesiaProgramme from '../../images/Workshops/labour-analgesia-programme.jpg';
 import maternalResuscitationProgramme from '../../images/Workshops/maternal-resuscitation-programme.jpg';
@@ -27,12 +32,32 @@ const WORKSHOP_PROGRAMMES = {
   ],
 };
 
+const WORKSHOP_FLYERS = {
+  'labour-analgesia': {
+    src: labourAnalgesiaFlyer,
+    alt: 'Labour Analgesia workshop announcement flyer',
+  },
+  'critical-incidents-ob-anaesthesia': {
+    src: criticalIncidentsFlyer,
+    alt: 'Critical Incidents in Obstetric Anaesthesia workshop announcement flyer',
+  },
+  'pocus-regional-anaesthesia-obstetrics': {
+    src: pocusObstetricFlyer,
+    alt: 'POCUS in Obstetrics workshop announcement flyer',
+  },
+  'maternal-resuscitation': {
+    src: maternalResuscitationFlyer,
+    alt: 'Maternal Resuscitation workshop announcement flyer',
+  },
+};
+
 const WorkshopDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
 
   const workshop = WORKSHOPS.find((item) => item.slug === slug);
   const programmeImages = WORKSHOP_PROGRAMMES[slug];
+  const workshopFlyer = WORKSHOP_FLYERS[slug];
 
   if (!workshop) {
     return (
@@ -60,6 +85,15 @@ const WorkshopDetailPage = () => {
   return (
     <div className="min-h-screen bg-slate-50">
       <Header />
+
+      {workshopFlyer ? (
+        <WorkshopFlyerModal
+          key={slug}
+          title={workshop.name}
+          image={workshopFlyer.src}
+          imageAlt={workshopFlyer.alt}
+        />
+      ) : null}
 
       <div className="max-w-5xl mx-auto px-3 sm:px-4 lg:px-6 pb-20">
         <button

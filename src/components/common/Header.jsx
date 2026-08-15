@@ -27,6 +27,7 @@ import {
   Award,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import AnnouncementCenter from './AnnouncementCenter';
 
 const NAV_ITEMS = [
   {
@@ -301,6 +302,7 @@ const Header = () => {
               <button
                 className="md:hidden inline-flex items-center justify-center rounded-md p-2 text-white hover:bg-[#004a8b] focus:outline-none focus:ring-2 focus:ring-white"
                 onClick={() => setShowMobileDrawer(true)}
+                aria-label="Open navigation menu"
               >
                 <Menu className="h-5 w-5" />
               </button>
@@ -397,6 +399,7 @@ const Header = () => {
 
             {}
             <div className="flex items-center gap-2">
+              <AnnouncementCenter />
               {isAuthenticated ? (
                 <div className="relative lg:ml-4">
                   <button

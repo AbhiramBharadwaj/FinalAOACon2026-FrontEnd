@@ -4,7 +4,9 @@ import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import Footer from '../../components/common/Footer';
 import ProgrammeFlyer from '../../components/common/ProgrammeFlyer';
+import WorkshopFlyerModal from '../../components/common/WorkshopFlyerModal';
 import { CERTIFICATE_COURSE_COORDINATORS } from '../../data/workshopsData';
+import certifiedCourseFullHouseFlyer from '../../images/Announcements/aoa-certified-course-full-house-2026.png';
 import criticalCareProgrammePage1 from '../../images/Workshops/critical-care-course-programme-page-1.jpg';
 import criticalCareProgrammePage2 from '../../images/Workshops/critical-care-course-programme-page-2.jpg';
 
@@ -19,6 +21,12 @@ const AOACertificateCoursePage = () => {
   return (
     <div className="min-h-screen bg-slate-50">
       <Header />
+
+      <WorkshopFlyerModal
+        title="AOA Certified Obstetric Critical Care Course"
+        image={certifiedCourseFullHouseFlyer}
+        imageAlt="AOA Certified Obstetric Critical Care Course full house and registration closed announcement"
+      />
 
       <div className="max-w-5xl mx-auto px-3 sm:px-4 lg:px-6 pb-20">
         <button
