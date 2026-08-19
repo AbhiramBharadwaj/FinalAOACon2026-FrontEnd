@@ -134,7 +134,18 @@ const Footer = () => {
 
         <div className="mt-8 border-t border-white/10 pt-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
           <p>AOACON 2026 - Association of Obstetric Anaesthesiologists</p>
-          <p>All rights reserved.</p>
+          <div className="flex flex-col items-center gap-1 sm:items-end">
+            <p>All rights reserved.</p>
+            <a
+              href="https://wa.me/919880739285"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[10px] text-slate-500 transition hover:text-emerald-300"
+              aria-label="Contact Abhiram on WhatsApp"
+            >
+              Designed by Abhiram
+            </a>
+          </div>
         </div>
       </div>
     </footer>
