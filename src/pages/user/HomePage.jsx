@@ -9,6 +9,7 @@ import ravindraImg from '../../images/OrganizingComittee/GL-Ravindra.jpg';
 import champaImg from '../../images/OrganizingComittee/Champa.jpg';
 import ashwiniImg from '../../images/OrganizingComittee/Ashwini.png';
 import anjuGrewalImg from '../../images/AOAOfficeBearers/Anju-Grewal-President.png';
+import sunandaGuptaImg from '../../images/AOAOfficeBearers/Sunanda-Gupta-Founder-President.png';
 
 const targetDate = new Date('2026-10-30T09:00:00+05:30');
 const workshopPreviewCards = [
@@ -231,72 +232,64 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
         </div>
       </section>
 
-      {}
-      <section className="border-b border-slate-300 bg-white py-12 lg:py-16">
+      {/* Welcome Messages Section */}
+      <section className="border-b border-slate-200 bg-slate-50/60 py-12 lg:py-16">
         <div className="max-w-5xl mx-auto px-4 lg:px-6">
-          <h2 className="mb-8 text-[30px] font-extrabold leading-tight text-[#082f63] sm:text-[36px] lg:text-[40px]">
-            Message from the President
-          </h2>
+          <div className="text-center mb-10">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#d9232d] uppercase tracking-wider">
+              WELCOME MESSAGES
+            </h2>
+            <div className="w-16 h-1 bg-[#ff8a1f] mx-auto mt-2.5 rounded-full"></div>
+          </div>
 
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.7fr)_minmax(250px,0.75fr)] lg:items-start">
-            <blockquote className={`space-y-5 text-justify text-slate-700 ${descriptionTextClass}`}>
-              <p className="font-semibold text-slate-900">
-                Respected members of the Association of Obstetric Anaesthesiologists (AOA) India,
-              </p>
-              <p>
-                As President of AOA India, I extend my heartfelt congratulations to Team Shivamogga,
-                ably led by Dr. G. L. Ravindra and Dr. Champa, for graciously hosting the 19th Annual
-                National Conference of AOA India. My best wishes for the success of this conference,
-                thoughtfully curated around the pertinent real-world theme, <em>&ldquo;Safe Motherhood
-                Everywhere: Bridging the Urban–Rural Gap in Obstetric Anaesthesia.&rdquo;</em>
-              </p>
-              <p>
-                I humbly appeal to all anaesthesiologists with an interest in obstetric anaesthesia and
-                critical care to register in large numbers, contribute to insightful deliberations,
-                develop skills that help bridge gaps in care, and collaborate with AOA India in its
-                mission to enhance safe maternal care across our country.
-              </p>
-              <p>
-                The conference highlights include the Obstetric Critical Care Course and four
-                interactive, day-long pre-conference workshops focused on the early recognition and
-                management of obstetric emergencies, structured approaches to safe practice, the
-                management of critical incidents, and simulation-based learning of both technical and
-                non-technical skills.
-              </p>
-              <p>
-                Leading international and national experts in obstetric anaesthesia will join us for
-                the conference talks and deliberations.
-              </p>
-              <p>
-                This Annual National Conference will exemplify our commitment to advancing obstetric
-                anaesthesia through cutting-edge education and hands-on training, empowering us to
-                deliver even better care to mothers and newborns across India.
-              </p>
-              <p className="font-semibold text-slate-900">
-                Together, let us join hands towards reducing maternal morbidity and mortality!
-              </p>
-              <footer className="border-t border-slate-200 pt-5 text-sm leading-relaxed text-slate-700">
-                Kind regards,<br />
-                <span className="font-bold text-slate-900">Dr. Anju Grewal</span><br />
-                President<br />
-                AOA India
-              </footer>
-            </blockquote>
-
-            <figure className="mx-auto w-full max-w-[320px] lg:sticky lg:top-24">
-              <div className="aspect-[8/7] overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Card 1: President */}
+            <div className="bg-white rounded-2xl border-2 border-amber-400/80 p-6 sm:p-8 text-center flex flex-col items-center shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="w-32 h-32 sm:w-36 sm:h-36 rounded-full border-4 border-red-500/90 overflow-hidden shadow-md mb-4 p-0.5 bg-white">
                 <img
                   src={anjuGrewalImg}
-                  alt="Dr. Anju Grewal, President, AOA India"
-                  className="h-full w-full object-cover"
-                  loading="lazy"
+                  alt="Dr. Anju Grewal"
+                  className="w-full h-full rounded-full object-cover"
                 />
               </div>
-              <figcaption className="pt-4 text-center">
-                <p className="text-xl font-bold text-[#082f63]">Dr. Anju Grewal</p>
-                <p className="mt-1 text-sm font-medium text-slate-600">President, AOA India</p>
-              </figcaption>
-            </figure>
+              <h3 className="text-xl font-bold text-slate-900">Dr. Anju Grewal</h3>
+              <p className="text-sm font-medium text-slate-600 mb-4">President, AOA India</p>
+
+              <p className="text-sm text-slate-600 leading-relaxed text-justify line-clamp-4 mb-6 flex-1">
+                As President of AOA India, I extend my heartfelt congratulations to Team Shivamogga, ably led by Dr. G. L. Ravindra and Dr. Champa, for graciously hosting the 19th Annual National Conference of AOA India...
+              </p>
+
+              <Link
+                to="/messages/president"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-6 py-2.5 rounded-lg border-2 border-amber-500 text-amber-600 hover:bg-amber-500 hover:text-white font-bold text-sm transition-colors shadow-sm"
+              >
+                Read More &rarr;
+              </Link>
+            </div>
+
+            {/* Card 2: Founder President */}
+            <div className="bg-white rounded-2xl border-2 border-amber-400/80 p-6 sm:p-8 text-center flex flex-col items-center shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="w-32 h-32 sm:w-36 sm:h-36 rounded-full border-4 border-red-500/90 overflow-hidden shadow-md mb-4 p-0.5 bg-white">
+                <img
+                  src={sunandaGuptaImg}
+                  alt="Dr. Sunanda Gupta"
+                  className="w-full h-full rounded-full object-cover"
+                />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900">Dr. Sunanda Gupta</h3>
+              <p className="text-sm font-medium text-slate-600 mb-4">Founder President, AOA India</p>
+
+              <p className="text-sm text-slate-600 leading-relaxed text-justify line-clamp-4 mb-6 flex-1">
+                Reflecting on our journey since we sowed the seeds of the Association of Obstetric Anaesthesiologists in 2005, it brings me immense joy, pride, and a deep sense of fulfillment to welcome you all to AOACON 2026...
+              </p>
+
+              <Link
+                to="/messages/founder-president"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-6 py-2.5 rounded-lg border-2 border-amber-500 text-amber-600 hover:bg-amber-500 hover:text-white font-bold text-sm transition-colors shadow-sm"
+              >
+                Read More &rarr;
+              </Link>
+            </div>
           </div>
         </div>
       </section>

@@ -43,6 +43,7 @@ import LoadingSpinner from './components/common/LoadingSpinner';
 import QrScanner from './pages/admin/QrScanner';
 import AttendanceManagementPage from './pages/admin/AttendanceManagement';
 import OfficeBearersPage from './pages/user/OfficeBearersPage';
+import MessageDetailPage from './pages/user/MessageDetailPage';
 import MaintenancePage from './pages/MaintenancePage';
 import { siteMode } from './config/siteMode';
 
@@ -181,6 +182,9 @@ function App() {
               } />
                <Route path="/office-bearers" element={
                   <OfficeBearersPage />
+              } />
+              <Route path="/messages/:type" element={
+                  <MessageDetailPage />
               } />
               
               
