@@ -1,649 +1,246 @@
-import { useState, useEffect } from 'react';
-import { Building2, Plus, Edit, Trash2, Eye, Star, MapPin, Users, Calendar, DollarSign, X, Image, List, Clock, HelpCircle } from 'lucide-react';
-import { accommodationAPI, adminAPI } from '../../utils/api';
+import { useEffect, useMemo, useState } from 'react';
+import { BedDouble, CalendarDays, CheckCircle2, IndianRupee, Mail, Plus, RefreshCw, Search, Settings2, UserRound, UsersRound } from 'lucide-react';
+import { adminAPI } from '../../utils/api';
 import Sidebar from '../../components/admin/Sidebar';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
+const money = (amount) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(Number(amount || 0));
+const dateLabel = (value) => value ? new Date(value).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' }) : '—';
+const inputClass = 'mt-1.5 w-full rounded-xl border border-slate-300 px-3 py-2.5 outline-none focus:border-[#005aa9]';
+const hotelWindow = (hotel = {}) => ({ earliestCheckIn: hotel.bookingWindow?.earliestCheckIn || '2026-10-28', latestCheckOut: hotel.bookingWindow?.latestCheckOut || '2026-11-03' });
+const dateOptions = (start, end) => {
+  if (!start || !end) return [];
+  const result = [];
+  const cursor = new Date(`${start}T00:00:00Z`);
+  const last = new Date(`${end}T00:00:00Z`);
+  while (cursor <= last && result.length < 31) {
+    const value = cursor.toISOString().slice(0, 10);
+    result.push([value, cursor.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })]);
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+  }
+  return result;
+};
+const initialStayDates = (hotel) => {
+  const window = hotelWindow(hotel);
+  const options = dateOptions(window.earliestCheckIn, window.latestCheckOut).map(([value]) => value);
+  const checkInDate = options.includes('2026-10-30') ? '2026-10-30' : options[0] || '';
+  const checkouts = options.filter((date) => date > checkInDate);
+  return { checkInDate, checkOutDate: checkouts.includes('2026-11-02') ? '2026-11-02' : checkouts[0] || '' };
+};
+const todayInIndia = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+const freshForm = (hotel = {}) => ({
+  accommodationId: hotel._id || '', occupancyType: 'SINGLE', roommateName: '', ...initialStayDates(hotel),
+  checkInTime: hotel.checkInTime || '14:00', checkOutTime: hotel.checkOutTime || '12:00', amountCollected: '', amountAdjustmentNote: '',
+  paymentMethod: 'UPI', paymentReference: '', paymentDate: todayInIndia(), adminNotes: '', sendEmail: true, confirmPaymentReceived: false,
+});
+const settingsFromHotel = (hotel = {}) => ({
+  name: hotel.name || '', location: hotel.location || '', description: hotel.description || '',
+  singleBasePerNight: hotel.manualBookingRates?.singleBasePerNight ?? 5000,
+  sharingBasePerPersonPerNight: hotel.manualBookingRates?.sharingBasePerPersonPerNight ?? 4000,
+  gstRate: hotel.manualBookingRates?.gstRate ?? 5, checkInTime: hotel.checkInTime || '14:00', checkOutTime: hotel.checkOutTime || '12:00',
+  earliestCheckIn: hotel.bookingWindow?.earliestCheckIn || '2026-10-28', latestCheckOut: hotel.bookingWindow?.latestCheckOut || '2026-11-03',
+  isActive: hotel.isActive !== false,
+});
+
 const AccommodationManagementPage = () => {
-  const [accommodations, setAccommodations] = useState([]);
-  const [bookings, setBookings] = useState([]);
+  const [tab, setTab] = useState('create');
   const [loading, setLoading] = useState(true);
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [editingAccommodation, setEditingAccommodation] = useState(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    images: [''],
-    pricePerNight: '',
-    totalRooms: '',
-    availableRooms: '',
-    amenities: [''],
-    inclusions: [''],
-    exclusions: [''],
-    faqs: [{ question: '', answer: '' }],
-    rating: 4,
-    location: '',
-    checkInTime: '14:00',
-    checkOutTime: '12:00',
-    isActive: true
-  });
+  const [busy, setBusy] = useState(false);
+  const [bookings, setBookings] = useState([]);
+  const [hotels, setHotels] = useState([]);
+  const [selectedHotelId, setSelectedHotelId] = useState('');
+  const [editingHotelId, setEditingHotelId] = useState('');
+  const [settings, setSettings] = useState(settingsFromHotel());
+  const [form, setForm] = useState(freshForm());
+  const [quote, setQuote] = useState(null);
+  const [selectedDelegate, setSelectedDelegate] = useState(null);
+  const [delegateSearch, setDelegateSearch] = useState('');
+  const [delegateResults, setDelegateResults] = useState([]);
+  const [delegateSearching, setDelegateSearching] = useState(false);
+  const [bookingSearch, setBookingSearch] = useState('');
+  const [notice, setNotice] = useState(null);
+
+  const activeHotels = useMemo(() => hotels.filter((hotel) => hotel.isActive), [hotels]);
+  const selectedHotel = useMemo(() => hotels.find((hotel) => hotel._id === selectedHotelId), [hotels, selectedHotelId]);
+  const stayDateOptions = useMemo(() => {
+    const window = hotelWindow(selectedHotel);
+    return dateOptions(window.earliestCheckIn, window.latestCheckOut);
+  }, [selectedHotel]);
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const [bookingResult, hotelResult] = await Promise.all([adminAPI.getAccommodationBookings(), adminAPI.getManagedAccommodations()]);
+      const loadedHotels = hotelResult.data;
+      const firstHotel = loadedHotels.find((hotel) => hotel.isActive && /Harsha The Fern/i.test(hotel.name)) || loadedHotels.find((hotel) => hotel.isActive) || loadedHotels[0];
+      setBookings(bookingResult.data);
+      setHotels(loadedHotels);
+      if (firstHotel) {
+        setSelectedHotelId(firstHotel._id);
+        setEditingHotelId(firstHotel._id);
+        setSettings(settingsFromHotel(firstHotel));
+        setForm(freshForm(firstHotel));
+      }
+    } catch (error) {
+      setNotice({ error: true, text: error.response?.data?.message || 'Accommodation data could not be loaded.' });
+    } finally { setLoading(false); }
+  };
+
+  useEffect(() => { loadData(); }, []);
+  useEffect(() => {
+    if (!form.accommodationId || !form.checkInDate || !form.checkOutDate) return undefined;
+    let current = true;
+    adminAPI.getAccommodationQuote({ accommodationId: form.accommodationId, occupancyType: form.occupancyType, checkInDate: form.checkInDate, checkOutDate: form.checkOutDate })
+      .then(({ data }) => {
+        if (!current) return;
+        setQuote(data.quote);
+        setForm((previous) => ({ ...previous, amountCollected: String(data.quote.totalAmount), amountAdjustmentNote: '' }));
+      }).catch((error) => {
+        if (!current) return;
+        setQuote(null);
+        setNotice({ error: true, text: error.response?.data?.message || 'Unable to calculate this stay.' });
+      });
+    return () => { current = false; };
+  }, [form.accommodationId, form.occupancyType, form.checkInDate, form.checkOutDate]);
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const [accommodationsRes, bookingsRes] = await Promise.all([
-        accommodationAPI.getAll(),
-        adminAPI.getAccommodationBookings()
-      ]);
-      setAccommodations(accommodationsRes.data);
-      setBookings(bookingsRes.data);
-    } catch (error) {
-      console.error('Failed to fetch data:', error);
-    } finally {
-      setLoading(false);
+    const query = delegateSearch.trim();
+    if (query.length < 2) {
+      setDelegateResults([]);
+      setDelegateSearching(false);
+      return undefined;
     }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
-  const handleArrayChange = (field, index, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: prev[field].map((item, i) => i === index ? value : item)
-    }));
-  };
-
-  const addArrayItem = (field) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: [...prev[field], field === 'faqs' ? { question: '', answer: '' } : '']
-    }));
-  };
-
-  const removeArrayItem = (field, index) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: prev[field].filter((_, i) => i !== index)
-    }));
-  };
-
-  const handleFAQChange = (index, field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      faqs: prev.faqs.map((faq, i) => 
-        i === index ? { ...faq, [field]: value } : faq
-      )
-    }));
-  };
-
-  const resetForm = () => {
-    setFormData({
-      name: '',
-      description: '',
-      images: [''],
-      pricePerNight: '',
-      totalRooms: '',
-      availableRooms: '',
-      amenities: [''],
-      inclusions: [''],
-      exclusions: [''],
-      faqs: [{ question: '', answer: '' }],
-      rating: 4,
-      location: '',
-      checkInTime: '14:00',
-      checkOutTime: '12:00',
-      isActive: true
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    try {
-      const submitData = {
-        ...formData,
-        pricePerNight: parseInt(formData.pricePerNight),
-        totalRooms: parseInt(formData.totalRooms),
-        availableRooms: parseInt(formData.availableRooms),
-        rating: parseFloat(formData.rating),
-        images: formData.images.filter(img => img.trim()),
-        amenities: formData.amenities.filter(amenity => amenity.trim()),
-        inclusions: formData.inclusions.filter(inclusion => inclusion.trim()),
-        exclusions: formData.exclusions.filter(exclusion => exclusion.trim()),
-        faqs: formData.faqs.filter(faq => faq.question.trim() && faq.answer.trim())
-      };
-
-      if (editingAccommodation) {
-        await adminAPI.updateAccommodation(editingAccommodation._id, submitData);
-      } else {
-        await adminAPI.createAccommodation(submitData);
-      }
-
-      fetchData();
-      setShowCreateModal(false);
-      setEditingAccommodation(null);
-      resetForm();
-    } catch (error) {
-      console.error('Failed to save accommodation:', error);
-    }
-  };
-
-  const handleEdit = (accommodation) => {
-    setEditingAccommodation(accommodation);
-    setFormData({
-      name: accommodation.name || '',
-      description: accommodation.description || '',
-      images: accommodation.images?.length ? accommodation.images : [''],
-      pricePerNight: accommodation.pricePerNight?.toString() || '',
-      totalRooms: accommodation.totalRooms?.toString() || '',
-      availableRooms: accommodation.availableRooms?.toString() || '',
-      amenities: accommodation.amenities?.length ? accommodation.amenities : [''],
-      inclusions: accommodation.inclusions?.length ? accommodation.inclusions : [''],
-      exclusions: accommodation.exclusions?.length ? accommodation.exclusions : [''],
-      faqs: accommodation.faqs?.length ? accommodation.faqs : [{ question: '', answer: '' }],
-      rating: accommodation.rating || 4,
-      location: accommodation.location || '',
-      checkInTime: accommodation.checkInTime || '14:00',
-      checkOutTime: accommodation.checkOutTime || '12:00',
-      isActive: accommodation.isActive !== false // Default true
-    });
-    setShowCreateModal(true);
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this accommodation?')) {
+    let current = true;
+    const timer = setTimeout(async () => {
+      setDelegateSearching(true);
       try {
-        await adminAPI.deleteAccommodation(id);
-        fetchData();
+        const { data } = await adminAPI.searchAccommodationDelegates(query);
+        if (current) setDelegateResults(data);
       } catch (error) {
-        console.error('Failed to delete accommodation:', error);
+        if (current) {
+          setDelegateResults([]);
+          setNotice({ error: true, text: error.response?.data?.message || 'Delegates could not be searched.' });
+        }
+      } finally {
+        if (current) setDelegateSearching(false);
       }
-    }
+    }, 300);
+    return () => { current = false; clearTimeout(timer); };
+  }, [delegateSearch]);
+
+  const summary = useMemo(() => ({
+    total: bookings.length,
+    collected: bookings.reduce((sum, item) => sum + Number(item.amountCollected ?? item.totalAmount ?? 0), 0),
+    single: bookings.filter((item) => item.occupancyType === 'SINGLE').length,
+    sharing: bookings.filter((item) => item.occupancyType === 'SHARING').length,
+    unsent: bookings.filter((item) => !item.paymentEmailSentAt).length,
+  }), [bookings]);
+  const filteredBookings = useMemo(() => {
+    const query = bookingSearch.trim().toLowerCase();
+    if (!query) return bookings;
+    return bookings.filter((item) => [item.bookingNumber, item.userId?.name, item.userId?.phone, item.userId?.email, item.paymentReference, item.accommodationId?.name]
+      .some((value) => String(value || '').toLowerCase().includes(query)));
+  }, [bookings, bookingSearch]);
+
+  const selectBookingHotel = (hotelId) => {
+    const hotel = hotels.find((item) => item._id === hotelId);
+    if (!hotel) return;
+    setSelectedHotelId(hotelId);
+    setQuote(null);
+    setForm((current) => ({ ...freshForm(hotel), paymentDate: current.paymentDate, paymentMethod: current.paymentMethod }));
+  };
+  const change = ({ target }) => setForm((current) => {
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const next = { ...current, [target.name]: value };
+    if (target.name === 'checkInDate' && current.checkOutDate <= value) next.checkOutDate = stayDateOptions.find(([date]) => date > value)?.[0] || current.checkOutDate;
+    return next;
+  });
+  const createBooking = async () => {
+    setNotice(null);
+    if (!selectedDelegate) return setNotice({ error: true, text: 'Select a registered delegate.' });
+    if (!selectedHotel) return setNotice({ error: true, text: 'Select a hotel.' });
+    setBusy(true);
+    try {
+      const { data } = await adminAPI.createManualAccommodationBooking({ ...form, userId: selectedDelegate.userId, amountCollected: Number(form.amountCollected) });
+      setBookings((items) => [data.booking, ...items]);
+      setNotice({ error: false, text: `${data.booking.bookingNumber} created for ${selectedHotel.name}.${data.emailStatus === 'SENT' ? ' Confirmation email sent.' : ''}` });
+      setSelectedDelegate(null); setDelegateResults([]); setDelegateSearch(''); setForm(freshForm(selectedHotel)); setTab('bookings');
+    } catch (error) { setNotice({ error: true, text: error.response?.data?.message || 'Accommodation booking could not be created.' }); }
+    finally { setBusy(false); }
+  };
+  const emailBooking = async (booking) => {
+    setNotice(null);
+    try {
+      await adminAPI.sendAccommodationEmail(booking._id);
+      setBookings((items) => items.map((item) => item._id === booking._id ? { ...item, paymentEmailSentAt: new Date().toISOString() } : item));
+      setNotice({ error: false, text: `Confirmation email sent for ${booking.bookingNumber}.` });
+    } catch (error) { setNotice({ error: true, text: error.response?.data?.message || 'Email could not be sent.' }); }
+  };
+  const editHotel = (hotel) => { setEditingHotelId(hotel._id); setSettings(settingsFromHotel(hotel)); setNotice(null); };
+  const addHotel = () => {
+    setEditingHotelId('');
+    setSettings({ ...settingsFromHotel(), singleBasePerNight: '', sharingBasePerPersonPerNight: '' });
+    setNotice(null);
+  };
+  const saveSettings = async (event) => {
+    event.preventDefault(); setBusy(true); setNotice(null);
+    const payload = { ...settings, singleBasePerNight: Number(settings.singleBasePerNight), sharingBasePerPersonPerNight: Number(settings.sharingBasePerPersonPerNight), gstRate: Number(settings.gstRate) };
+    try {
+      const wasEditing = Boolean(editingHotelId);
+      const { data } = editingHotelId ? await adminAPI.updateManagedAccommodation(editingHotelId, payload) : await adminAPI.createManagedAccommodation(payload);
+      const saved = data.accommodation;
+      setHotels((items) => items.some((item) => item._id === saved._id) ? items.map((item) => item._id === saved._id ? saved : item) : [...items, saved]);
+      setEditingHotelId(saved._id);
+      setSettings(settingsFromHotel(saved));
+      if (saved._id === selectedHotelId && saved.isActive) setForm(freshForm(saved));
+      if (saved._id === selectedHotelId && !saved.isActive) {
+        const replacement = hotels.find((hotel) => hotel._id !== saved._id && hotel.isActive);
+        if (replacement) selectBookingHotel(replacement._id);
+        else { setSelectedHotelId(''); setForm(freshForm()); setQuote(null); }
+      }
+      setNotice({ error: false, text: wasEditing ? 'Hotel settings updated.' : 'Hotel added successfully.' });
+    } catch (error) { setNotice({ error: true, text: error.response?.data?.message || 'Hotel settings could not be saved.' }); }
+    finally { setBusy(false); }
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 0
-    }).format(amount);
-  };
+  if (loading) return <div className="flex h-screen bg-slate-50"><Sidebar /><div className="flex flex-1 items-center justify-center"><LoadingSpinner size="sm" text="Loading accommodations..." /></div></div>;
+  return <div className="flex min-h-screen bg-slate-50"><Sidebar /><main className="min-w-0 flex-1 p-4 sm:p-6"><div className="mx-auto max-w-7xl space-y-5">
+    <header><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#005aa9]">Organizer allocation</p><h1 className="mt-1 text-xl font-bold text-slate-950">Accommodation management</h1><p className="mt-1 text-sm text-slate-600">Record paid delegate stays across organizer-managed hotels. Room assignment remains with each hotel.</p></header>
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">{[['Bookings', summary.total, BedDouble], ['Collected', money(summary.collected), IndianRupee], ['Single', summary.single, UserRound], ['Sharing', summary.sharing, UsersRound], ['Email pending', summary.unsent, Mail]].map(([label, value, Icon]) => <div key={label} className="rounded-2xl border border-slate-200 bg-white p-4"><Icon className="h-4 w-4 text-[#005aa9]" /><p className="mt-3 text-xs text-slate-500">{label}</p><p className="mt-1 text-lg font-bold text-slate-950">{value}</p></div>)}</div>
+    <nav className="flex flex-wrap gap-2 rounded-2xl border border-slate-200 bg-white p-2">{[['create', 'Create booking', BedDouble], ['bookings', 'All bookings', CalendarDays], ['settings', 'Manage hotels', Settings2]].map(([id, label, Icon]) => <button key={id} type="button" onClick={() => { setTab(id); setNotice(null); }} className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold ${tab === id ? 'bg-[#005aa9] text-white' : 'text-slate-600 hover:bg-slate-100'}`}><Icon className="h-4 w-4" />{label}</button>)}</nav>
+    {notice && <div className={`rounded-xl border px-4 py-3 text-sm ${notice.error ? 'border-red-200 bg-red-50 text-red-700' : 'border-emerald-200 bg-emerald-50 text-emerald-800'}`}>{notice.text}</div>}
 
-  if (loading) {
-    return (
-      <div className="flex h-screen bg-slate-50">
-        <Sidebar />
-        <div className="flex-1 flex items-center justify-center p-4">
-          <LoadingSpinner size="sm" text="Loading accommodations..." />
-        </div>
-      </div>
-    );
-  }
+    {tab === 'create' && <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]"><div className="space-y-5">
+      <section className="rounded-2xl border border-slate-200 bg-white p-5"><h2 className="font-bold text-slate-950">1. Select registered delegate</h2><div className="relative mt-4"><Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" /><input value={delegateSearch} onChange={(event) => { setDelegateSearch(event.target.value); setSelectedDelegate(null); }} placeholder="Start typing a name, phone, email or registration number" className="w-full rounded-xl border border-slate-300 py-2.5 pl-10 pr-3 text-sm" /></div>
+        {delegateSearching && <p className="mt-3 text-xs text-slate-500">Searching registered delegates…</p>}
+        {!delegateSearching && delegateSearch.trim().length >= 2 && delegateResults.length === 0 && <p className="mt-3 text-xs text-slate-500">No paid registration found.</p>}
+        {delegateResults.length > 0 && <div className="mt-3 divide-y overflow-hidden rounded-xl border">{delegateResults.map((person) => <button key={person.registrationId} type="button" onClick={() => setSelectedDelegate(person)} className={`flex w-full items-center justify-between gap-4 p-3 text-left hover:bg-slate-50 ${selectedDelegate?.userId === person.userId ? 'bg-sky-50' : ''}`}><div><p className="text-sm font-bold text-slate-900">{person.name}</p><p className="text-xs text-slate-500">{person.phone} · {person.email}</p></div><span className="text-xs font-bold text-[#005aa9]">{person.registrationNumber}</span></button>)}</div>}
+        {selectedDelegate && <div className="mt-4 flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-3"><CheckCircle2 className="h-5 w-5 text-emerald-600" /><div><p className="text-sm font-bold text-emerald-900">{selectedDelegate.name}</p><p className="text-xs text-emerald-700">Paid registration {selectedDelegate.registrationNumber}</p></div></div>}
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-5"><h2 className="font-bold text-slate-950">2. Hotel and stay</h2><div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <label className="text-sm font-medium sm:col-span-2">Hotel<select value={selectedHotelId} onChange={(event) => selectBookingHotel(event.target.value)} className={inputClass}>{activeHotels.map((hotel) => <option key={hotel._id} value={hotel._id}>{hotel.name} — {hotel.location}</option>)}</select></label>
+        <label className="text-sm font-medium">Occupancy<select name="occupancyType" value={form.occupancyType} onChange={change} className={inputClass}><option value="SINGLE">Single</option><option value="SHARING">Sharing</option></select></label>
+        <label className="text-sm font-medium">Check-in date<select name="checkInDate" value={form.checkInDate} onChange={change} className={inputClass}>{stayDateOptions.slice(0, -1).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+        <label className="text-sm font-medium">Check-in time<input type="time" name="checkInTime" value={form.checkInTime} onChange={change} className={inputClass} /></label>
+        <label className="text-sm font-medium">Check-out date<select name="checkOutDate" value={form.checkOutDate} onChange={change} className={inputClass}>{stayDateOptions.slice(1).map(([value, label]) => <option key={value} value={value} disabled={value <= form.checkInDate}>{label}</option>)}</select></label>
+        <label className="text-sm font-medium">Check-out time<input type="time" name="checkOutTime" value={form.checkOutTime} onChange={change} className={inputClass} /></label>
+        {form.occupancyType === 'SHARING' && <label className="text-sm font-medium">Roommate name <span className="text-slate-400">(optional)</span><input name="roommateName" value={form.roommateName} onChange={change} className={inputClass} /></label>}
+      </div></section>
+    </div><section className="h-fit rounded-2xl border border-slate-200 bg-white p-5"><h2 className="font-bold text-slate-950">3. Payment</h2>
+      {quote && <div className="mt-4 rounded-xl bg-slate-950 p-4 text-white"><p className="mb-3 text-xs font-bold uppercase tracking-wide text-sky-300">{selectedHotel?.name}</p><p className="flex justify-between text-sm text-slate-300"><span>{money(quote.baseRatePerNight)} × {quote.numberOfNights} nights</span><span>{money(quote.baseAmount)}</span></p><p className="mt-2 flex justify-between text-sm text-slate-300"><span>GST ({quote.gstRate}%)</span><span>{money(quote.gstAmount)}</span></p><p className="mt-3 flex justify-between border-t border-white/20 pt-3 font-bold"><span>Calculated total</span><span>{money(quote.totalAmount)}</span></p></div>}
+      <div className="mt-4 grid gap-4 sm:grid-cols-2"><label className="text-sm font-medium">Amount collected<input min="0" type="number" name="amountCollected" value={form.amountCollected} onChange={change} className={inputClass} /></label><label className="text-sm font-medium">Payment method<select name="paymentMethod" value={form.paymentMethod} onChange={change} className={inputClass}><option value="UPI">UPI</option><option value="BANK_TRANSFER">Bank transfer</option><option value="CASH">Cash</option><option value="OTHER">Other</option></select></label><label className="text-sm font-medium">Payment date<input type="date" name="paymentDate" value={form.paymentDate} onChange={change} className={inputClass} /></label><label className="text-sm font-medium">UTR/reference <span className="text-slate-400">(optional)</span><input name="paymentReference" value={form.paymentReference} onChange={change} className={inputClass} /></label></div>
+      {quote && Number(form.amountCollected) !== quote.totalAmount && <label className="mt-4 block text-sm font-medium">Amount difference reason<textarea name="amountAdjustmentNote" value={form.amountAdjustmentNote} onChange={change} rows="2" className={`${inputClass} border-amber-300`} /></label>}
+      <label className="mt-4 block text-sm font-medium">Internal notes<textarea name="adminNotes" value={form.adminNotes} onChange={change} rows="2" className={inputClass} /></label>
+      <div className="mt-4 space-y-3 rounded-xl border bg-slate-50 p-4 text-sm"><label className="flex gap-3"><input type="checkbox" name="confirmPaymentReceived" checked={form.confirmPaymentReceived} onChange={change} />I confirm payment was received.</label><label className="flex gap-3"><input type="checkbox" name="sendEmail" checked={form.sendEmail} onChange={change} />Send confirmation email and invoice now.</label></div>
+      <button type="button" onClick={createBooking} disabled={busy || !selectedDelegate || !selectedHotel || !quote || !form.confirmPaymentReceived} className="mt-5 w-full rounded-xl bg-[#005aa9] px-4 py-3 text-sm font-bold text-white disabled:opacity-50">{busy ? 'Recording…' : 'Record paid accommodation'}</button>
+    </section></div>}
 
-  return (
-    <div className="flex h-screen bg-slate-50">
-      <Sidebar />
-      
-      <div className="flex-1 overflow-auto">
-        <div className="p-4 sm:p-6">
-          {}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
-            <div>
-              <h1 className="text-base sm:text-lg text-slate-900">Accommodations</h1>
-              <p className="text-xs text-slate-600">{accommodations.length} hotels</p>
-            </div>
-            <button
-              onClick={() => {
-                resetForm();
-                setEditingAccommodation(null);
-                setShowCreateModal(true);
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[#005aa9] text-white rounded-xl hover:bg-[#004684] transition-colors"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              Add Hotel
-            </button>
-          </div>
+    {tab === 'bookings' && <section className="rounded-2xl border border-slate-200 bg-white p-5"><div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="font-bold">Accommodation bookings</h2><p className="text-xs text-slate-500">Internal allocations linked to delegate profiles.</p></div><div className="relative"><Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" /><input value={bookingSearch} onChange={(event) => setBookingSearch(event.target.value)} placeholder="Delegate, hotel or booking" className="rounded-xl border py-2 pl-9 pr-3 text-sm" /></div></div><div className="mt-4 overflow-x-auto"><table className="w-full min-w-[980px] text-left text-sm"><thead><tr className="border-b text-xs uppercase text-slate-500"><th className="p-3">Delegate</th><th className="p-3">Hotel</th><th className="p-3">Stay</th><th className="p-3">Occupancy</th><th className="p-3">Collected</th><th className="p-3">Payment</th><th className="p-3">Email</th></tr></thead><tbody className="divide-y">{filteredBookings.map((item) => <tr key={item._id}><td className="p-3"><p className="font-bold">{item.userId?.name}</p><p className="text-xs text-slate-500">{item.bookingNumber} · {item.userId?.phone}</p></td><td className="p-3"><p className="font-medium">{item.accommodationId?.name || '—'}</p><p className="text-xs text-slate-500">{item.accommodationId?.location}</p></td><td className="p-3"><p>{dateLabel(item.checkInDate)} – {dateLabel(item.checkOutDate)}</p><p className="text-xs text-slate-500">{item.numberOfNights} nights · {item.checkInTime} / {item.checkOutTime}</p></td><td className="p-3"><span className="rounded-full bg-sky-50 px-2 py-1 text-xs font-bold text-sky-700">{item.occupancyType === 'SHARING' ? 'Sharing' : 'Single'}</span>{item.roommateName && <p className="mt-1 text-xs text-slate-500">with {item.roommateName}</p>}</td><td className="p-3 font-bold">{money(item.amountCollected ?? item.totalAmount)}</td><td className="p-3"><p>{item.paymentMethod?.replaceAll('_', ' ') || '—'}</p><p className="max-w-44 truncate text-xs text-slate-500">{item.paymentReference || 'No reference'}</p></td><td className="p-3">{item.paymentEmailSentAt ? <span className="text-xs font-bold text-emerald-700">Sent {dateLabel(item.paymentEmailSentAt)}</span> : <button type="button" onClick={() => emailBooking(item)} className="flex items-center gap-1 rounded-lg border border-[#005aa9]/30 px-2 py-1 text-xs font-bold text-[#005aa9]"><Mail className="h-3 w-3" />Send email</button>}</td></tr>)}</tbody></table>{!filteredBookings.length && <p className="py-10 text-center text-sm text-slate-500">No bookings found.</p>}</div></section>}
 
-          {}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
-            <div className="flex items-center gap-2.5 p-3 bg-white border border-slate-200 rounded-xl">
-              <div className="w-9 h-9 bg-sky-50 rounded-xl flex items-center justify-center">
-                <Building2 className="w-4 h-4 text-sky-600" />
-              </div>
-              <div>
-                <p className="text-xs text-slate-600">Hotels</p>
-                <p className="text-sm text-slate-900">{accommodations.length}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2.5 p-3 bg-white border border-slate-200 rounded-xl">
-              <div className="w-9 h-9 bg-emerald-50 rounded-xl flex items-center justify-center">
-                <Calendar className="w-4 h-4 text-emerald-600" />
-              </div>
-              <div>
-                <p className="text-xs text-slate-600">Bookings</p>
-                <p className="text-sm text-slate-900">{bookings.length}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2.5 p-3 bg-white border border-slate-200 rounded-xl">
-              <div className="w-9 h-9 bg-amber-50 rounded-xl flex items-center justify-center">
-                <Users className="w-4 h-4 text-amber-600" />
-              </div>
-              <div>
-                <p className="text-xs text-slate-600">Rooms</p>
-                <p className="text-sm text-slate-900">
-                  {accommodations.reduce((sum, acc) => sum + (acc.totalRooms || 0), 0)}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2.5 p-3 bg-white border border-slate-200 rounded-xl">
-              <div className="w-9 h-9 bg-indigo-50 rounded-xl flex items-center justify-center">
-                <DollarSign className="w-4 h-4 text-indigo-600" />
-              </div>
-              <div>
-                <p className="text-xs text-slate-600">Revenue</p>
-                <p className="text-xs text-indigo-600">
-                  {formatCurrency(bookings.filter(b => b.paymentStatus === 'PAID').reduce((sum, b) => sum + (b.totalAmount || 0), 0))}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {accommodations.map((accommodation) => (
-              <div key={accommodation._id} className="bg-white border border-slate-200 rounded-2xl p-4 hover:border-slate-300 transition-colors">
-                <div className="relative mb-3">
-                  <img src={accommodation.images[0]} className='w-full rounded-xl' alt="" />
-                  
-                  <div className={`absolute -top-2 right-2 px-2 py-1 rounded-lg border text-xs flex items-center gap-1 ${
-                    accommodation.isActive 
-                      ? 'bg-emerald-50 border-emerald-200 text-emerald-700' 
-                      : 'bg-red-50 border-red-200 text-red-700'
-                  }`}>
-                    {accommodation.isActive ? 'Active' : 'Inactive'}
-                  </div>
-                  <div className="absolute -top-2 left-2 px-2 py-1 rounded-lg border border-slate-200 flex items-center gap-1 text-xs bg-white">
-                    <Star className="w-3 h-3 text-amber-400 fill-current" />
-                    <span>{accommodation.rating}</span>
-                  </div>
-                </div>
-
-                <h3 className="text-sm font-medium text-slate-900 mb-1 truncate">{accommodation.name}</h3>
-                <p className="text-xs text-slate-600 mb-2 line-clamp-2">{accommodation.description}</p>
-                
-                <div className="flex items-center text-xs text-slate-600 mb-3">
-                  <MapPin className="w-3 h-3 mr-1" />
-                  <span className="truncate">{accommodation.location}</span>
-                </div>
-
-                <div className="flex items-center justify-between mb-4">
-                  <div className="text-sm font-medium text-slate-900">
-                    {formatCurrency(accommodation.pricePerNight)}<span className="text-xs text-slate-600">/night</span>
-                  </div>
-                  <div className="text-xs text-slate-600">
-                    {accommodation.availableRooms}/{accommodation.totalRooms} rooms
-                  </div>
-                </div>
-
-                <div className="flex gap-1.5">
-                  <button
-                    onClick={() => handleEdit(accommodation)}
-                    className="flex-1 flex items-center justify-center gap-1 text-xs h-8 bg-[#005aa9]/10 hover:bg-[#005aa9]/20 text-[#005aa9] border border-[#005aa9]/20 rounded-xl transition-colors"
-                  >
-                    <Edit className="w-3 h-3" />
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(accommodation._id)}
-                    className="flex-1 flex items-center justify-center gap-1 text-xs h-8 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl transition-colors"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {accommodations.length === 0 && (
-            <div className="text-center py-12 px-4">
-              <Building2 className="w-10 h-10 text-slate-400 mx-auto mb-3" />
-              <h3 className="text-sm font-medium text-slate-900 mb-1">No accommodations</h3>
-              <p className="text-xs text-slate-600 mb-4">Add your first hotel</p>
-              <button
-                onClick={() => setShowCreateModal(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[#005aa9] text-white rounded-xl hover:bg-[#004684] transition-colors mx-auto"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                Add Hotel
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {}
-      {showCreateModal && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-2">
-          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-slate-200">
-            <div className="p-5">
-              <div className="flex items-center justify-between mb-5">
-                <h3 className="text-base font-medium text-slate-900">
-                  {editingAccommodation ? 'Edit Hotel' : 'Add New Hotel'}
-                </h3>
-                <button
-                  onClick={() => {
-                    setShowCreateModal(false);
-                    setEditingAccommodation(null);
-                    resetForm();
-                  }}
-                  className="p-1.5 hover:bg-slate-100 rounded-xl transition-colors"
-                >
-                  <X className="w-5 h-5 text-slate-500" />
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-4 text-sm">
-                {}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-slate-700 mb-1.5 font-medium">Hotel Name *</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-slate-700 mb-1.5 font-medium">Location *</label>
-                    <input
-                      type="text"
-                      name="location"
-                      value={formData.location}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9]"
-                    />
-                  </div>
-                </div>
-
-                {}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div className="md:col-span-2">
-                    <label className="block text-slate-700 mb-1.5 font-medium">Description</label>
-                    <textarea
-                      name="description"
-                      value={formData.description}
-                      onChange={handleInputChange}
-                      rows={3}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9] resize-vertical"
-                    />
-                  </div>
-                  <div>
-                    <label className="flex items-center gap-2 text-slate-700 mb-1.5 font-medium">
-                      <input
-                        type="checkbox"
-                        name="isActive"
-                        checked={formData.isActive}
-                        onChange={handleInputChange}
-                        className="w-4 h-4 text-[#005aa9] rounded focus:ring-[#005aa9]"
-                      />
-                      Active
-                    </label>
-                  </div>
-                </div>
-
-                {}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-slate-700 mb-1.5 font-medium text-[13px]">Price/Night *</label>
-                    <input
-                      type="number"
-                      name="pricePerNight"
-                      value={formData.pricePerNight}
-                      onChange={handleInputChange}
-                      required
-                      min="0"
-                      className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-slate-700 mb-1.5 font-medium text-[13px]">Total Rooms *</label>
-                    <input
-                      type="number"
-                      name="totalRooms"
-                      value={formData.totalRooms}
-                      onChange={handleInputChange}
-                      required
-                      min="1"
-                      className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-slate-700 mb-1.5 font-medium text-[13px]">Available *</label>
-                    <input
-                      type="number"
-                      name="availableRooms"
-                      value={formData.availableRooms}
-                      onChange={handleInputChange}
-                      required
-                      min="0"
-                      className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-slate-700 mb-1.5 font-medium text-[13px]">Rating</label>
-                    <input
-                      type="number"
-                      name="rating"
-                      value={formData.rating}
-                      onChange={handleInputChange}
-                      min="1"
-                      max="5"
-                      step="0.1"
-                      className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9]"
-                    />
-                  </div>
-                </div>
-
-                {}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="flex items-center gap-2 text-slate-700 mb-1.5 font-medium">
-                      <Clock className="w-4 h-4" />
-                      Check-in
-                    </label>
-                    <input
-                      type="time"
-                      name="checkInTime"
-                      value={formData.checkInTime}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9]"
-                    />
-                  </div>
-                  <div>
-                    <label className="flex items-center gap-2 text-slate-700 mb-1.5 font-medium">
-                      <Clock className="w-4 h-4" />
-                      Check-out
-                    </label>
-                    <input
-                      type="time"
-                      name="checkOutTime"
-                      value={formData.checkOutTime}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9]"
-                    />
-                  </div>
-                </div>
-
-                {}
-                <div>
-                  <label className="flex items-center gap-2 text-slate-700 mb-2 font-medium">
-                    <Image className="w-4 h-4" />
-                    Images
-                  </label>
-                  <div className="space-y-2 max-h-32 overflow-y-auto pr-1">
-                    {formData.images.map((image, index) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <input
-                          type="url"
-                          value={image}
-                          onChange={(e) => handleArrayChange('images', index, e.target.value)}
-                          placeholder={`Image URL ${index + 1}`}
-                          className="flex-1 px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9] text-sm"
-                        />
-                        {formData.images.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeArrayItem('images', index)}
-                            className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => addArrayItem('images')}
-                    className="flex items-center gap-1.5 mt-2 px-3 py-1.5 text-xs bg-[#005aa9]/10 hover:bg-[#005aa9]/20 text-[#005aa9] rounded-xl transition-colors border border-[#005aa9]/20"
-                  >
-                    <Plus className="w-3 h-3" />
-                    Add Image
-                  </button>
-                </div>
-
-                {}
-                {[['amenities', 'Amenities', List], ['inclusions', 'Inclusions', List], ['exclusions', 'Exclusions', List]].map(([field, label, Icon]) => (
-                  <div key={field}>
-                    <label className="flex items-center gap-2 text-slate-700 mb-2 font-medium">
-                      <Icon className="w-4 h-4" />
-                      {label}
-                    </label>
-                    <div className="space-y-2 max-h-24 overflow-y-auto pr-1">
-                      {formData[field].map((item, index) => (
-                        <div key={index} className="flex items-center gap-2">
-                          <input
-                            type="text"
-                            value={item}
-                            onChange={(e) => handleArrayChange(field, index, e.target.value)}
-                            placeholder={`Enter ${label.toLowerCase()} ${index + 1}`}
-                            className="flex-1 px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9] text-sm"
-                          />
-                          {formData[field].length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => removeArrayItem(field, index)}
-                              className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => addArrayItem(field)}
-                      className="flex items-center gap-1.5 mt-2 px-3 py-1.5 text-xs bg-[#005aa9]/10 hover:bg-[#005aa9]/20 text-[#005aa9] rounded-xl transition-colors border border-[#005aa9]/20"
-                    >
-                      <Plus className="w-3 h-3" />
-                      Add {label.slice(0, -1)}
-                    </button>
-                  </div>
-                ))}
-
-                {}
-                <div>
-                  <label className="flex items-center gap-2 text-slate-700 mb-2 font-medium">
-                    <HelpCircle className="w-4 h-4" />
-                    FAQs
-                  </label>
-                  <div className="space-y-3 max-h-40 overflow-y-auto pr-1">
-                    {formData.faqs.map((faq, index) => (
-                      <div key={index} className="border border-slate-200 rounded-xl p-3 bg-slate-50">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-medium text-slate-700">FAQ {index + 1}</span>
-                          {formData.faqs.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => removeArrayItem('faqs', index)}
-                              className="p-1 text-red-500 hover:bg-red-100 rounded transition-colors"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          )}
-                        </div>
-                        <input
-                          type="text"
-                          value={faq.question}
-                          onChange={(e) => handleFAQChange(index, 'question', e.target.value)}
-                          placeholder="Question"
-                          className="w-full px-3 py-2 mb-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9] text-sm"
-                        />
-                        <textarea
-                          value={faq.answer}
-                          onChange={(e) => handleFAQChange(index, 'answer', e.target.value)}
-                          placeholder="Answer"
-                          rows={2}
-                          className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9] text-sm resize-none"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => addArrayItem('faqs')}
-                    className="flex items-center gap-1.5 mt-3 px-3 py-1.5 text-xs bg-[#005aa9]/10 hover:bg-[#005aa9]/20 text-[#005aa9] rounded-xl transition-colors border border-[#005aa9]/20"
-                  >
-                    <Plus className="w-3 h-3" />
-                    Add FAQ
-                  </button>
-                </div>
-
-                <div className="flex gap-3 pt-3">
-                  <button
-                    type="submit"
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 h-11 bg-[#005aa9] text-white rounded-xl hover:bg-[#004684] transition-all font-medium shadow-sm hover:shadow-md"
-                  >
-                    {editingAccommodation ? 'Update Hotel' : 'Create Hotel'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowCreateModal(false);
-                      setEditingAccommodation(null);
-                      resetForm();
-                    }}
-                    className="flex-1 px-4 py-3 h-11 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors text-slate-700 font-medium"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+    {tab === 'settings' && <div className="grid gap-5 lg:grid-cols-[0.36fr_0.64fr]"><section className="rounded-2xl border border-slate-200 bg-white p-4"><div className="flex items-center justify-between"><div><h2 className="font-bold">Hotels</h2><p className="text-xs text-slate-500">{hotels.length} configured</p></div><button type="button" onClick={addHotel} className="flex items-center gap-1 rounded-lg bg-[#005aa9] px-3 py-2 text-xs font-bold text-white"><Plus className="h-3.5 w-3.5" />Add hotel</button></div><div className="mt-4 space-y-2">{hotels.map((hotel) => <button key={hotel._id} type="button" onClick={() => editHotel(hotel)} className={`w-full rounded-xl border p-3 text-left ${editingHotelId === hotel._id ? 'border-[#005aa9] bg-sky-50' : 'border-slate-200 hover:bg-slate-50'}`}><div className="flex items-start justify-between gap-2"><div><p className="text-sm font-bold text-slate-900">{hotel.name}</p><p className="mt-1 text-xs text-slate-500">{hotel.location}</p></div><span className={`rounded-full px-2 py-1 text-[10px] font-bold ${hotel.isActive ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>{hotel.isActive ? 'Active' : 'Inactive'}</span></div></button>)}</div></section>
+      <form onSubmit={saveSettings} className="rounded-2xl border border-slate-200 bg-white p-5"><h2 className="font-bold">{editingHotelId ? `${settings.name} settings` : 'Add hotel'}</h2><p className="mt-1 text-sm text-slate-500">Tariff changes apply only to new bookings. Existing booking totals stay unchanged.</p><div className="mt-5 grid gap-4 sm:grid-cols-2"><label className="text-sm font-medium">Hotel name<input required value={settings.name} onChange={(event) => setSettings((value) => ({ ...value, name: event.target.value }))} className={inputClass} /></label><label className="text-sm font-medium">Location<input required value={settings.location} onChange={(event) => setSettings((value) => ({ ...value, location: event.target.value }))} className={inputClass} /></label><label className="text-sm font-medium">Single base rate/night<input required min="0" type="number" value={settings.singleBasePerNight} onChange={(event) => setSettings((value) => ({ ...value, singleBasePerNight: event.target.value }))} className={inputClass} /></label><label className="text-sm font-medium">Sharing rate/person/night<input required min="0" type="number" value={settings.sharingBasePerPersonPerNight} onChange={(event) => setSettings((value) => ({ ...value, sharingBasePerPersonPerNight: event.target.value }))} className={inputClass} /></label><label className="text-sm font-medium">GST percentage<input required min="0" type="number" value={settings.gstRate} onChange={(event) => setSettings((value) => ({ ...value, gstRate: event.target.value }))} className={inputClass} /></label><span /><label className="text-sm font-medium">Earliest check-in<input required type="date" value={settings.earliestCheckIn} onChange={(event) => setSettings((value) => ({ ...value, earliestCheckIn: event.target.value }))} className={inputClass} /></label><label className="text-sm font-medium">Latest check-out<input required type="date" value={settings.latestCheckOut} onChange={(event) => setSettings((value) => ({ ...value, latestCheckOut: event.target.value }))} className={inputClass} /></label><label className="text-sm font-medium">Default check-in<input required type="time" value={settings.checkInTime} onChange={(event) => setSettings((value) => ({ ...value, checkInTime: event.target.value }))} className={inputClass} /></label><label className="text-sm font-medium">Default check-out<input required type="time" value={settings.checkOutTime} onChange={(event) => setSettings((value) => ({ ...value, checkOutTime: event.target.value }))} className={inputClass} /></label><label className="flex items-center gap-3 rounded-xl border bg-slate-50 p-3 text-sm sm:col-span-2"><input type="checkbox" checked={settings.isActive} onChange={(event) => setSettings((value) => ({ ...value, isActive: event.target.checked }))} />Active and available for new bookings</label></div><button disabled={busy} className="mt-5 flex items-center gap-2 rounded-xl bg-[#005aa9] px-4 py-2.5 text-sm font-bold text-white"><RefreshCw className="h-4 w-4" />{busy ? 'Saving…' : editingHotelId ? 'Save hotel settings' : 'Add hotel'}</button></form>
+    </div>}
+  </div></main></div>;
 };
 
 export default AccommodationManagementPage;

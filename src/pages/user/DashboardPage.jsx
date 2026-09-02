@@ -23,6 +23,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
 import {
   registrationAPI,
+  accommodationAPI,
   abstractAPI,
   feedbackAPI,
   API_BASE_URL,
@@ -46,6 +47,7 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     registration: null,
+    accommodationBookings: [],
     abstract: null,
     videoSubmission: null,
     feedback: null,
@@ -56,6 +58,7 @@ const DashboardPage = () => {
   const { user, updateUser } = useAuth();
   const {
     setRegistration,
+    setAccommodationBookings,
     setAbstract,
     setVideoSubmission,
     setFeedback,
@@ -206,6 +209,12 @@ const DashboardPage = () => {
         const regResponse = await registrationAPI.getMyRegistration();
         setStats((prev) => ({ ...prev, registration: regResponse.data }));
         setRegistration(regResponse.data);
+      } catch {}
+
+      try {
+        const accommodationResponse = await accommodationAPI.getMyBookings();
+        setStats((prev) => ({ ...prev, accommodationBookings: accommodationResponse.data }));
+        setAccommodationBookings(accommodationResponse.data);
       } catch {}
 
       try {
@@ -617,21 +626,36 @@ const DashboardPage = () => {
                 </button>
               </div>
 
-              <div className="text-center py-8 rounded-xl bg-[#ff8a1f]/5 border border-[#ff8a1f]/20">
-                <Hotel className="w-10 h-10 text-[#ff8a1f]/60 mx-auto mb-3" />
-                <p className="text-sm font-medium text-slate-900 mb-1">
-                  Hotels and lodging near SIMS
-                </p>
-                <p className="mx-auto max-w-md text-[11px] leading-5 text-slate-600 mb-4">
-                  Browse the accommodation directory and contact the property directly for availability, reservations and payment.
-                </p>
-                <button
-                  onClick={() => navigate('/accommodation')}
-                  className="inline-flex items-center justify-center rounded-xl bg-[#ff8a1f] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#e67e22]"
-                >
-                  View hotels and lodging
-                </button>
-              </div>
+              {stats.accommodationBookings.length > 0 ? (
+                <div className="space-y-3">
+                  {stats.accommodationBookings.map((booking) => (
+                    <div key={booking._id} className="rounded-xl border border-[#ff8a1f]/20 bg-[#ff8a1f]/5 p-4">
+                      <div className="flex flex-wrap items-start justify-between gap-2">
+                        <div>
+                          <p className="text-sm font-semibold text-slate-900">{booking.accommodationId?.name || 'Harsha The Fern, Shivamogga'}</p>
+                          <p className="mt-1 text-[11px] text-slate-600">Booking {booking.bookingNumber}</p>
+                        </div>
+                        {getStatusBadge(booking.paymentStatus)}
+                      </div>
+                      <div className="mt-3 grid gap-2 text-xs text-slate-700 sm:grid-cols-2">
+                        <p><strong>Stay:</strong> {new Date(booking.checkInDate).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })} – {new Date(booking.checkOutDate).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })}</p>
+                        <p><strong>Occupancy:</strong> {booking.occupancyType === 'SHARING' ? 'Sharing' : 'Single'}</p>
+                        <p><strong>Nights:</strong> {booking.numberOfNights}</p>
+                        <p><strong>Amount paid:</strong> ₹{Number(booking.amountCollected ?? booking.totalAmount ?? 0).toLocaleString('en-IN')}</p>
+                        {booking.roommateName && <p className="sm:col-span-2"><strong>Roommate:</strong> {booking.roommateName}</p>}
+                      </div>
+                      <p className="mt-3 text-[11px] text-slate-500">Room assignment will be coordinated separately by the hotel.</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 rounded-xl bg-[#ff8a1f]/5 border border-[#ff8a1f]/20">
+                  <Hotel className="w-10 h-10 text-[#ff8a1f]/60 mx-auto mb-3" />
+                  <p className="text-sm font-medium text-slate-900 mb-1">No organizer accommodation recorded</p>
+                  <p className="mx-auto max-w-md text-[11px] leading-5 text-slate-600 mb-4">Browse the hotel directory for general lodging information.</p>
+                  <button onClick={() => navigate('/accommodation')} className="inline-flex items-center justify-center rounded-xl bg-[#ff8a1f] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#e67e22]">View hotels and lodging</button>
+                </div>
+              )}
             </div>
 
             {}
