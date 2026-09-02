@@ -10,14 +10,9 @@ import champaImg from '../../images/OrganizingComittee/Champa.jpg';
 import ashwiniImg from '../../images/OrganizingComittee/Ashwini.png';
 import anjuGrewalImg from '../../images/AOAOfficeBearers/Anju-Grewal-President.png';
 import sunandaGuptaImg from '../../images/AOAOfficeBearers/Sunanda-Gupta-Founder-President.png';
+import { WORKSHOPS } from '../../data/workshopsData';
 
 const targetDate = new Date('2026-10-30T09:00:00+05:30');
-const workshopPreviewCards = [
-  { title: 'Labour Analgesia', accent: 'border-t-4 border-t-amber-400' },
-  { title: 'Critical Incidents in Obstetric Anaesthesia', accent: 'border-t-4 border-t-rose-400' },
-  { title: 'POCUS in Obstetrics', accent: 'border-t-4 border-t-sky-400' },
-  { title: 'Maternal Resuscitation', accent: 'border-t-4 border-t-emerald-400' },
-];
 const descriptionTextClass = 'text-[17px] sm:text-[19px] leading-relaxed';
 const descriptionTextLightClass = 'text-[17px] sm:text-[19px] leading-relaxed text-slate-100';
 
@@ -164,7 +159,7 @@ const HomePage = () => {
 
       {}
       <section className="border-b border-slate-300 bg-white py-12 lg:py-14">
-        <div className="max-w-5xl mx-auto px-4 lg:px-6">
+        <div className="max-w-6xl mx-auto px-4 lg:px-6">
           <div className="space-y-5">
             <h2 className="text-[26px] lg:text-[28px] font-bold text-slate-900 leading-snug">
               Pranams  and  greetings,
@@ -234,7 +229,7 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
 
       {/* Welcome Messages Section */}
       <section className="border-b border-slate-200 bg-slate-50/60 py-12 lg:py-16">
-        <div className="max-w-5xl mx-auto px-4 lg:px-6">
+        <div className="max-w-6xl mx-auto px-4 lg:px-6">
           <div className="text-center mb-10">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#d9232d] uppercase tracking-wider">
               WELCOME MESSAGES
@@ -242,7 +237,7 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
             <div className="w-16 h-1 bg-[#ff8a1f] mx-auto mt-2.5 rounded-full"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Card 1: President */}
             <div className="bg-white rounded-2xl border-2 border-amber-400/80 p-6 sm:p-8 text-center flex flex-col items-center shadow-sm hover:shadow-md transition-all duration-300">
               <div className="w-32 h-32 sm:w-36 sm:h-36 rounded-full border-4 border-red-500/90 overflow-hidden shadow-md mb-4 p-0.5 bg-white">
@@ -296,7 +291,7 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
 
       {}
       <section className="border-b border-slate-200 bg-white py-12 lg:py-14">
-        <div className="max-w-5xl mx-auto px-4 lg:px-6">
+        <div className="max-w-6xl mx-auto px-4 lg:px-6">
           <div className="space-y-6">
             <div className="space-y-2">
               <h2 className="text-[30px] lg:text-[34px] font-bold text-slate-900">
@@ -365,40 +360,57 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
         </div>
       </section>
 
-      {}
-      <section className="border-b border-slate-300 bg-[#f8fafc] py-12 lg:py-14">
+      {/* Pre Conference Workshops Section */}
+      <section className="border-b border-slate-200 bg-white py-12 lg:py-16">
         <div className="max-w-6xl mx-auto px-4 lg:px-6">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 flex items-center gap-2">
-                <Stethoscope className="w-5 h-5 text-[#005aa9]" />
-                Pre Conference Workshops (30th Oct 2026)
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-slate-200 pb-5">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold uppercase tracking-wider rounded-full border border-amber-300">
+                  30th Oct 2026
+                </span>
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  Full Day Workshops
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 flex items-center gap-2.5">
+                <Stethoscope className="w-7 h-7 text-[#005aa9]" />
+                Pre-Conference Workshops
               </h2>
+              <p className="text-slate-600 text-sm sm:text-base mt-1">
+                Hands-on, immersive skill-building modules led by distinguished national faculty
+              </p>
+            </div>
+
+            <Link
+              to="/workshops"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 font-semibold text-sm hover:bg-[#005aa9] hover:text-white hover:border-[#005aa9] transition-all shadow-sm self-start md:self-auto group"
+            >
+              Explore All Workshops
+              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {WORKSHOPS.map((workshop) => (
               <Link
-                to="/workshops"
-                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+                key={workshop.slug}
+                to={`/workshops/${workshop.slug}`}
+                className="group relative bg-white hover:bg-slate-50/80 rounded-2xl border border-slate-200 p-6 sm:p-7 shadow-sm hover:shadow-md hover:border-[#005aa9]/40 transition-all duration-300 flex items-center justify-between overflow-hidden"
               >
-                Explore all workshops
-                <ArrowUpRight className="w-3.5 h-3.5" />
+                {/* Top Colored Accent Bar */}
+                <div className={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${workshop.accent}`} />
+
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-[#005aa9] transition-colors">
+                  {workshop.name}
+                </h3>
+
+                <span className="inline-flex items-center gap-1 text-sm font-semibold text-[#005aa9] group-hover:translate-x-1 transition-transform shrink-0 ml-4">
+                  View details
+                  <ArrowUpRight className="w-4 h-4" />
+                </span>
               </Link>
-            </div>
-
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
-              {workshopPreviewCards.map((item) => (
-                <Link
-                  key={item.title}
-                  to="/workshops"
-                  className={`group rounded-lg border border-slate-200 bg-white px-4 sm:px-5 py-6 ${item.accent} hover:shadow-md transition-all`}
-                >
-                  <p className="text-lg sm:text-2xl font-semibold text-slate-900">{item.title}</p>
-                  <p className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-slate-600 group-hover:text-[#005aa9]">
-                    View details
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </p>
-                </Link>
-              ))}
-            </div>
-
+            ))}
           </div>
         </div>
       </section>
