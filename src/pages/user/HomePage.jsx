@@ -8,6 +8,7 @@ import virupakshappaImg from '../../images/OrganizingComittee/Virupakshappa.jpg'
 import ravindraImg from '../../images/OrganizingComittee/GL-Ravindra.jpg';
 import champaImg from '../../images/OrganizingComittee/Champa.jpg';
 import ashwiniImg from '../../images/OrganizingComittee/Ashwini.png';
+import anjuGrewalImg from '../../images/AOAOfficeBearers/Anju-Grewal-President.png';
 
 const targetDate = new Date('2026-10-30T09:00:00+05:30');
 const workshopPreviewCards = [
@@ -226,6 +227,76 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {}
+      <section className="border-b border-slate-300 bg-white py-12 lg:py-16">
+        <div className="max-w-5xl mx-auto px-4 lg:px-6">
+          <h2 className="mb-8 text-[30px] font-extrabold leading-tight text-[#082f63] sm:text-[36px] lg:text-[40px]">
+            Message from the President
+          </h2>
+
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.7fr)_minmax(250px,0.75fr)] lg:items-start">
+            <blockquote className={`space-y-5 text-justify text-slate-700 ${descriptionTextClass}`}>
+              <p className="font-semibold text-slate-900">
+                Respected members of the Association of Obstetric Anaesthesiologists (AOA) India,
+              </p>
+              <p>
+                As President of AOA India, I extend my heartfelt congratulations to Team Shivamogga,
+                ably led by Dr. G. L. Ravindra and Dr. Champa, for graciously hosting the 19th Annual
+                National Conference of AOA India. My best wishes for the success of this conference,
+                thoughtfully curated around the pertinent real-world theme, <em>&ldquo;Safe Motherhood
+                Everywhere: Bridging the Urban–Rural Gap in Obstetric Anaesthesia.&rdquo;</em>
+              </p>
+              <p>
+                I humbly appeal to all anaesthesiologists with an interest in obstetric anaesthesia and
+                critical care to register in large numbers, contribute to insightful deliberations,
+                develop skills that help bridge gaps in care, and collaborate with AOA India in its
+                mission to enhance safe maternal care across our country.
+              </p>
+              <p>
+                The conference highlights include the Obstetric Critical Care Course and four
+                interactive, day-long pre-conference workshops focused on the early recognition and
+                management of obstetric emergencies, structured approaches to safe practice, the
+                management of critical incidents, and simulation-based learning of both technical and
+                non-technical skills.
+              </p>
+              <p>
+                Leading international and national experts in obstetric anaesthesia will join us for
+                the conference talks and deliberations.
+              </p>
+              <p>
+                This Annual National Conference will exemplify our commitment to advancing obstetric
+                anaesthesia through cutting-edge education and hands-on training, empowering us to
+                deliver even better care to mothers and newborns across India.
+              </p>
+              <p className="font-semibold text-slate-900">
+                Together, let us join hands towards reducing maternal morbidity and mortality!
+              </p>
+              <footer className="border-t border-slate-200 pt-5 text-sm leading-relaxed text-slate-700">
+                Kind regards,<br />
+                <span className="font-bold text-slate-900">Dr. Anju Grewal</span><br />
+                President<br />
+                AOA India
+              </footer>
+            </blockquote>
+
+            <figure className="mx-auto w-full max-w-[320px] lg:sticky lg:top-24">
+              <div className="aspect-[8/7] overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-sm">
+                <img
+                  src={anjuGrewalImg}
+                  alt="Dr. Anju Grewal, President, AOA India"
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+              <figcaption className="pt-4 text-center">
+                <p className="text-xl font-bold text-[#082f63]">Dr. Anju Grewal</p>
+                <p className="mt-1 text-sm font-medium text-slate-600">President, AOA India</p>
+              </figcaption>
+            </figure>
           </div>
         </div>
       </section>
