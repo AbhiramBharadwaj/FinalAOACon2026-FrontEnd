@@ -4,7 +4,7 @@ import { MapPin, Clock, Stethoscope, Building2, ArrowUpRight } from 'lucide-reac
 import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
 import logo from '../../images/main-logo.png';
-import virupakshappaImg from '../../images/OrganizingComittee/Virupakshappa.jpg';
+import rameshBabuImg from '../../images/OrganizingComittee/Dr Ramesh Babu K.png';
 import ravindraImg from '../../images/OrganizingComittee/GL-Ravindra.jpg';
 import champaImg from '../../images/OrganizingComittee/Champa.jpg';
 import ashwiniImg from '../../images/OrganizingComittee/Ashwini.png';
@@ -204,7 +204,7 @@ Department of Anaesthesiology, Shimoga Institute of Medical Sciences (SIMS) and 
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
               {[
-                { name: 'Dr. Virupakshappa V', title: 'Chief Patron', img: virupakshappaImg },
+                { name: 'Dr Ramesh Babu K', title: 'Chief Patron', img: rameshBabuImg },
                 { name: 'Dr. Ravindra G L', title: 'Organizing Chairperson', img: ravindraImg },
                 { name: 'Dr. Champa B V', title: 'Organizing Secretary', img: champaImg },
                 { name: 'Dr. Ashwini S', title: 'Treasurer', img: ashwiniImg },

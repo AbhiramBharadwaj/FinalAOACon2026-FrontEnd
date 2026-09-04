@@ -22,7 +22,7 @@ import swathiHegdeImg from '../../images/OrganizingComittee/Swathi Hegde.png';
 import swethaPurohitImg from '../../images/OrganizingComittee/Dr. Swetha Purohit.png';
 import sandeepKotiImg from '../../images/OrganizingComittee/Dr. Sandeep Koti .png';
 import vandanaHebballiImg from '../../images/OrganizingComittee/Vandana Hebballi.png';
-import virupakshappaImg from '../../images/OrganizingComittee/Virupakshappa.jpg';
+import rameshBabuImg from '../../images/OrganizingComittee/Dr Ramesh Babu K.png';
 import yashodhaVImg from '../../images/OrganizingComittee/Yashodha V.png';
 import hemanthImg from '../../images/OrganizingComittee/Dr hemanth.png';
 import poojaShahImg from '../../images/OrganizingComittee/Dr Pooja Shah.png';
@@ -41,9 +41,9 @@ const committees = [
         role: 'Dean & Director SIMS, Shivamogg',
         members: [
           {
-            name: 'Dr. Virupakshappa V',
+            name: 'Dr Ramesh Babu K',
             designation: 'Dean & Director SIMS, Shivamogga',
-            image: virupakshappaImg,
+            image: rameshBabuImg,
           },
         ],
       }
