@@ -120,6 +120,9 @@ const RegistrationsManagementPage = () => {
     };
   };
 
+  const formatAmount = (value) =>
+    `₹${Number(value || 0).toLocaleString('en-IN')}`;
+
   const registrationStats = useMemo(
     () => ({
       total: registrations.length,
@@ -1150,6 +1153,18 @@ const RegistrationsManagementPage = () => {
                     {modalData.registration.totalAmount?.toLocaleString()}
                   </p>
                   <p className="text-[11px] text-slate-700">
+                    Booking phase:{' '}
+                    <span className="font-medium">
+                      {modalData.registration.bookingPhase?.replace(/_/g, ' ') || '—'}
+                    </span>
+                  </p>
+                  <p className="text-[11px] text-slate-700">
+                    Accompanying persons:{' '}
+                    <span className="font-medium">
+                      {modalData.registration.accompanyingPersons || 0}
+                    </span>
+                  </p>
+                  <p className="text-[11px] text-slate-700">
                     Coupon: {modalData.registration.couponCode
                       ? `${modalData.registration.couponCode} (-₹${modalData.registration.couponDiscount?.toLocaleString() || 0})`
                       : '—'}
@@ -1164,6 +1179,61 @@ const RegistrationsManagementPage = () => {
                   <p className="text-[11px] text-slate-700 flex items-center gap-1">
                     Status: {getStatusBadge(modalData.registration.paymentStatus)}
                   </p>
+                  <div className="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-2.5">
+                    <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+                      Amount breakdown
+                    </p>
+                    <div className="space-y-1 text-[11px] text-slate-700">
+                      <div className="flex justify-between gap-3">
+                        <span>Conference base</span>
+                        <span>{formatAmount(modalData.registration.basePrice)}</span>
+                      </div>
+                      {(modalData.registration.workshopAddOn > 0 || modalData.registration.addWorkshop) && (
+                        <div className="flex justify-between gap-3">
+                          <span>Workshop add-on</span>
+                          <span>{formatAmount(modalData.registration.workshopAddOn)}</span>
+                        </div>
+                      )}
+                      {modalData.registration.accompanyingPersons > 0 && (
+                        <div className="flex justify-between gap-3 font-medium text-amber-700">
+                          <span>
+                            Accompanying person × {modalData.registration.accompanyingPersons}
+                          </span>
+                          <span>{formatAmount(modalData.registration.accompanyingBase)}</span>
+                        </div>
+                      )}
+                      {modalData.registration.aoaCourseBase > 0 && (
+                        <div className="flex justify-between gap-3">
+                          <span>AOA Certified Course</span>
+                          <span>{formatAmount(modalData.registration.aoaCourseBase)}</span>
+                        </div>
+                      )}
+                      {modalData.registration.lifeMembershipBase > 0 && (
+                        <div className="flex justify-between gap-3">
+                          <span>Life membership</span>
+                          <span>{formatAmount(modalData.registration.lifeMembershipBase)}</span>
+                        </div>
+                      )}
+                      {modalData.registration.couponDiscount > 0 && (
+                        <div className="flex justify-between gap-3 text-emerald-700">
+                          <span>Coupon discount</span>
+                          <span>- {formatAmount(modalData.registration.couponDiscount)}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between gap-3">
+                        <span>GST</span>
+                        <span>{formatAmount(modalData.registration.totalGST)}</span>
+                      </div>
+                      <div className="flex justify-between gap-3">
+                        <span>Processing fee</span>
+                        <span>{formatAmount(modalData.registration.processingFee)}</span>
+                      </div>
+                      <div className="mt-1 flex justify-between gap-3 border-t border-slate-200 pt-1 font-semibold text-slate-900">
+                        <span>Total</span>
+                        <span>{formatAmount(modalData.registration.totalAmount)}</span>
+                      </div>
+                    </div>
+                  </div>
                   {}
                   {modalData.registration.userId?.role === 'PGS' && (
                     <button
