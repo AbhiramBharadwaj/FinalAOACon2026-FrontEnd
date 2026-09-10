@@ -144,6 +144,7 @@ export const adminAPI = {
   previewAccommodationInvoice: (id) =>
     api.get(`/admin/accommodation-bookings/${id}/invoice-preview`, { responseType: 'blob' }),
   sendAccommodationEmail: (id) => api.post(`/admin/accommodation-bookings/${id}/send-email`),
+  deleteAccommodationBooking: (id) => api.delete(`/admin/accommodation-bookings/${id}`),
   getManualRegistrationAvailability: (params) =>
     api.get('/admin/manual-registrations/availability', { params }),
   getManualRegistrationQuote: (data) => api.post('/admin/manual-registrations/quote', data),
