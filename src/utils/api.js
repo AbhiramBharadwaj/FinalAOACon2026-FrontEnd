@@ -141,6 +141,8 @@ export const adminAPI = {
   searchAccommodationDelegates: (search) => api.get('/admin/accommodation-eligible-users', { params: { search } }),
   getAccommodationQuote: (data) => api.post('/admin/accommodation-bookings/quote', data),
   createManualAccommodationBooking: (data) => api.post('/admin/accommodation-bookings/manual', data),
+  previewAccommodationInvoice: (id) =>
+    api.get(`/admin/accommodation-bookings/${id}/invoice-preview`, { responseType: 'blob' }),
   sendAccommodationEmail: (id) => api.post(`/admin/accommodation-bookings/${id}/send-email`),
   getManualRegistrationAvailability: (params) =>
     api.get('/admin/manual-registrations/availability', { params }),
