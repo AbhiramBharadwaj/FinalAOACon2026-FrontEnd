@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { BedDouble, CalendarDays, CheckCircle2, Eye, IndianRupee, Mail, Plus, RefreshCw, Search, Settings2, UserRound, UsersRound } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { BedDouble, CalendarDays, CheckCircle2, Download, Eye, IndianRupee, Mail, Plus, RefreshCw, Search, Settings2, UserRound, UsersRound, X } from 'lucide-react';
 import { adminAPI } from '../../utils/api';
 import Sidebar from '../../components/admin/Sidebar';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
@@ -59,6 +59,8 @@ const AccommodationManagementPage = () => {
   const [delegateSearching, setDelegateSearching] = useState(false);
   const [bookingSearch, setBookingSearch] = useState('');
   const [notice, setNotice] = useState(null);
+  const [invoicePreview, setInvoicePreview] = useState(null);
+  const previewUrlRef = useRef(null);
 
   const activeHotels = useMemo(() => hotels.filter((hotel) => hotel.isActive), [hotels]);
   const selectedHotel = useMemo(() => hotels.find((hotel) => hotel._id === selectedHotelId), [hotels, selectedHotelId]);
@@ -87,6 +89,9 @@ const AccommodationManagementPage = () => {
   };
 
   useEffect(() => { loadData(); }, []);
+  useEffect(() => () => {
+    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+  }, []);
   useEffect(() => {
     if (!form.accommodationId || !form.checkInDate || !form.checkOutDate) return undefined;
     let current = true;
@@ -159,43 +164,44 @@ const AccommodationManagementPage = () => {
     setNotice(null);
     if (!selectedDelegate) return setNotice({ error: true, text: 'Select a registered delegate.' });
     if (!selectedHotel) return setNotice({ error: true, text: 'Select a hotel.' });
-    const previewWindow = window.open('', '_blank');
-    if (previewWindow) previewWindow.document.title = 'Preparing invoice preview…';
     setBusy(true);
     try {
       const { data } = await adminAPI.createManualAccommodationBooking({ ...form, sendEmail: false, userId: selectedDelegate.userId, amountCollected: Number(form.amountCollected) });
       setBookings((items) => [data.booking, ...items]);
-      const previewOpened = await previewBooking(data.booking, previewWindow);
+      const previewOpened = await previewBooking(data.booking);
       setNotice(previewOpened
         ? { error: false, text: `${data.booking.bookingNumber} created for ${selectedHotel.name}. Review the invoice, then send the email when ready.` }
         : { error: true, text: `${data.booking.bookingNumber} was created, but its invoice preview could not be opened. Use Preview in the bookings table to try again.` });
       setSelectedDelegate(null); setDelegateResults([]); setDelegateSearch(''); setForm(freshForm(selectedHotel)); setTab('bookings');
     } catch (error) {
-      if (previewWindow && !previewWindow.closed) previewWindow.close();
       setNotice({ error: true, text: error.response?.data?.message || 'Accommodation booking could not be created.' });
     }
     finally { setBusy(false); }
   };
-  const previewBooking = async (booking, openedWindow) => {
-    const previewWindow = openedWindow || window.open('', '_blank');
+  const previewBooking = async (booking) => {
     try {
       const { data } = await adminAPI.previewAccommodationInvoice(booking._id);
       const url = URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
-      if (previewWindow) previewWindow.location.href = url;
-      else window.location.href = url;
-      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+      previewUrlRef.current = url;
+      setInvoicePreview({ booking, url });
       return true;
     } catch (error) {
-      if (previewWindow && !previewWindow.closed) previewWindow.close();
       setNotice({ error: true, text: error.response?.data?.message || 'Invoice preview could not be opened.' });
       return false;
     }
+  };
+  const closeInvoicePreview = () => {
+    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+    previewUrlRef.current = null;
+    setInvoicePreview(null);
   };
   const emailBooking = async (booking) => {
     setNotice(null);
     try {
       await adminAPI.sendAccommodationEmail(booking._id);
       setBookings((items) => items.map((item) => item._id === booking._id ? { ...item, paymentEmailSentAt: new Date().toISOString() } : item));
+      setInvoicePreview((current) => current?.booking?._id === booking._id ? { ...current, booking: { ...current.booking, paymentEmailSentAt: new Date().toISOString() } } : current);
       setNotice({ error: false, text: `Confirmation email sent for ${booking.bookingNumber}.` });
     } catch (error) { setNotice({ error: true, text: error.response?.data?.message || 'Email could not be sent.' }); }
   };
@@ -262,6 +268,12 @@ const AccommodationManagementPage = () => {
 
     {tab === 'settings' && <div className="grid gap-5 lg:grid-cols-[0.36fr_0.64fr]"><section className="rounded-2xl border border-slate-200 bg-white p-4"><div className="flex items-center justify-between"><div><h2 className="font-bold">Hotels</h2><p className="text-xs text-slate-500">{hotels.length} configured</p></div><button type="button" onClick={addHotel} className="flex items-center gap-1 rounded-lg bg-[#005aa9] px-3 py-2 text-xs font-bold text-white"><Plus className="h-3.5 w-3.5" />Add hotel</button></div><div className="mt-4 space-y-2">{hotels.map((hotel) => <button key={hotel._id} type="button" onClick={() => editHotel(hotel)} className={`w-full rounded-xl border p-3 text-left ${editingHotelId === hotel._id ? 'border-[#005aa9] bg-sky-50' : 'border-slate-200 hover:bg-slate-50'}`}><div className="flex items-start justify-between gap-2"><div><p className="text-sm font-bold text-slate-900">{hotel.name}</p><p className="mt-1 text-xs text-slate-500">{hotel.location}</p></div><span className={`rounded-full px-2 py-1 text-[10px] font-bold ${hotel.isActive ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>{hotel.isActive ? 'Active' : 'Inactive'}</span></div></button>)}</div></section>
       <form onSubmit={saveSettings} className="rounded-2xl border border-slate-200 bg-white p-5"><h2 className="font-bold">{editingHotelId ? `${settings.name} settings` : 'Add hotel'}</h2><p className="mt-1 text-sm text-slate-500">Tariff changes apply only to new bookings. Existing booking totals stay unchanged.</p><div className="mt-5 grid gap-4 sm:grid-cols-2"><label className="text-sm font-medium">Hotel name<input required value={settings.name} onChange={(event) => setSettings((value) => ({ ...value, name: event.target.value }))} className={inputClass} /></label><label className="text-sm font-medium">Location<input required value={settings.location} onChange={(event) => setSettings((value) => ({ ...value, location: event.target.value }))} className={inputClass} /></label><label className="text-sm font-medium">Single base rate/night<input required min="0" type="number" value={settings.singleBasePerNight} onChange={(event) => setSettings((value) => ({ ...value, singleBasePerNight: event.target.value }))} className={inputClass} /></label><label className="text-sm font-medium">Sharing rate/person/night<input required min="0" type="number" value={settings.sharingBasePerPersonPerNight} onChange={(event) => setSettings((value) => ({ ...value, sharingBasePerPersonPerNight: event.target.value }))} className={inputClass} /></label><label className="text-sm font-medium">GST percentage<input required min="0" type="number" value={settings.gstRate} onChange={(event) => setSettings((value) => ({ ...value, gstRate: event.target.value }))} className={inputClass} /></label><span /><label className="text-sm font-medium">Earliest check-in<input required type="date" value={settings.earliestCheckIn} onChange={(event) => setSettings((value) => ({ ...value, earliestCheckIn: event.target.value }))} className={inputClass} /></label><label className="text-sm font-medium">Latest check-out<input required type="date" value={settings.latestCheckOut} onChange={(event) => setSettings((value) => ({ ...value, latestCheckOut: event.target.value }))} className={inputClass} /></label><label className="text-sm font-medium">Default check-in<input required type="time" value={settings.checkInTime} onChange={(event) => setSettings((value) => ({ ...value, checkInTime: event.target.value }))} className={inputClass} /></label><label className="text-sm font-medium">Default check-out<input required type="time" value={settings.checkOutTime} onChange={(event) => setSettings((value) => ({ ...value, checkOutTime: event.target.value }))} className={inputClass} /></label><label className="flex items-center gap-3 rounded-xl border bg-slate-50 p-3 text-sm sm:col-span-2"><input type="checkbox" checked={settings.isActive} onChange={(event) => setSettings((value) => ({ ...value, isActive: event.target.checked }))} />Active and available for new bookings</label></div><button disabled={busy} className="mt-5 flex items-center gap-2 rounded-xl bg-[#005aa9] px-4 py-2.5 text-sm font-bold text-white"><RefreshCw className="h-4 w-4" />{busy ? 'Saving…' : editingHotelId ? 'Save hotel settings' : 'Add hotel'}</button></form>
+    </div>}
+    {invoicePreview && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-3 sm:p-6" role="dialog" aria-modal="true" aria-label={`Invoice preview ${invoicePreview.booking.bookingNumber}`}>
+      <div className="flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3 sm:px-5"><div><h2 className="font-bold text-slate-950">Accommodation invoice preview</h2><p className="text-xs text-slate-500">{invoicePreview.booking.bookingNumber} · {invoicePreview.booking.userId?.name}</p></div><div className="flex items-center gap-2"><a href={invoicePreview.url} download={`AOA_Invoice_${invoicePreview.booking.bookingNumber}.pdf`} className="flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700"><Download className="h-3.5 w-3.5" />Download</a>{invoicePreview.booking.paymentEmailSentAt ? <span className="rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700">Email sent</span> : <button type="button" onClick={() => emailBooking(invoicePreview.booking)} className="flex items-center gap-1.5 rounded-lg bg-[#005aa9] px-3 py-2 text-xs font-bold text-white"><Mail className="h-3.5 w-3.5" />Send email</button>}<button type="button" onClick={closeInvoicePreview} aria-label="Close invoice preview" className="rounded-lg border border-slate-300 p-2 text-slate-600"><X className="h-4 w-4" /></button></div></div>
+        <iframe title={`Invoice ${invoicePreview.booking.bookingNumber}`} src={invoicePreview.url} className="min-h-0 flex-1 bg-slate-100" />
+      </div>
     </div>}
   </div></main></div>;
 };
