@@ -319,6 +319,7 @@ const AbstractUploadPage = () => {
 
   const isRejectedAbstract = existingAbstract?.status === 'REJECTED';
   const finalPosterUrl = getAssetUrl(existingAbstract?.finalPosterPath);
+  const hasFinalPoster = Boolean(existingAbstract?.finalPosterPath);
 
   if (existingAbstract && !isRejectedAbstract) {
     return (
@@ -345,10 +346,16 @@ const AbstractUploadPage = () => {
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
-          <div className="ml-3">
-            <h1 className="text-lg font-semibold text-slate-900">E-Poster Abstract Submitted</h1>
-            <p className="text-xs text-slate-600">Status: {existingAbstract.status}</p>
-          </div>
+            <div className="ml-3">
+              <h1 className="text-lg font-semibold text-slate-900">
+                {existingAbstract.status === 'APPROVED' ? 'Abstract Accepted' : 'Abstract Submitted'}
+              </h1>
+              <p className="text-xs text-slate-600">
+                {existingAbstract.status === 'APPROVED'
+                  ? 'Your abstract is complete. Upload the final e-poster as the next step.'
+                  : `Status: ${existingAbstract.status}`}
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
@@ -357,11 +364,16 @@ const AbstractUploadPage = () => {
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
                     <FileText className="w-4 h-4 text-[#7cb342]" />
-                    Abstract #{existingAbstract.submissionNumber}
+                    Step 1: Abstract Submission
                   </h2>
-                  <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-medium ${getStatusColor(existingAbstract.status)}`}>
-                    {existingAbstract.status}
-                  </span>
+                  <div className="flex flex-wrap items-center justify-end gap-2">
+                    <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-medium text-slate-600">
+                      #{existingAbstract.submissionNumber}
+                    </span>
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-medium ${getStatusColor(existingAbstract.status)}`}>
+                      {existingAbstract.status === 'APPROVED' ? 'COMPLETED' : existingAbstract.status}
+                    </span>
+                  </div>
                 </div>
                 
                 <div className="space-y-3 text-xs">
@@ -451,7 +463,7 @@ const AbstractUploadPage = () => {
               <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-xl p-4 lg:p-6">
                 <h3 className="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-[#7cb342]" />
-                  Submission Status
+                  Abstract Review Status
                 </h3>
                 
                 {existingAbstract.status === 'PENDING' && (
@@ -481,10 +493,24 @@ const AbstractUploadPage = () => {
 
               {existingAbstract.status === 'APPROVED' && (
                 <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-xl p-4 lg:p-6">
-                  <h3 className="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                    <Upload className="w-4 h-4 text-[#005aa9]" />
-                    Final E-Poster
-                  </h3>
+                  <div className="mb-4 flex items-start justify-between gap-3">
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                        <Upload className="w-4 h-4 text-[#005aa9]" />
+                        Step 2: Final E-Poster Upload
+                      </h3>
+                      <p className="mt-1 text-xs text-slate-600">
+                        Upload the presentation file for your accepted abstract.
+                      </p>
+                    </div>
+                    <span className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-[10px] font-medium ${
+                      hasFinalPoster
+                        ? 'bg-[#7cb342]/20 text-[#7cb342]'
+                        : 'bg-[#005aa9]/10 text-[#005aa9]'
+                    }`}>
+                      {hasFinalPoster ? 'UPLOADED' : 'NEXT STEP'}
+                    </span>
+                  </div>
 
                   {posterSuccessMessage && (
                     <div className="mb-3 rounded-lg border border-emerald-300/60 bg-emerald-50 p-3 text-xs text-emerald-700">
@@ -573,6 +599,11 @@ const AbstractUploadPage = () => {
                       </>
                     )}
                   </button>
+                  <p className="mt-2 text-center text-[11px] text-slate-500">
+                    {posterFile
+                      ? 'Ready to upload. You can replace the file later if needed.'
+                      : 'Select a PDF, DOCX, PPT, or PPTX file to enable upload.'}
+                  </p>
                 </div>
               )}
 
