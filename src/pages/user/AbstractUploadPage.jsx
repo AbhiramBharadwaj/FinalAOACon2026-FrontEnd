@@ -195,11 +195,18 @@ const AbstractUploadPage = () => {
   const handlePosterFileChange = (file) => {
     if (!file) return;
 
+    const allowedMimeTypes = new Set([
+      'application/pdf',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    ]);
+    const allowedExtensions = new Set(['pdf', 'docx', 'ppt', 'pptx']);
     const fileExtension = file.name.split('.').pop()?.toLowerCase();
-    const isPdf = file.type === 'application/pdf' || fileExtension === 'pdf';
+    const isAllowedType = allowedMimeTypes.has(file.type) || allowedExtensions.has(fileExtension);
 
-    if (!isPdf) {
-      setPosterError('Please upload the final e-poster as a PDF file.');
+    if (!isAllowedType) {
+      setPosterError('Please upload the final e-poster as PDF, DOCX, PPT, or PPTX.');
       return;
     }
 
@@ -220,7 +227,7 @@ const AbstractUploadPage = () => {
 
   const handlePosterSubmit = async () => {
     if (!posterFile) {
-      setPosterError('Final e-poster PDF file is required.');
+      setPosterError('Final e-poster file is required.');
       return;
     }
 
@@ -459,7 +466,7 @@ const AbstractUploadPage = () => {
                   <div className="text-center p-6 border-2 border-[#7cb342]/30 rounded-xl bg-[#7cb342]/10">
                     <CheckCircle className="w-12 h-12 text-[#7cb342] mx-auto mb-3" />
                     <p className="text-lg font-semibold text-[#7cb342] mb-1">Accepted ✓</p>
-                    <p className="text-xs text-[#7cb342]">Upload the final e-poster PDF before 15th October, 2026</p>
+                    <p className="text-xs text-[#7cb342]">Upload the final e-poster before 15th October, 2026</p>
                   </div>
                 )}
                 
@@ -495,7 +502,7 @@ const AbstractUploadPage = () => {
                     <div className="mb-4 rounded-lg border border-[#7cb342]/30 bg-[#7cb342]/10 p-3 text-xs text-slate-700">
                       <p className="font-semibold text-slate-900">Uploaded</p>
                       <p className="mt-1 truncate">
-                        {existingAbstract.finalPosterOriginalName || 'Final e-poster PDF'}
+                        {existingAbstract.finalPosterOriginalName || 'Final e-poster file'}
                       </p>
                       {existingAbstract.finalPosterUploadedAt && (
                         <p className="mt-1 text-slate-600">
@@ -536,17 +543,17 @@ const AbstractUploadPage = () => {
                         <Upload className="mx-auto mb-3 h-9 w-9 text-slate-400" />
                         <label htmlFor="final-poster-file" className="inline-flex cursor-pointer items-center rounded-xl border border-[#005aa9]/30 bg-[#005aa9]/10 px-4 py-2.5 text-xs font-semibold text-[#005aa9] transition hover:bg-[#005aa9]/20">
                           <Upload className="mr-1.5 h-3.5 w-3.5" />
-                          Select PDF
+                          Select File
                           <input
                             id="final-poster-file"
                             type="file"
-                            accept=".pdf,application/pdf"
+                            accept=".pdf,.docx,.ppt,.pptx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation"
                             onChange={(event) => handlePosterFileChange(event.target.files[0])}
                             className="sr-only"
                             disabled={posterSubmitting}
                           />
                         </label>
-                        <p className="mt-2 text-xs text-slate-500">Max 25MB • PDF only</p>
+                        <p className="mt-2 text-xs text-slate-500">Max 25MB • PDF, DOCX, PPT, or PPTX</p>
                       </>
                     )}
                   </div>
