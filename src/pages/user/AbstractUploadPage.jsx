@@ -478,7 +478,7 @@ const AbstractUploadPage = () => {
                   <div className="text-center p-6 border-2 border-[#7cb342]/30 rounded-xl bg-[#7cb342]/10">
                     <CheckCircle className="w-12 h-12 text-[#7cb342] mx-auto mb-3" />
                     <p className="text-lg font-semibold text-[#7cb342] mb-1">Accepted ✓</p>
-                    <p className="text-xs text-[#7cb342]">Upload the final e-poster before 15th October, 2026</p>
+                    <p className="text-xs text-[#7cb342]">Upload the final e-poster before 10th October, 2026</p>
                   </div>
                 )}
                 
