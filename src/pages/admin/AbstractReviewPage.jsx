@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { 
+import {
   FileText, 
   Search, 
   Eye, 
@@ -8,15 +8,13 @@ import {
   Clock,
   Download,
   MessageSquare,
-  List,
   User
 } from 'lucide-react';
-import { abstractAPI } from '../../utils/api';
+import { abstractAPI, API_BASE_URL } from '../../utils/api';
 import { ABSTRACT_CATEGORIES } from '../../utils/constants';
 import Sidebar from '../../components/admin/Sidebar';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import { X } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const AbstractReviewPage = () => {
   const [abstracts, setAbstracts] = useState([]);
@@ -25,6 +23,7 @@ const AbstractReviewPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
+  const [posterFilter, setPosterFilter] = useState('');
   const [selectedAbstract, setSelectedAbstract] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [reviewData, setReviewData] = useState({
@@ -39,7 +38,7 @@ const AbstractReviewPage = () => {
 
   useEffect(() => {
     filterAbstracts();
-  }, [abstracts, searchTerm, statusFilter, categoryFilter]);
+  }, [abstracts, searchTerm, statusFilter, categoryFilter, posterFilter]);
 
   const fetchAbstracts = async () => {
     try {
@@ -59,7 +58,9 @@ const AbstractReviewPage = () => {
       filtered = filtered.filter(abstract => 
         abstract.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         abstract.authors.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        abstract.userId?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        abstract.userId?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        abstract.userId?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        abstract.registration?.registrationNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         abstract.submissionNumber.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
@@ -72,7 +73,45 @@ const AbstractReviewPage = () => {
       filtered = filtered.filter(abstract => abstract.category === categoryFilter);
     }
 
+    if (posterFilter === 'UPLOADED') {
+      filtered = filtered.filter(abstract => Boolean(abstract.finalPosterPath));
+    }
+
+    if (posterFilter === 'NOT_UPLOADED') {
+      filtered = filtered.filter(abstract => !abstract.finalPosterPath);
+    }
+
+    if (posterFilter === 'APPROVED_PENDING') {
+      filtered = filtered.filter(abstract => abstract.status === 'APPROVED' && !abstract.finalPosterPath);
+    }
+
     setFilteredAbstracts(filtered);
+  };
+
+  const getAssetUrl = (filePath) => {
+    if (!filePath) return null;
+    return /^https?:\/\//i.test(filePath) ? filePath : `${API_BASE_URL}/${filePath}`;
+  };
+
+  const getPosterStatusLabel = (abstract) => {
+    if (abstract.finalPosterPath) return 'Uploaded';
+    if (abstract.status === 'APPROVED') return 'Pending';
+    return 'Not eligible';
+  };
+
+  const getPosterBadge = (abstract) => {
+    const status = getPosterStatusLabel(abstract);
+    const styles = {
+      Uploaded: 'bg-emerald-100 text-emerald-800',
+      Pending: 'bg-amber-100 text-amber-800',
+      'Not eligible': 'bg-slate-100 text-slate-600',
+    };
+
+    return (
+      <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium ${styles[status]}`}>
+        {status}
+      </span>
+    );
   };
 
   const getStatusBadge = (status) => {
@@ -146,7 +185,8 @@ const AbstractReviewPage = () => {
   const exportToCSV = () => {
     const headers = [
       'Submission Number', 'Registration Number', 'Title', 'Authors', 'Category', 'Submitter Name',
-      'Submitter Email', 'Attempt Number', 'Status', 'Submission Date', 'Review Comments'
+      'Submitter Email', 'Attempt Number', 'Status', 'Final E-Poster Status',
+      'Final E-Poster Uploaded At', 'Final E-Poster File', 'Submission Date', 'Review Comments'
     ];
 
     const csvData = filteredAbstracts.map(abstract => [
@@ -159,12 +199,15 @@ const AbstractReviewPage = () => {
       abstract.userId?.email,
       getCurrentAttemptNumber(abstract),
       abstract.status,
+      getPosterStatusLabel(abstract),
+      abstract.finalPosterUploadedAt ? new Date(abstract.finalPosterUploadedAt).toLocaleString() : '',
+      getAssetUrl(abstract.finalPosterPath) || '',
       new Date(getLatestSubmittedAt(abstract)).toLocaleDateString(),
       abstract.reviewComments || ''
     ]);
 
     const csvContent = [headers, ...csvData]
-      .map(row => row.map(field => `"${field}"`).join(','))
+      .map(row => row.map(field => `"${String(field ?? '').replaceAll('"', '""')}"`).join(','))
       .join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv' });
@@ -180,6 +223,7 @@ const AbstractReviewPage = () => {
   const pendingAbstracts = abstracts.filter(a => a.status === 'PENDING').length;
   const approvedAbstracts = abstracts.filter(a => a.status === 'APPROVED').length;
   const rejectedAbstracts = abstracts.filter(a => a.status === 'REJECTED').length;
+  const uploadedPosters = abstracts.filter(a => a.finalPosterPath).length;
 
   if (loading) {
     return (
@@ -214,7 +258,7 @@ const AbstractReviewPage = () => {
           </div>
 
           {}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-5">
             <div className="flex items-center gap-2.5 p-3 bg-white border border-slate-200 rounded-xl">
               <div className="w-9 h-9 bg-sky-50 rounded-xl flex items-center justify-center">
                 <FileText className="w-4 h-4 text-sky-600" />
@@ -254,11 +298,21 @@ const AbstractReviewPage = () => {
                 <p className="text-sm text-slate-900">{rejectedAbstracts}</p>
               </div>
             </div>
+
+            <div className="flex items-center gap-2.5 p-3 bg-white border border-slate-200 rounded-xl">
+              <div className="w-9 h-9 bg-[#005aa9]/10 rounded-xl flex items-center justify-center">
+                <Download className="w-4 h-4 text-[#005aa9]" />
+              </div>
+              <div>
+                <p className="text-xs text-slate-600">E-Posters</p>
+                <p className="text-sm text-slate-900">{uploadedPosters}</p>
+              </div>
+            </div>
           </div>
 
           {}
           <div className="bg-white border border-slate-200 rounded-2xl p-4 mb-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <div className="relative">
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 w-3.5 h-3.5" />
                 <input
@@ -291,6 +345,16 @@ const AbstractReviewPage = () => {
                   </option>
                 ))}
               </select>
+              <select
+                value={posterFilter}
+                onChange={(e) => setPosterFilter(e.target.value)}
+                className="text-sm border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9]"
+              >
+                <option value="">All E-Posters</option>
+                <option value="UPLOADED">Uploaded</option>
+                <option value="NOT_UPLOADED">Not Uploaded</option>
+                <option value="APPROVED_PENDING">Approved but Not Uploaded</option>
+              </select>
             </div>
           </div>
 
@@ -322,6 +386,10 @@ const AbstractReviewPage = () => {
                       <span className="text-slate-500">{abstract.userId?.name}</span>
                       <span className="text-slate-500">{new Date(getLatestSubmittedAt(abstract)).toLocaleDateString()}</span>
                     </div>
+                    <div className="mb-2 flex items-center justify-between text-xs">
+                      <span className="text-slate-500">Final E-Poster</span>
+                      <span>{getPosterBadge(abstract)}</span>
+                    </div>
                     <button
                       onClick={() => handleReview(abstract)}
                       className="w-full flex items-center justify-center gap-1 text-xs text-[#005aa9] hover:text-[#004684] py-2 rounded-lg border border-[#005aa9]/20 hover:bg-[#005aa9]/5 transition-colors"
@@ -343,6 +411,7 @@ const AbstractReviewPage = () => {
                       <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-600 uppercase tracking-wider">Category</th>
                       <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-600 uppercase tracking-wider w-48">Submitter</th>
                       <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-600 uppercase tracking-wider">Status</th>
+                      <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-600 uppercase tracking-wider">E-Poster</th>
                       <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-600 uppercase tracking-wider w-32">Date</th>
                       <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-600 uppercase tracking-wider w-24">Action</th>
                     </tr>
@@ -366,6 +435,21 @@ const AbstractReviewPage = () => {
                           <div className="text-[10px] text-slate-500 truncate max-w-[120px]">{abstract.userId?.email}</div>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">{getStatusBadge(abstract.status)}</td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="flex flex-col gap-1">
+                            {getPosterBadge(abstract)}
+                            {abstract.finalPosterPath && (
+                              <a
+                                href={getAssetUrl(abstract.finalPosterPath)}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-[10px] font-medium text-[#005aa9] hover:text-[#004684]"
+                              >
+                                Download
+                              </a>
+                            )}
+                          </div>
+                        </td>
                         <td className="px-4 py-3 whitespace-nowrap text-xs text-slate-600">
                           {new Date(getLatestSubmittedAt(abstract)).toLocaleDateString()}
                         </td>
@@ -493,7 +577,59 @@ const AbstractReviewPage = () => {
                       </div>
                       <p className="text-sky-700 text-[11px] mt-1 truncate">{selectedAbstract.filePath}</p>
 
-                      <Link className='mt-5 block flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm bg-[#005aa9] text-white rounded-xl hover:bg-[#004684]  transition-all font-medium shadow-sm hover:shadow-md' to={`https://api.aoacon2026.com/${selectedAbstract.filePath}`}>Check Abstract</Link>
+                      <a
+                        className="mt-5 flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#005aa9] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-[#004684] hover:shadow-md"
+                        href={getAssetUrl(selectedAbstract.filePath)}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Check Abstract
+                      </a>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-medium text-slate-900 mb-2 flex items-center gap-2">
+                      <Download className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
+                      Final E-Poster
+                    </h4>
+                    <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs lg:text-sm font-medium text-emerald-900">Upload Status</span>
+                        {getPosterBadge(selectedAbstract)}
+                      </div>
+                      {selectedAbstract.finalPosterPath ? (
+                        <>
+                          <p className="mt-2 text-[11px] text-emerald-800 truncate">
+                            {selectedAbstract.finalPosterOriginalName || selectedAbstract.finalPosterPath}
+                          </p>
+                          {selectedAbstract.finalPosterUploadedAt && (
+                            <p className="mt-1 text-[11px] text-emerald-700">
+                              Uploaded: {new Date(selectedAbstract.finalPosterUploadedAt).toLocaleString()}
+                            </p>
+                          )}
+                          {selectedAbstract.finalPosterSize && (
+                            <p className="mt-1 text-[11px] text-emerald-700">
+                              Size: {(selectedAbstract.finalPosterSize / (1024 * 1024)).toFixed(2)} MB
+                            </p>
+                          )}
+                          <a
+                            href={getAssetUrl(selectedAbstract.finalPosterPath)}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-emerald-700 hover:shadow-md"
+                          >
+                            <Download className="h-3.5 w-3.5" />
+                            Download Final E-Poster
+                          </a>
+                        </>
+                      ) : (
+                        <p className="mt-2 text-[11px] text-emerald-800">
+                          {selectedAbstract.status === 'APPROVED'
+                            ? 'Approved, but final e-poster has not been uploaded yet.'
+                            : 'Final e-poster upload becomes available after approval.'}
+                        </p>
+                      )}
                     </div>
                   </div>
 

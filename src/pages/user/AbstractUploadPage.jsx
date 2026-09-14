@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
-import { abstractAPI } from '../../utils/api';
+import { abstractAPI, API_BASE_URL } from '../../utils/api';
 import { ABSTRACT_CATEGORIES } from '../../utils/constants';
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
@@ -34,6 +34,10 @@ const AbstractUploadPage = () => {
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState('');
   const [dragActive, setDragActive] = useState(false);
+  const [posterFile, setPosterFile] = useState(null);
+  const [posterSubmitting, setPosterSubmitting] = useState(false);
+  const [posterError, setPosterError] = useState('');
+  const [posterSuccessMessage, setPosterSuccessMessage] = useState('');
   const [showAnnouncement, setShowAnnouncement] = useState(true);
   
   const { user, isAuthenticated } = useAuth();
@@ -188,6 +192,57 @@ const AbstractUploadPage = () => {
     setErrors(prev => ({ ...prev, file: '' }));
   };
 
+  const handlePosterFileChange = (file) => {
+    if (!file) return;
+
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+    const isPdf = file.type === 'application/pdf' || fileExtension === 'pdf';
+
+    if (!isPdf) {
+      setPosterError('Please upload the final e-poster as a PDF file.');
+      return;
+    }
+
+    if (file.size > 25 * 1024 * 1024) {
+      setPosterError('Final e-poster file size must be less than 25MB.');
+      return;
+    }
+
+    setPosterFile(file);
+    setPosterError('');
+    setPosterSuccessMessage('');
+  };
+
+  const removePosterFile = () => {
+    setPosterFile(null);
+    setPosterError('');
+  };
+
+  const handlePosterSubmit = async () => {
+    if (!posterFile) {
+      setPosterError('Final e-poster PDF file is required.');
+      return;
+    }
+
+    setPosterSubmitting(true);
+    setPosterError('');
+    setPosterSuccessMessage('');
+
+    try {
+      const submitData = new FormData();
+      submitData.append('finalPoster', posterFile);
+      const response = await abstractAPI.uploadFinalPoster(submitData);
+      setExistingAbstract(response.data.abstract);
+      setAbstract(response.data.abstract);
+      setPosterFile(null);
+      setPosterSuccessMessage('Final e-poster uploaded successfully.');
+    } catch (error) {
+      setPosterError(error.response?.data?.message || 'Failed to upload final e-poster. Please try again.');
+    } finally {
+      setPosterSubmitting(false);
+    }
+  };
+
   const handleBackNavigation = () => {
     navigate(isAuthenticated ? '/dashboard' : '/abstract/rules');
   };
@@ -199,6 +254,11 @@ const AbstractUploadPage = () => {
       REJECTED: 'bg-red-500/20 text-red-400 border-red-400/30'
     };
     return colors[status] || 'bg-slate-500/20 text-slate-500 border-slate-400/30';
+  };
+
+  const getAssetUrl = (filePath) => {
+    if (!filePath) return null;
+    return /^https?:\/\//i.test(filePath) ? filePath : `${API_BASE_URL}/${filePath}`;
   };
 
   const announcementModal = showAnnouncement ? (
@@ -251,6 +311,7 @@ const AbstractUploadPage = () => {
   }
 
   const isRejectedAbstract = existingAbstract?.status === 'REJECTED';
+  const finalPosterUrl = getAssetUrl(existingAbstract?.finalPosterPath);
 
   if (existingAbstract && !isRejectedAbstract) {
     return (
@@ -410,6 +471,103 @@ const AbstractUploadPage = () => {
                   </div>
                 )}
               </div>
+
+              {existingAbstract.status === 'APPROVED' && (
+                <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-xl p-4 lg:p-6">
+                  <h3 className="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                    <Upload className="w-4 h-4 text-[#005aa9]" />
+                    Final E-Poster
+                  </h3>
+
+                  {posterSuccessMessage && (
+                    <div className="mb-3 rounded-lg border border-emerald-300/60 bg-emerald-50 p-3 text-xs text-emerald-700">
+                      {posterSuccessMessage}
+                    </div>
+                  )}
+
+                  {posterError && (
+                    <div className="mb-3 rounded-lg border border-red-300/60 bg-red-50 p-3 text-xs text-red-600">
+                      {posterError}
+                    </div>
+                  )}
+
+                  {existingAbstract.finalPosterPath && (
+                    <div className="mb-4 rounded-lg border border-[#7cb342]/30 bg-[#7cb342]/10 p-3 text-xs text-slate-700">
+                      <p className="font-semibold text-slate-900">Uploaded</p>
+                      <p className="mt-1 truncate">
+                        {existingAbstract.finalPosterOriginalName || 'Final e-poster PDF'}
+                      </p>
+                      {existingAbstract.finalPosterUploadedAt && (
+                        <p className="mt-1 text-slate-600">
+                          {new Date(existingAbstract.finalPosterUploadedAt).toLocaleString('en-IN')}
+                        </p>
+                      )}
+                      {finalPosterUrl && (
+                        <a
+                          href={finalPosterUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-3 inline-flex w-full items-center justify-center rounded-lg border border-[#7cb342]/40 px-3 py-2 font-semibold text-[#7cb342] hover:bg-[#7cb342]/10"
+                        >
+                          View uploaded e-poster
+                        </a>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="rounded-xl border-2 border-dashed border-slate-200 p-4 text-center">
+                    {posterFile ? (
+                      <div className="flex flex-col items-center space-y-2">
+                        <FileText className="h-9 w-9 text-[#005aa9]" />
+                        <div className="flex max-w-full items-center rounded border border-[#005aa9]/20 bg-[#005aa9]/10 px-3 py-2 text-xs text-[#005aa9]">
+                          <span className="max-w-[190px] truncate">{posterFile.name}</span>
+                          <button
+                            type="button"
+                            onClick={removePosterFile}
+                            className="ml-2 text-[#005aa9] hover:text-[#004684]"
+                            disabled={posterSubmitting}
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <Upload className="mx-auto mb-3 h-9 w-9 text-slate-400" />
+                        <label htmlFor="final-poster-file" className="inline-flex cursor-pointer items-center rounded-xl border border-[#005aa9]/30 bg-[#005aa9]/10 px-4 py-2.5 text-xs font-semibold text-[#005aa9] transition hover:bg-[#005aa9]/20">
+                          <Upload className="mr-1.5 h-3.5 w-3.5" />
+                          Select PDF
+                          <input
+                            id="final-poster-file"
+                            type="file"
+                            accept=".pdf,application/pdf"
+                            onChange={(event) => handlePosterFileChange(event.target.files[0])}
+                            className="sr-only"
+                            disabled={posterSubmitting}
+                          />
+                        </label>
+                        <p className="mt-2 text-xs text-slate-500">Max 25MB • PDF only</p>
+                      </>
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handlePosterSubmit}
+                    disabled={posterSubmitting || !posterFile}
+                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#005aa9] px-4 py-3 text-xs font-semibold text-white transition hover:bg-[#004684] disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {posterSubmitting ? (
+                      <LoadingSpinner size="sm" />
+                    ) : (
+                      <>
+                        <Upload className="h-4 w-4" />
+                        {existingAbstract.finalPosterPath ? 'Replace final e-poster' : 'Upload final e-poster'}
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
 
               <button
                 onClick={() => navigate('/dashboard')}

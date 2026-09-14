@@ -171,6 +171,9 @@ const DashboardPage = () => {
   const videoSubmissionUrl = stats.videoSubmission?.filePath
     ? getAssetUrl(stats.videoSubmission.filePath)
     : null;
+  const finalPosterUrl = stats.abstract?.finalPosterPath
+    ? getAssetUrl(stats.abstract.finalPosterPath)
+    : null;
   const profileRole = profile?.role || user?.role;
   const isProfileComplete = !!profile?.isProfileComplete;
   const hasVideoSubmission = !!stats.videoSubmission;
@@ -734,12 +737,35 @@ const DashboardPage = () => {
                     <p className="text-[11px] text-slate-600/80">
                       #{stats.abstract.submissionNumber}
                     </p>
+                    {stats.abstract.status === 'APPROVED' && (
+                      <div className={`rounded-xl border px-3 py-2 text-[11px] font-medium ${
+                        stats.abstract.finalPosterPath
+                          ? 'border-[#7cb342]/30 bg-[#7cb342]/10 text-[#7cb342]'
+                          : 'border-[#ff8a1f]/30 bg-[#ff8a1f]/10 text-[#ff8a1f]'
+                      }`}>
+                        {stats.abstract.finalPosterPath
+                          ? 'Final e-poster uploaded'
+                          : 'Final e-poster pending'}
+                      </div>
+                    )}
                     <button
                       onClick={() => navigate('/abstract/upload')}
                       className="mt-2 w-full rounded-xl bg-[#7cb342] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#68c239]"
                     >
-                      View abstract
+                      {stats.abstract.status === 'APPROVED' && !stats.abstract.finalPosterPath
+                        ? 'Upload final e-poster'
+                        : 'View abstract'}
                     </button>
+                    {finalPosterUrl && (
+                      <a
+                        href={finalPosterUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="block w-full text-center rounded-xl border border-[#005aa9]/40 text-[#005aa9] px-4 py-2 text-xs sm:text-sm font-semibold hover:bg-[#005aa9]/10"
+                      >
+                        View final e-poster
+                      </a>
+                    )}
                     {abstractFileUrl && (
                       <a
                         href={abstractFileUrl}

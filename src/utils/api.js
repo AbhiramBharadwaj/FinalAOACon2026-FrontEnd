@@ -88,6 +88,9 @@ export const abstractAPI = {
   submit: (formData) => api.post('/abstract/submit', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   }),
+  uploadFinalPoster: (formData) => api.post('/abstract/final-poster', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }),
   getMyAbstract: () => api.get('/abstract/my-abstract'),
   getAll: (params) => api.get('/abstract/all', { params }),
   review: (id, data) => api.put(`/abstract/review/${id}`, data),
