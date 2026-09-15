@@ -254,8 +254,6 @@ const AbstractUploadPage = () => {
   }
 
   const isRejectedAbstract = existingAbstract?.status === 'REJECTED';
-  const finalPosterUrl = getAssetUrl(existingAbstract?.finalPosterPath);
-  const hasFinalPoster = Boolean(existingAbstract?.finalPosterPath);
 
   if (existingAbstract && !isRejectedAbstract) {
     return (
@@ -288,7 +286,7 @@ const AbstractUploadPage = () => {
               </h1>
               <p className="text-xs text-slate-600">
                 {existingAbstract.status === 'APPROVED'
-                  ? 'Your abstract is complete. Upload the final e-poster as the next step.'
+                  ? 'Your abstract details and review status are shown below.'
                   : `Status: ${existingAbstract.status}`}
               </p>
             </div>
@@ -414,7 +412,7 @@ const AbstractUploadPage = () => {
                   <div className="text-center p-6 border-2 border-[#7cb342]/30 rounded-xl bg-[#7cb342]/10">
                     <CheckCircle className="w-12 h-12 text-[#7cb342] mx-auto mb-3" />
                     <p className="text-lg font-semibold text-[#7cb342] mb-1">Accepted ✓</p>
-                    <p className="text-xs text-[#7cb342]">Upload the final e-poster before 10th October, 2026</p>
+                    <p className="text-xs text-[#7cb342]">Use the E-Poster window on your dashboard for final upload.</p>
                   </div>
                 )}
                 
@@ -426,65 +424,6 @@ const AbstractUploadPage = () => {
                   </div>
                 )}
               </div>
-
-              {existingAbstract.status === 'APPROVED' && (
-                <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-xl p-4 lg:p-6">
-                  <div className="mb-4 flex items-start justify-between gap-3">
-                    <div>
-                      <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-                        <Upload className="w-4 h-4 text-[#005aa9]" />
-                        Step 2: Final E-Poster Upload
-                      </h3>
-                      <p className="mt-1 text-xs text-slate-600">
-                        Upload the presentation file for your accepted abstract.
-                      </p>
-                    </div>
-                    <span className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-[10px] font-medium ${
-                      hasFinalPoster
-                        ? 'bg-[#7cb342]/20 text-[#7cb342]'
-                        : 'bg-[#005aa9]/10 text-[#005aa9]'
-                    }`}>
-                      {hasFinalPoster ? 'UPLOADED' : 'NEXT STEP'}
-                    </span>
-                  </div>
-
-                  {existingAbstract.finalPosterPath && (
-                    <div className="mb-4 rounded-lg border border-[#7cb342]/30 bg-[#7cb342]/10 p-3 text-xs text-slate-700">
-                      <p className="font-semibold text-slate-900">Uploaded</p>
-                      <p className="mt-1 truncate">
-                        {existingAbstract.finalPosterOriginalName || 'Final e-poster file'}
-                      </p>
-                      {existingAbstract.finalPosterUploadedAt && (
-                        <p className="mt-1 text-slate-600">
-                          {new Date(existingAbstract.finalPosterUploadedAt).toLocaleString('en-IN')}
-                        </p>
-                      )}
-                      {finalPosterUrl && (
-                        <a
-                          href={finalPosterUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="mt-3 inline-flex w-full items-center justify-center rounded-lg border border-[#7cb342]/40 px-3 py-2 font-semibold text-[#7cb342] hover:bg-[#7cb342]/10"
-                        >
-                          View uploaded e-poster
-                        </a>
-                      )}
-                    </div>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={() => navigate('/e-poster/upload')}
-                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#005aa9] px-4 py-3 text-xs font-semibold text-white transition hover:bg-[#004684]"
-                  >
-                    <Upload className="h-4 w-4" />
-                    {existingAbstract.finalPosterPath ? 'Manage final e-poster' : 'Upload final e-poster'}
-                  </button>
-                  <p className="mt-2 text-center text-[11px] text-slate-500">
-                    E-poster upload opens in a separate window for a cleaner workflow.
-                  </p>
-                </div>
-              )}
 
               <button
                 onClick={() => navigate('/dashboard')}
