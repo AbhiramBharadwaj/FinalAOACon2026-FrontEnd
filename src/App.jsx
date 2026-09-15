@@ -14,6 +14,7 @@ import AccommodationListPage from './pages/user/AccommodationListPage';
 import ConferenceDaysPage from './pages/user/ConferenceDaysPage';
 import AbstractRulesPage from './pages/user/AbstractRulesPage';
 import AbstractUploadPage from './pages/user/AbstractUploadPage';
+import EPosterUploadPage from './pages/user/EPosterUploadPage';
 import VideoRulesPage from './pages/user/VideoRulesPage';
 import VideoUploadPage from './pages/user/VideoUploadPage';
 import FeedbackPage from './pages/user/FeedbackPage';
@@ -235,6 +236,11 @@ function App() {
               <Route path="/abstract/upload" element={
                 <ProtectedRoute>
                   <AbstractUploadPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/e-poster/upload" element={
+                <ProtectedRoute>
+                  <EPosterUploadPage />
                 </ProtectedRoute>
               } />
               <Route path="/video" element={<Navigate to="/video/rules" replace />} />

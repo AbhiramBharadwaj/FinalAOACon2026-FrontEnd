@@ -16,8 +16,8 @@ import {
   MessageSquare,
   MapPin,
   Download,
-  Star,
   Video,
+  Upload,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
@@ -69,6 +69,7 @@ const DashboardPage = () => {
     { key: 'profile', label: 'Profile', short: 'Profile' },
     { key: 'registration', label: 'Registration', short: 'Reg' },
     { key: 'abstract', label: 'Abstract', short: 'Abs' },
+    { key: 'eposter', label: 'E-Poster', short: 'Poster' },
     { key: 'video', label: 'Video', short: 'Vid' },
     { key: 'feedback', label: 'Feedback', short: 'Fb' },
   ];
@@ -177,10 +178,13 @@ const DashboardPage = () => {
   const profileRole = profile?.role || user?.role;
   const isProfileComplete = !!profile?.isProfileComplete;
   const hasVideoSubmission = !!stats.videoSubmission;
+  const isAbstractApproved = stats.abstract?.status === 'APPROVED';
+  const hasFinalPoster = !!stats.abstract?.finalPosterPath;
   const stepCompletion = {
     profile: isProfileComplete,
     registration: !!stats.registration,
     abstract: !!stats.abstract,
+    eposter: hasFinalPoster,
     video: hasVideoSubmission,
     feedback: !!stats.feedback,
   };
@@ -355,7 +359,7 @@ const DashboardPage = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {!stats.registration && (
             <button
               onClick={() => navigate('/registration')}
@@ -384,6 +388,29 @@ const DashboardPage = () => {
             <p className="font-semibold text-slate-900">Abstract</p>
             <p className="text-[11px] text-slate-600">
               {isAbstractOpen ? 'Submit' : 'Coming soon'}
+            </p>
+          </button>
+          <button
+            onClick={() => navigate('/e-poster/upload')}
+            disabled={!isProfileComplete || !isAbstractApproved}
+            className={`group bg-white/90 backdrop-blur-xl rounded-2xl px-3 py-3 text-center text-xs sm:text-sm transition-all disabled:cursor-not-allowed ${
+              isAbstractApproved
+                ? 'border border-[#005aa9]/30 hover:border-[#005aa9]/50'
+                : 'border border-slate-200 opacity-60 grayscale'
+            }`}
+          >
+            <Upload className={`w-5 h-5 mx-auto mb-2 transition-transform ${
+              isAbstractApproved
+                ? 'text-[#005aa9] group-hover:scale-110'
+                : 'text-slate-400'
+            }`} />
+            <p className="font-semibold text-slate-900">E-Poster</p>
+            <p className="text-[11px] text-slate-600">
+              {isAbstractApproved
+                ? hasFinalPoster
+                  ? 'View upload'
+                  : 'Upload'
+                : 'After approval'}
             </p>
           </button>
           <button
@@ -737,35 +764,12 @@ const DashboardPage = () => {
                     <p className="text-[11px] text-slate-600/80">
                       #{stats.abstract.submissionNumber}
                     </p>
-                    {stats.abstract.status === 'APPROVED' && (
-                      <div className={`rounded-xl border px-3 py-2 text-[11px] font-medium ${
-                        stats.abstract.finalPosterPath
-                          ? 'border-[#7cb342]/30 bg-[#7cb342]/10 text-[#7cb342]'
-                          : 'border-[#ff8a1f]/30 bg-[#ff8a1f]/10 text-[#ff8a1f]'
-                      }`}>
-                        {stats.abstract.finalPosterPath
-                          ? 'Final e-poster uploaded'
-                          : 'Final e-poster pending'}
-                      </div>
-                    )}
                     <button
                       onClick={() => navigate('/abstract/upload')}
                       className="mt-2 w-full rounded-xl bg-[#7cb342] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#68c239]"
                     >
-                      {stats.abstract.status === 'APPROVED' && !stats.abstract.finalPosterPath
-                        ? 'Upload final e-poster'
-                        : 'View abstract'}
+                      View abstract
                     </button>
-                    {finalPosterUrl && (
-                      <a
-                        href={finalPosterUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="block w-full text-center rounded-xl border border-[#005aa9]/40 text-[#005aa9] px-4 py-2 text-xs sm:text-sm font-semibold hover:bg-[#005aa9]/10"
-                      >
-                        View final e-poster
-                      </a>
-                    )}
                     {abstractFileUrl && (
                       <a
                         href={abstractFileUrl}
@@ -803,6 +807,69 @@ const DashboardPage = () => {
                     className="w-full rounded-xl bg-[#7cb342] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold opacity-60 cursor-not-allowed"
                   >
                     Coming soon
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div className={`bg-white/90 backdrop-blur-xl border rounded-2xl px-4 py-4 sm:px-5 sm:py-5 ${
+              isAbstractApproved ? 'border-white/40' : 'border-slate-200/80 opacity-75 grayscale'
+            }`}>
+              <h3 className="text-sm font-semibold mb-3 flex items-center gap-2 text-slate-900">
+                <Upload className={`w-4 h-4 ${isAbstractApproved ? 'text-[#005aa9]' : 'text-slate-400'}`} />
+                E-Poster Upload
+              </h3>
+              {stats.abstract ? (
+                <div className="space-y-3 text-xs sm:text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-600/90">Abstract status</span>
+                    {getReviewStatusBadge(stats.abstract.status)}
+                  </div>
+                  <p className="font-medium text-slate-900 truncate">{stats.abstract.title}</p>
+                  {isAbstractApproved ? (
+                    <>
+                      <div className={`rounded-xl border px-3 py-2 text-[11px] font-medium ${
+                        hasFinalPoster
+                          ? 'border-[#7cb342]/30 bg-[#7cb342]/10 text-[#7cb342]'
+                          : 'border-[#005aa9]/30 bg-[#005aa9]/10 text-[#005aa9]'
+                      }`}>
+                        {hasFinalPoster ? 'Final e-poster uploaded' : 'Ready for final e-poster upload'}
+                      </div>
+                      <button
+                        onClick={() => navigate('/e-poster/upload')}
+                        className="w-full rounded-xl bg-[#005aa9] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#004684]"
+                      >
+                        {hasFinalPoster ? 'View final e-poster' : 'Upload final e-poster'}
+                      </button>
+                      {finalPosterUrl && (
+                        <a
+                          href={finalPosterUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="block w-full text-center rounded-xl border border-[#005aa9]/40 text-[#005aa9] px-4 py-2 text-xs sm:text-sm font-semibold hover:bg-[#005aa9]/10"
+                        >
+                          View uploaded file
+                        </a>
+                      )}
+                    </>
+                  ) : (
+                    <div className="rounded-xl border border-slate-200 bg-slate-100 px-3 py-3 text-[11px] font-medium text-slate-500">
+                      Once your abstract is accepted, e-poster upload will unlock here.
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Upload className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+                  <p className="text-xs sm:text-sm text-slate-600 mb-2">
+                    Submit an abstract first.
+                  </p>
+                  <button
+                    onClick={() => navigate('/abstract/rules')}
+                    disabled={!isProfileComplete}
+                    className="w-full rounded-xl bg-slate-200 text-slate-600 px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-slate-300 disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    Go to abstract
                   </button>
                 </div>
               )}

@@ -7,10 +7,8 @@ import {
   AlertCircle, 
   ArrowLeft,
   X,
-  Eye,
   Users,
-  Clock,
-  Star
+  Clock
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useApp } from '../../contexts/AppContext';
@@ -34,10 +32,6 @@ const AbstractUploadPage = () => {
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState('');
   const [dragActive, setDragActive] = useState(false);
-  const [posterFile, setPosterFile] = useState(null);
-  const [posterSubmitting, setPosterSubmitting] = useState(false);
-  const [posterError, setPosterError] = useState('');
-  const [posterSuccessMessage, setPosterSuccessMessage] = useState('');
   const [showAnnouncement, setShowAnnouncement] = useState(true);
   
   const { user, isAuthenticated } = useAuth();
@@ -190,64 +184,6 @@ const AbstractUploadPage = () => {
   const removeFile = () => {
     setAbstractFile(null);
     setErrors(prev => ({ ...prev, file: '' }));
-  };
-
-  const handlePosterFileChange = (file) => {
-    if (!file) return;
-
-    const allowedMimeTypes = new Set([
-      'application/pdf',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'application/vnd.ms-powerpoint',
-      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-    ]);
-    const allowedExtensions = new Set(['pdf', 'docx', 'ppt', 'pptx']);
-    const fileExtension = file.name.split('.').pop()?.toLowerCase();
-    const isAllowedType = allowedMimeTypes.has(file.type) || allowedExtensions.has(fileExtension);
-
-    if (!isAllowedType) {
-      setPosterError('Please upload the final e-poster as PDF, DOCX, PPT, or PPTX.');
-      return;
-    }
-
-    if (file.size > 25 * 1024 * 1024) {
-      setPosterError('Final e-poster file size must be less than 25MB.');
-      return;
-    }
-
-    setPosterFile(file);
-    setPosterError('');
-    setPosterSuccessMessage('');
-  };
-
-  const removePosterFile = () => {
-    setPosterFile(null);
-    setPosterError('');
-  };
-
-  const handlePosterSubmit = async () => {
-    if (!posterFile) {
-      setPosterError('Final e-poster file is required.');
-      return;
-    }
-
-    setPosterSubmitting(true);
-    setPosterError('');
-    setPosterSuccessMessage('');
-
-    try {
-      const submitData = new FormData();
-      submitData.append('finalPoster', posterFile);
-      const response = await abstractAPI.uploadFinalPoster(submitData);
-      setExistingAbstract(response.data.abstract);
-      setAbstract(response.data.abstract);
-      setPosterFile(null);
-      setPosterSuccessMessage('Final e-poster uploaded successfully.');
-    } catch (error) {
-      setPosterError(error.response?.data?.message || 'Failed to upload final e-poster. Please try again.');
-    } finally {
-      setPosterSubmitting(false);
-    }
   };
 
   const handleBackNavigation = () => {
@@ -512,18 +448,6 @@ const AbstractUploadPage = () => {
                     </span>
                   </div>
 
-                  {posterSuccessMessage && (
-                    <div className="mb-3 rounded-lg border border-emerald-300/60 bg-emerald-50 p-3 text-xs text-emerald-700">
-                      {posterSuccessMessage}
-                    </div>
-                  )}
-
-                  {posterError && (
-                    <div className="mb-3 rounded-lg border border-red-300/60 bg-red-50 p-3 text-xs text-red-600">
-                      {posterError}
-                    </div>
-                  )}
-
                   {existingAbstract.finalPosterPath && (
                     <div className="mb-4 rounded-lg border border-[#7cb342]/30 bg-[#7cb342]/10 p-3 text-xs text-slate-700">
                       <p className="font-semibold text-slate-900">Uploaded</p>
@@ -548,61 +472,16 @@ const AbstractUploadPage = () => {
                     </div>
                   )}
 
-                  <div className="rounded-xl border-2 border-dashed border-slate-200 p-4 text-center">
-                    {posterFile ? (
-                      <div className="flex flex-col items-center space-y-2">
-                        <FileText className="h-9 w-9 text-[#005aa9]" />
-                        <div className="flex max-w-full items-center rounded border border-[#005aa9]/20 bg-[#005aa9]/10 px-3 py-2 text-xs text-[#005aa9]">
-                          <span className="max-w-[190px] truncate">{posterFile.name}</span>
-                          <button
-                            type="button"
-                            onClick={removePosterFile}
-                            className="ml-2 text-[#005aa9] hover:text-[#004684]"
-                            disabled={posterSubmitting}
-                          >
-                            <X className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        <Upload className="mx-auto mb-3 h-9 w-9 text-slate-400" />
-                        <label htmlFor="final-poster-file" className="inline-flex cursor-pointer items-center rounded-xl border border-[#005aa9]/30 bg-[#005aa9]/10 px-4 py-2.5 text-xs font-semibold text-[#005aa9] transition hover:bg-[#005aa9]/20">
-                          <Upload className="mr-1.5 h-3.5 w-3.5" />
-                          Select File
-                          <input
-                            id="final-poster-file"
-                            type="file"
-                            accept=".pdf,.docx,.ppt,.pptx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation"
-                            onChange={(event) => handlePosterFileChange(event.target.files[0])}
-                            className="sr-only"
-                            disabled={posterSubmitting}
-                          />
-                        </label>
-                        <p className="mt-2 text-xs text-slate-500">Max 25MB • PDF, DOCX, PPT, or PPTX</p>
-                      </>
-                    )}
-                  </div>
-
                   <button
                     type="button"
-                    onClick={handlePosterSubmit}
-                    disabled={posterSubmitting || !posterFile}
-                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#005aa9] px-4 py-3 text-xs font-semibold text-white transition hover:bg-[#004684] disabled:cursor-not-allowed disabled:opacity-50"
+                    onClick={() => navigate('/e-poster/upload')}
+                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#005aa9] px-4 py-3 text-xs font-semibold text-white transition hover:bg-[#004684]"
                   >
-                    {posterSubmitting ? (
-                      <LoadingSpinner size="sm" />
-                    ) : (
-                      <>
-                        <Upload className="h-4 w-4" />
-                        {existingAbstract.finalPosterPath ? 'Replace final e-poster' : 'Upload final e-poster'}
-                      </>
-                    )}
+                    <Upload className="h-4 w-4" />
+                    {existingAbstract.finalPosterPath ? 'Manage final e-poster' : 'Upload final e-poster'}
                   </button>
                   <p className="mt-2 text-center text-[11px] text-slate-500">
-                    {posterFile
-                      ? 'Ready to upload. You can replace the file later if needed.'
-                      : 'Select a PDF, DOCX, PPT, or PPTX file to enable upload.'}
+                    E-poster upload opens in a separate window for a cleaner workflow.
                   </p>
                 </div>
               )}
