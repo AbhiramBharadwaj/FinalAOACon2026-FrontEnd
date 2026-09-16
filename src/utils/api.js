@@ -122,6 +122,17 @@ export const feedbackAPI = {
   getAnalytics: () => api.get('/feedback/analytics'),
 };
 
+export const facultyCvAPI = {
+  requestOtp: (email) => api.post('/faculty-cv/request-otp', { email }),
+  verifyOtp: (email, otp) => api.post('/faculty-cv/verify-otp', { email, otp }),
+  upload: (formData, config = {}) => api.post('/faculty-cv/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    ...config,
+  }),
+  getAll: () => api.get('/faculty-cv/admin/all'),
+  download: (id) => api.get(`/faculty-cv/admin/download/${id}`, { responseType: 'blob' }),
+};
+
 export const adminAPI = {
   getDashboard: () => api.get('/admin/dashboard'),
   getRegistrations: (params) => api.get('/admin/registrations', { params }),

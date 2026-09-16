@@ -36,6 +36,7 @@ import AccommodationManagementPage from './pages/admin/AccommodationManagementPa
 import PaymentsManagementPage from './pages/admin/PaymentsManagementPage';
 import AbstractReviewPage from './pages/admin/AbstractReviewPage';
 import VideoConferencingPage from './pages/admin/VideoConferencingPage';
+import FacultyCvManagementPage from './pages/admin/FacultyCvManagementPage';
 import FeedbackViewerPage from './pages/admin/FeedbackViewerPage';
 import ManualRegistrationsPage from './pages/admin/ManualRegistrationsPage';
 import CounterManagementPage from './pages/admin/CounterManagementPage';
@@ -47,6 +48,7 @@ import OfficeBearersPage from './pages/user/OfficeBearersPage';
 import MessageDetailPage from './pages/user/MessageDetailPage';
 import MaintenancePage from './pages/MaintenancePage';
 import { siteMode } from './config/siteMode';
+import FacultyCvUploadPage from './pages/user/FacultyCvUploadPage';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -172,6 +174,7 @@ function App() {
                   <GalleryPage />
               } />
               <Route path="/downloads" element={<DownloadsPage />} />
+              <Route path="/faculty-cv" element={<FacultyCvUploadPage />} />
               <Route path="/workshops" element={
                   <WorkshopsPage />
               } />
@@ -300,6 +303,11 @@ function App() {
               <Route path="/admin/video-conferencing" element={
                 <AdminRoute>
                   <VideoConferencingPage />
+                </AdminRoute>
+              } />
+              <Route path="/admin/faculty-cvs" element={
+                <AdminRoute>
+                  <FacultyCvManagementPage />
                 </AdminRoute>
               } />
               <Route path="/admin/feedback" element={
