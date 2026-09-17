@@ -412,7 +412,9 @@ const AbstractUploadPage = () => {
                   <div className="text-center p-6 border-2 border-[#7cb342]/30 rounded-xl bg-[#7cb342]/10">
                     <CheckCircle className="w-12 h-12 text-[#7cb342] mx-auto mb-3" />
                     <p className="text-lg font-semibold text-[#7cb342] mb-1">Accepted ✓</p>
-                    <p className="text-xs text-[#7cb342]">Proceed to final e-poster upload.</p>
+                    <p className="text-xs text-[#7cb342]">
+                      Your abstract is accepted. Please proceed to upload your E-Poster.
+                    </p>
                     <button
                       type="button"
                       onClick={() => navigate('/e-poster/upload')}
