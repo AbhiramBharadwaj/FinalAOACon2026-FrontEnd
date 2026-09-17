@@ -97,6 +97,19 @@ const RegistrationPage = () => {
       return;
     }
 
+    const selectedWorkshopAvailability = pricing?.meta?.workshops?.[formData.selectedWorkshop];
+    const hasExistingWorkshopReservation =
+      existingRegistration?.addWorkshop &&
+      existingRegistration?.selectedWorkshop === formData.selectedWorkshop;
+    if (
+      formData.addWorkshop &&
+      selectedWorkshopAvailability?.full &&
+      !hasExistingWorkshopReservation
+    ) {
+      setError('This workshop is full. Please select another workshop.');
+      return;
+    }
+
     setSubmitting(true);
     try {
       const submitData = new FormData();
@@ -541,34 +554,58 @@ const RegistrationPage = () => {
                   )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                     {WORKSHOPS.map((workshop) => (
-                      <label
-                        key={workshop.id}
-                        className={`border px-3 py-3 transition-colors ${
-                          formData.selectedWorkshop === workshop.id
-                            ? 'border-[#7cb342] bg-[#7cb342]/5'
-                            : 'border-slate-200 bg-white'
-                        } ${isWorkshopSelectionLocked ? 'cursor-not-allowed opacity-70' : 'cursor-pointer hover:border-[#ff8a1f] hover:bg-[#ff8a1f]/5'}`}
-                        onClick={() => {
-                          if (!isWorkshopSelectionLocked) {
-                            setFormData((prev) => ({ ...prev, selectedWorkshop: workshop.id }));
-                          }
-                        }}
-                      >
-                        <div className="flex items-start gap-2">
-                          <input
-                            type="radio"
-                            name="workshop"
-                            value={workshop.id}
-                            checked={formData.selectedWorkshop === workshop.id}
-                            onChange={() => {}}
-                            disabled={isWorkshopSelectionLocked}
-                            className="mt-0.5 h-4 w-4 text-[#7cb342] border-slate-300"
-                          />
-                          <div>
-                            <p className="font-medium text-slate-900">{workshop.name}</p>
-                          </div>
-                        </div>
-                      </label>
+                      (() => {
+                        const availability = pricing?.meta?.workshops?.[workshop.id];
+                        const isExistingSelection =
+                          existingRegistration?.addWorkshop &&
+                          existingRegistration?.selectedWorkshop === workshop.id;
+                        const isFull = Boolean(availability?.full && !isExistingSelection);
+                        const disabled = isWorkshopSelectionLocked || isFull;
+                        const seatsLeft = availability?.remaining;
+                        const capacity = availability?.capacity;
+
+                        return (
+                          <label
+                            key={workshop.id}
+                            className={`border px-3 py-3 transition-colors ${
+                              formData.selectedWorkshop === workshop.id
+                                ? 'border-[#7cb342] bg-[#7cb342]/5'
+                                : 'border-slate-200 bg-white'
+                            } ${
+                              disabled
+                                ? 'cursor-not-allowed opacity-70'
+                                : 'cursor-pointer hover:border-[#ff8a1f] hover:bg-[#ff8a1f]/5'
+                            }`}
+                            onClick={() => {
+                              if (!disabled) {
+                                setFormData((prev) => ({ ...prev, selectedWorkshop: workshop.id }));
+                              }
+                            }}
+                          >
+                            <div className="flex items-start gap-2">
+                              <input
+                                type="radio"
+                                name="workshop"
+                                value={workshop.id}
+                                checked={formData.selectedWorkshop === workshop.id}
+                                onChange={() => {}}
+                                disabled={disabled}
+                                className="mt-0.5 h-4 w-4 text-[#7cb342] border-slate-300"
+                              />
+                              <div>
+                                <p className="font-medium text-slate-900">{workshop.name}</p>
+                                {availability && (
+                                  <p className={`mt-1 text-[11px] ${isFull ? 'text-red-600' : 'text-slate-500'}`}>
+                                    {isFull
+                                      ? 'Seats full'
+                                      : `${seatsLeft} of ${capacity} seats left`}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </label>
+                        );
+                      })()
                     ))}
                   </div>
                 </div>
