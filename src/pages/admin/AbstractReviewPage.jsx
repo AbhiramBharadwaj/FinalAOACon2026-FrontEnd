@@ -30,7 +30,12 @@ const AbstractReviewPage = () => {
     status: '',
     reviewComments: ''
   });
+  const [posterReviewData, setPosterReviewData] = useState({
+    status: '',
+    reviewComments: ''
+  });
   const [submitting, setSubmitting] = useState(false);
+  const [posterSubmitting, setPosterSubmitting] = useState(false);
 
   useEffect(() => {
     fetchAbstracts();
@@ -77,6 +82,18 @@ const AbstractReviewPage = () => {
       filtered = filtered.filter(abstract => Boolean(abstract.finalPosterPath));
     }
 
+    if (posterFilter === 'POSTER_PENDING') {
+      filtered = filtered.filter(abstract => abstract.finalPosterPath && (abstract.finalPosterStatus || 'PENDING') === 'PENDING');
+    }
+
+    if (posterFilter === 'POSTER_APPROVED') {
+      filtered = filtered.filter(abstract => abstract.finalPosterPath && abstract.finalPosterStatus === 'APPROVED');
+    }
+
+    if (posterFilter === 'POSTER_REJECTED') {
+      filtered = filtered.filter(abstract => abstract.finalPosterPath && abstract.finalPosterStatus === 'REJECTED');
+    }
+
     if (posterFilter === 'NOT_UPLOADED') {
       filtered = filtered.filter(abstract => !abstract.finalPosterPath);
     }
@@ -94,7 +111,13 @@ const AbstractReviewPage = () => {
   };
 
   const getPosterStatusLabel = (abstract) => {
-    if (abstract.finalPosterPath) return 'Uploaded';
+    if (abstract.finalPosterPath) {
+      return {
+        PENDING: 'Poster Pending',
+        APPROVED: 'Poster Accepted',
+        REJECTED: 'Poster Rejected',
+      }[abstract.finalPosterStatus || 'PENDING'];
+    }
     if (abstract.status === 'APPROVED') return 'Pending';
     return 'Not eligible';
   };
@@ -103,6 +126,9 @@ const AbstractReviewPage = () => {
     const status = getPosterStatusLabel(abstract);
     const styles = {
       Uploaded: 'bg-emerald-100 text-emerald-800',
+      'Poster Pending': 'bg-amber-100 text-amber-800',
+      'Poster Accepted': 'bg-emerald-100 text-emerald-800',
+      'Poster Rejected': 'bg-red-100 text-red-800',
       Pending: 'bg-amber-100 text-amber-800',
       'Not eligible': 'bg-slate-100 text-slate-600',
     };
@@ -158,6 +184,10 @@ const AbstractReviewPage = () => {
       status: abstract.status || 'PENDING',
       reviewComments: abstract.reviewComments || ''
     });
+    setPosterReviewData({
+      status: abstract.finalPosterStatus || 'PENDING',
+      reviewComments: abstract.finalPosterReviewComments || ''
+    });
     setShowModal(true);
   };
 
@@ -179,6 +209,32 @@ const AbstractReviewPage = () => {
       alert('Failed to submit review. Please try again.');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const submitPosterReview = async (statusOverride) => {
+    const nextStatus = statusOverride || posterReviewData.status;
+    if (!nextStatus || !['APPROVED', 'REJECTED'].includes(nextStatus)) {
+      alert('Please select Accepted or Rejected for the final e-poster');
+      return;
+    }
+
+    setPosterSubmitting(true);
+    try {
+      const payload = {
+        status: nextStatus,
+        reviewComments: posterReviewData.reviewComments
+      };
+      await abstractAPI.reviewFinalPoster(selectedAbstract._id, payload);
+      await fetchAbstracts();
+      setShowModal(false);
+      setSelectedAbstract(null);
+      setPosterReviewData({ status: '', reviewComments: '' });
+    } catch (error) {
+      console.error('Failed to submit final e-poster review:', error);
+      alert(error.response?.data?.message || 'Failed to submit final e-poster review. Please try again.');
+    } finally {
+      setPosterSubmitting(false);
     }
   };
 
@@ -224,6 +280,7 @@ const AbstractReviewPage = () => {
   const approvedAbstracts = abstracts.filter(a => a.status === 'APPROVED').length;
   const rejectedAbstracts = abstracts.filter(a => a.status === 'REJECTED').length;
   const uploadedPosters = abstracts.filter(a => a.finalPosterPath).length;
+  const pendingPosters = abstracts.filter(a => a.finalPosterPath && (a.finalPosterStatus || 'PENDING') === 'PENDING').length;
 
   if (loading) {
     return (
@@ -306,6 +363,7 @@ const AbstractReviewPage = () => {
               <div>
                 <p className="text-xs text-slate-600">E-Posters</p>
                 <p className="text-sm text-slate-900">{uploadedPosters}</p>
+                <p className="text-[10px] text-amber-700">{pendingPosters} pending review</p>
               </div>
             </div>
           </div>
@@ -352,6 +410,9 @@ const AbstractReviewPage = () => {
               >
                 <option value="">All E-Posters</option>
                 <option value="UPLOADED">Uploaded</option>
+                <option value="POSTER_PENDING">Uploaded - Pending Review</option>
+                <option value="POSTER_APPROVED">Uploaded - Accepted</option>
+                <option value="POSTER_REJECTED">Uploaded - Rejected</option>
                 <option value="NOT_UPLOADED">Not Uploaded</option>
                 <option value="APPROVED_PENDING">Approved but Not Uploaded</option>
               </select>
@@ -608,6 +669,16 @@ const AbstractReviewPage = () => {
                               Uploaded: {new Date(selectedAbstract.finalPosterUploadedAt).toLocaleString()}
                             </p>
                           )}
+                          {selectedAbstract.finalPosterReviewedAt && (
+                            <p className="mt-1 text-[11px] text-emerald-700">
+                              Reviewed: {new Date(selectedAbstract.finalPosterReviewedAt).toLocaleString()}
+                            </p>
+                          )}
+                          {selectedAbstract.finalPosterReviewComments && (
+                            <p className="mt-2 rounded-lg border border-white/70 bg-white/70 p-2 text-[11px] text-slate-700">
+                              {selectedAbstract.finalPosterReviewComments}
+                            </p>
+                          )}
                           {selectedAbstract.finalPosterSize && (
                             <p className="mt-1 text-[11px] text-emerald-700">
                               Size: {(selectedAbstract.finalPosterSize / (1024 * 1024)).toFixed(2)} MB
@@ -632,6 +703,62 @@ const AbstractReviewPage = () => {
                       )}
                     </div>
                   </div>
+
+                  {selectedAbstract.finalPosterPath && (
+                    <div className="p-4 bg-gradient-to-r from-sky-50 to-slate-50 rounded-2xl border border-sky-200">
+                      <h4 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
+                        <Download className="w-4 h-4 text-[#005aa9]" />
+                        Final E-Poster Decision
+                      </h4>
+
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-slate-700 mb-1.5 font-medium text-[13px]">E-poster status *</label>
+                          <select
+                            value={posterReviewData.status}
+                            onChange={(e) => setPosterReviewData({ ...posterReviewData, status: e.target.value })}
+                            className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9] text-sm"
+                          >
+                            <option value="PENDING">Pending Review</option>
+                            <option value="APPROVED">Accepted</option>
+                            <option value="REJECTED">Rejected</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-slate-700 mb-1.5 font-medium text-[13px]">E-poster comments</label>
+                          <textarea
+                            value={posterReviewData.reviewComments}
+                            onChange={(e) => setPosterReviewData({ ...posterReviewData, reviewComments: e.target.value })}
+                            rows={3}
+                            placeholder="Example: Please use the official AOACON 2026 e-poster template and re-upload."
+                            className="w-full px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9] text-sm resize-none"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                          <button
+                            type="button"
+                            onClick={() => submitPosterReview('APPROVED')}
+                            disabled={posterSubmitting}
+                            className="flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:opacity-50"
+                          >
+                            <CheckCircle className="h-3.5 w-3.5" />
+                            Accept E-Poster
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => submitPosterReview('REJECTED')}
+                            disabled={posterSubmitting}
+                            className="flex items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-red-700 disabled:opacity-50"
+                          >
+                            <XCircle className="h-3.5 w-3.5" />
+                            Reject E-Poster
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {}
                   <div className="p-4 bg-gradient-to-r from-amber-50 to-slate-50 rounded-2xl border border-amber-200">

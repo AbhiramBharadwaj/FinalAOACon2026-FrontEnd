@@ -94,6 +94,7 @@ export const abstractAPI = {
   getMyAbstract: () => api.get('/abstract/my-abstract'),
   getAll: (params) => api.get('/abstract/all', { params }),
   review: (id, data) => api.put(`/abstract/review/${id}`, data),
+  reviewFinalPoster: (id, data) => api.put(`/abstract/final-poster/review/${id}`, data),
 };
 
 export const videoAPI = {
