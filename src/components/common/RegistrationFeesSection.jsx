@@ -109,7 +109,7 @@ const RegistrationFeesSection = () => {
           <section className="space-y-3 rounded-2xl border border-pink-200 bg-white p-4 sm:p-5 shadow-sm">
             <div>
               <h3 className="text-lg font-semibold text-[#a21d71]">EARLY BIRD</h3>
-              <p className="text-sm font-semibold text-slate-700">UP TO 15TH SEPTEMBER 2026</p>
+              <p className="text-sm font-semibold text-slate-700">TILL 30TH SEPTEMBER 2026</p>
             </div>
             <div className="w-full overflow-x-auto">
               <table className="w-full text-sm border-collapse min-w-[680px]">
@@ -139,7 +139,7 @@ const RegistrationFeesSection = () => {
           <section className="space-y-3 rounded-2xl border border-pink-200 bg-white p-4 sm:p-5 shadow-sm">
             <div>
               <h3 className="text-lg font-semibold text-[#a21d71]">REGULAR</h3>
-              <p className="text-sm font-semibold text-slate-700">16TH SEPTEMBER 2026 - 15TH OCTOBER 2026</p>
+              <p className="text-sm font-semibold text-slate-700">REGULAR PRICING FROM 1ST OCTOBER 2026 - 15TH OCTOBER 2026</p>
             </div>
             <div className="w-full overflow-x-auto">
               <table className="w-full text-sm border-collapse min-w-[680px]">
@@ -252,7 +252,7 @@ const RegistrationFeesSection = () => {
           </div>
           <div className="flex items-center gap-3">
             <p className="hidden sm:flex items-center gap-1 text-xs text-slate-500">
-              <CalendarClock className="w-3.5 h-3.5" /> Register early for best slab
+              <CalendarClock className="w-3.5 h-3.5" /> Early bird registrations till 30th September
             </p>
             <Link
               to="/login"
