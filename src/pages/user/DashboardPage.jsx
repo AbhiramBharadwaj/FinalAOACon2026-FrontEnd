@@ -34,6 +34,14 @@ import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
+const accommodationOccupancyLabel = (booking = {}) => {
+  if (booking.accommodationUseCase === 'SINGLE_OCCUPANCY') return 'Single occupancy';
+  if (booking.accommodationUseCase === 'SHARING_WITH_FAMILY') return 'Sharing with family';
+  if (booking.accommodationUseCase === 'SHARING_WITH_FACULTY') return 'Sharing with other faculty';
+  if (booking.accommodationUseCase === 'SHARING_WITH_OTHER') return 'Sharing';
+  return booking.occupancyType === 'SHARING' ? 'Sharing' : 'Single occupancy';
+};
+
 const DashboardPage = () => {
   const WORKSHOP_LABELS = {
     'labour-analgesia': 'Labour Analgesia',
@@ -669,7 +677,7 @@ const DashboardPage = () => {
                       </div>
                       <div className="mt-3 grid gap-2 text-xs text-slate-700 sm:grid-cols-2">
                         <p><strong>Stay:</strong> {new Date(booking.checkInDate).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })} – {new Date(booking.checkOutDate).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })}</p>
-                        <p><strong>Occupancy:</strong> {booking.occupancyType === 'SHARING' ? 'Sharing' : 'Single'}</p>
+                        <p><strong>Occupancy:</strong> {accommodationOccupancyLabel(booking)}</p>
                         <p><strong>Nights:</strong> {booking.numberOfNights}</p>
                         <p><strong>Amount paid:</strong> ₹{Number(booking.amountCollected ?? booking.totalAmount ?? 0).toLocaleString('en-IN')}</p>
                         {booking.roommateName && <p className="sm:col-span-2"><strong>Roommate:</strong> {booking.roommateName}</p>}
