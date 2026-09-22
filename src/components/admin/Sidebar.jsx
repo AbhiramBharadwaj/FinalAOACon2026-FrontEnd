@@ -35,7 +35,7 @@ const Sidebar = () => {
     { icon: CreditCard, label: 'Payments', path: '/admin/payments' },
     { icon: Building2, label: 'Accommodations', path: '/admin/accommodations' },
     { icon: FileText, label: 'Abstracts', path: '/admin/abstracts' },
-    { icon: Video, label: 'Video Conferencing', path: '/admin/video-conferencing' },
+    { icon: Video, label: 'Award Video Competition', path: '/admin/video-conferencing' },
     { icon: Files, label: 'Faculty CVs', path: '/admin/faculty-cvs' },
     { icon: MessageSquare, label: 'Feedback', path: '/admin/feedback' },
     { icon: ClipboardList, label: 'Manual Registrations', path: '/admin/manual-registrations' },

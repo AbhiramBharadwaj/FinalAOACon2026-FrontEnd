@@ -192,7 +192,7 @@ const VideoConferencingPage = () => {
         <div className="p-4 sm:p-6">
           <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-base text-slate-900 sm:text-lg">Video Conferencing</h1>
+              <h1 className="text-base text-slate-900 sm:text-lg"> Award Video Competition</h1>
               <p className="text-xs text-slate-600">{filteredSubmissions.length} of {total} submissions</p>
             </div>
             <button
