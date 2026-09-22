@@ -188,6 +188,12 @@ const DashboardPage = () => {
   const hasVideoSubmission = !!stats.videoSubmission;
   const isAbstractApproved = stats.abstract?.status === 'APPROVED';
   const hasFinalPoster = !!stats.abstract?.finalPosterPath;
+  const finalPosterStatus = stats.abstract?.finalPosterStatus || 'PENDING';
+  const finalPosterStatusLabel = {
+    PENDING: 'PENDING REVIEW',
+    APPROVED: 'ACCEPTED',
+    REJECTED: 'REJECTED',
+  }[finalPosterStatus] || 'PENDING REVIEW';
   const stepCompletion = {
     profile: isProfileComplete,
     registration: !!stats.registration,
@@ -830,8 +836,19 @@ const DashboardPage = () => {
               {stats.abstract ? (
                 <div className="space-y-3 text-xs sm:text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-600/90">Abstract status</span>
+                    <span className="text-slate-600/90">Abstract approval</span>
                     {getReviewStatusBadge(stats.abstract.status)}
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-600/90">E-poster status</span>
+                    {hasFinalPoster ? (
+                      getReviewStatusBadge(finalPosterStatus)
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-[#005aa9]/30 bg-[#005aa9]/10 px-2 py-1 text-[10px] font-medium text-[#005aa9]">
+                        <Upload className="w-3 h-3" />
+                        READY TO UPLOAD
+                      </span>
+                    )}
                   </div>
                   <p className="font-medium text-slate-900 truncate">{stats.abstract.title}</p>
                   {isAbstractApproved ? (
@@ -841,7 +858,7 @@ const DashboardPage = () => {
                           ? 'border-[#7cb342]/30 bg-[#7cb342]/10 text-[#7cb342]'
                           : 'border-[#005aa9]/30 bg-[#005aa9]/10 text-[#005aa9]'
                       }`}>
-                        {hasFinalPoster ? 'Final e-poster uploaded' : 'Ready for final e-poster upload'}
+                        {hasFinalPoster ? `Final e-poster ${finalPosterStatusLabel.toLowerCase()}` : 'Ready for final e-poster upload'}
                       </div>
                       <button
                         onClick={() => navigate('/e-poster/upload')}
