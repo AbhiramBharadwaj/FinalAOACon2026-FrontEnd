@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { CheckCircle, FileUp, Loader2, Mail, ShieldCheck } from 'lucide-react';
+import { CheckCircle, FileUp, Loader2, Mail, Search, ShieldCheck } from 'lucide-react';
 import { facultyCvAPI } from '../../utils/api';
 import logo from '../../images/logo.png';
 
@@ -14,6 +14,9 @@ const FacultyCvUploadPage = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [showRecovery, setShowRecovery] = useState(false);
+  const [registrationLast4, setRegistrationLast4] = useState('');
+  const [recoveredFaculty, setRecoveredFaculty] = useState(null);
 
   const acceptedTypes = useMemo(
     () => '.pdf,.doc,.docx,.ppt,.pptx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation',
@@ -29,10 +32,32 @@ const FacultyCvUploadPage = () => {
     try {
       const response = await facultyCvAPI.requestOtp(email.trim());
       setFaculty(response.data.faculty);
+      setShowRecovery(false);
+      setRecoveredFaculty(null);
       setStep('otp');
       setMessage('OTP sent to your faculty email.');
     } catch (err) {
-      setError(err.response?.data?.message || 'OTP could not be sent. Please try again.');
+      const errorMessage = err.response?.data?.message || 'OTP could not be sent. Please try again.';
+      setError(errorMessage);
+      setShowRecovery(errorMessage === 'This email is not listed for faculty CV upload');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const recoverEmail = async (event) => {
+    event.preventDefault();
+    setError('');
+    setMessage('');
+    setRecoveredFaculty(null);
+    setLoading(true);
+
+    try {
+      const response = await facultyCvAPI.recoverEmail(registrationLast4.trim());
+      setRecoveredFaculty(response.data.faculty);
+      setMessage('We found the email listed for faculty CV upload. Please request OTP using that email.');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Email lookup could not be completed. Please contact the organizing team.');
     } finally {
       setLoading(false);
     }
@@ -167,23 +192,60 @@ const FacultyCvUploadPage = () => {
           {message && <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{message}</div>}
 
           {step === 'email' && (
-            <form onSubmit={requestOtp} className="space-y-4">
-              <div>
-                <label className="mb-1 block text-sm font-medium text-slate-700">Faculty email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-[#005aa9] focus:ring-2 focus:ring-[#005aa9]/10"
-                  placeholder="doctor@example.com"
-                  required
-                />
-              </div>
-              <button type="submit" disabled={loading} className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#005aa9] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#004684] disabled:opacity-60">
-                {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                Send OTP
-              </button>
-            </form>
+            <div className="space-y-4">
+              <form onSubmit={requestOtp} className="space-y-4">
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-700">Faculty email</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-[#005aa9] focus:ring-2 focus:ring-[#005aa9]/10"
+                    placeholder="doctor@example.com"
+                    required
+                  />
+                </div>
+                <button type="submit" disabled={loading} className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#005aa9] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#004684] disabled:opacity-60">
+                  {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+                  Send OTP
+                </button>
+              </form>
+
+              {showRecovery && (
+                <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+                  <div className="mb-3 flex items-start gap-2">
+                    <Search className="mt-0.5 h-4 w-4 text-amber-700" />
+                    <div>
+                      <p className="text-sm font-semibold text-amber-900">Forgot which email is listed?</p>
+                      <p className="mt-1 text-xs text-amber-800">
+                        Enter only the last 4 digits of your Registration ID. Example: for AOA2026-0482, enter 0482.
+                      </p>
+                    </div>
+                  </div>
+                  <form onSubmit={recoverEmail} className="space-y-3">
+                    <input
+                      value={registrationLast4}
+                      onChange={(event) => setRegistrationLast4(event.target.value.replace(/\D/g, '').slice(0, 4))}
+                      className="w-full rounded-xl border border-amber-200 bg-white px-3 py-2.5 text-center text-lg tracking-[0.35em] outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10"
+                      placeholder="0482"
+                      inputMode="numeric"
+                      required
+                    />
+                    <button type="submit" disabled={loading || registrationLast4.length !== 4} className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-60">
+                      {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+                      Find listed email
+                    </button>
+                  </form>
+                  {recoveredFaculty && (
+                    <div className="mt-3 rounded-xl border border-amber-200 bg-white px-3 py-2 text-sm text-amber-900">
+                      <p className="font-semibold">{recoveredFaculty.name}</p>
+                      <p>Listed email: <span className="font-mono">{recoveredFaculty.maskedEmail}</span></p>
+                      <p className="mt-1 text-xs text-amber-700">Please request OTP using this email. If you cannot access it, contact the organizing team.</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           )}
 
           {step === 'otp' && (

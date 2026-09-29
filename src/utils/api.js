@@ -125,6 +125,7 @@ export const feedbackAPI = {
 
 export const facultyCvAPI = {
   requestOtp: (email) => api.post('/faculty-cv/request-otp', { email }),
+  recoverEmail: (registrationLast4) => api.post('/faculty-cv/recover-email', { registrationLast4 }),
   verifyOtp: (email, otp) => api.post('/faculty-cv/verify-otp', { email, otp }),
   upload: (formData, config = {}) => api.post('/faculty-cv/upload', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
