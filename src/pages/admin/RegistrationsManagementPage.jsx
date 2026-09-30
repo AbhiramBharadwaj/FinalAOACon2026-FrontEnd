@@ -205,12 +205,17 @@ const RegistrationsManagementPage = () => {
 
   useEffect(() => {
     const q = searchTerm.trim().toLowerCase();
+    const qDigits = searchTerm.replace(/\D/g, '');
     setFiltered(
       registrations.filter((r) => {
+        const phoneDigits = String(r.userId?.phone || '').replace(/\D/g, '');
         const matchesSearch =
+          !q ||
           r.registrationNumber?.toLowerCase().includes(q) ||
           r.userId?.name?.toLowerCase().includes(q) ||
-          r.userId?.email?.toLowerCase().includes(q);
+          r.userId?.email?.toLowerCase().includes(q) ||
+          r.userId?.phone?.toLowerCase().includes(q) ||
+          (qDigits && phoneDigits.includes(qDigits));
         const matchesPackage = matchesRegistrationChoice(r, packageFilters[0]);
         const matchesStatus =
           statusFilters.length === 0 ||
