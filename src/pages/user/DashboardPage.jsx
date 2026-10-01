@@ -34,6 +34,9 @@ import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
+const ePosterTemplateNote =
+  'Candidates can alter the headings in the e-poster template to suit their category of presentation without altering the logos and the colour theme of the slide.';
+
 const accommodationOccupancyLabel = (booking = {}) => {
   if (booking.accommodationUseCase === 'SINGLE_OCCUPANCY') return 'Single occupancy';
   if (booking.accommodationUseCase === 'SHARING_WITH_FAMILY') return 'Sharing with family';
@@ -860,6 +863,11 @@ const DashboardPage = () => {
                       }`}>
                         {hasFinalPoster ? `Final e-poster ${finalPosterStatusLabel.toLowerCase()}` : 'Ready for final e-poster upload'}
                       </div>
+                      {!hasFinalPoster && (
+                        <p className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] leading-relaxed text-slate-600">
+                          {ePosterTemplateNote}
+                        </p>
+                      )}
                       <button
                         onClick={() => navigate('/e-poster/upload')}
                         className="w-full rounded-xl bg-[#005aa9] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#004684]"

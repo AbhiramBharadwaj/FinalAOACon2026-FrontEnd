@@ -7,6 +7,9 @@ import MobileNav from '../../components/common/MobileNav';
 import ePosterTemplate from '../../files/E-Poster-Template.pptx';
 import abstractAnnouncementImage from '../../images/Abstract/abstract-announcement.jpeg';
 
+const ePosterTemplateNote =
+  'Candidates can alter the headings in the e-poster template to suit their category of presentation without altering the logos and the colour theme of the slide.';
+
 const AbstractRulesPage = () => {
   const [acceptedRules, setAcceptedRules] = useState(false);
   const [showAnnouncement, setShowAnnouncement] = useState(true);
@@ -166,6 +169,7 @@ const AbstractRulesPage = () => {
               <div className="text-sm text-slate-700">
                 <div className="font-semibold text-slate-900">E-Poster Template</div>
                 <div>Use the official template provided on the website.</div>
+                <p className="mt-2 text-xs leading-relaxed text-slate-600">{ePosterTemplateNote}</p>
               </div>
               <a
                 href={ePosterTemplate}

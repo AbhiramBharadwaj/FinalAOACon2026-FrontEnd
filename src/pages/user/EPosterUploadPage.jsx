@@ -15,6 +15,9 @@ import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
+const ePosterTemplateNote =
+  'Candidates can alter the headings in the e-poster template to suit their category of presentation without altering the logos and the colour theme of the slide.';
+
 const EPosterUploadPage = () => {
   const [existingAbstract, setExistingAbstract] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -218,6 +221,9 @@ const EPosterUploadPage = () => {
                   </h2>
                   <p className="mt-1 text-sm text-slate-600">
                     Upload the final presentation file for your accepted abstract.
+                  </p>
+                  <p className="mt-2 max-w-2xl text-xs leading-relaxed text-slate-600">
+                    {ePosterTemplateNote}
                   </p>
                 </div>
                 <span className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-[10px] font-medium ${
