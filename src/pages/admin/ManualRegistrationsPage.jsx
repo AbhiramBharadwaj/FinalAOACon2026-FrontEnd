@@ -388,11 +388,12 @@ const ManualRegistrationsPage = () => {
                       />
                       Add AOA Certified Course
                     </label>
-                    <label className="flex items-center gap-2 text-sm text-slate-700">
+                    <label className="flex items-center gap-2 text-sm text-slate-400">
                       <input
                         type="checkbox"
                         name="addLifeMembership"
-                        checked={form.addLifeMembership}
+                        checked={false}
+                        disabled
                         onChange={handleChange}
                       />
                       Add AOA Life Membership

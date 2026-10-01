@@ -521,13 +521,33 @@ const RegistrationPage = () => {
                             className="mt-0.5 h-4 w-4 text-[#ff8a1f] border-slate-300"
                           />
                           <div>
-                            <p className="font-medium text-slate-900">AOA Life Membership</p>
-                            <p className="text-sm text-slate-600">Only for Non-AOA members.</p>
+                            <p
+                              className={`font-medium ${
+                                lifeMembershipAddOn.priceWithoutGST > 0 ? 'text-slate-900' : 'text-slate-400'
+                              }`}
+                            >
+                              AOA Life Membership
+                            </p>
+                            <p
+                              className={`text-sm ${
+                                lifeMembershipAddOn.priceWithoutGST > 0 ? 'text-slate-600' : 'text-slate-400'
+                              }`}
+                            >
+                              {lifeMembershipAddOn.priceWithoutGST > 0
+                                ? 'Only for Non-AOA members.'
+                                : 'Currently unavailable.'}
+                            </p>
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm font-semibold text-[#ff8a1f]">
-                            ₹{lifeMembershipAddOn.priceWithoutGST.toLocaleString()}
+                          <p
+                            className={`text-sm font-semibold ${
+                              lifeMembershipAddOn.priceWithoutGST > 0 ? 'text-[#ff8a1f]' : 'text-slate-400'
+                            }`}
+                          >
+                            {lifeMembershipAddOn.priceWithoutGST > 0
+                              ? `₹${lifeMembershipAddOn.priceWithoutGST.toLocaleString()}`
+                              : 'Closed'}
                           </p>
                         </div>
                       </label>

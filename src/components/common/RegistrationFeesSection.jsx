@@ -10,8 +10,8 @@ const feeRows = [
   },
   {
     label: 'Non-AOA Member',
-    early: { conf: '11000', ws: '13000', combo: '14000' },
-    regular: { conf: '13000', ws: '15000', combo: '16000' },
+    early: { conf: '11000', ws: '13000', combo: null },
+    regular: { conf: '13000', ws: '15000', combo: null },
     spot: { conf: '16000' },
   },
   {
