@@ -4,6 +4,7 @@ import {
   CheckCircle,
   XCircle,
   Clock,
+  RotateCcw,
   SwitchCamera,
 } from 'lucide-react';
 import Sidebar from '../../components/admin/Sidebar';
@@ -58,6 +59,9 @@ const WORKSHOP_LABELS = {
   'maternal-resuscitation': 'Maternal Resuscitation',
 };
 
+const SUCCESS_MODAL_SECONDS = 6;
+const ERROR_MODAL_SECONDS = 4;
+
 const QrScanner = () => {
   const scannerRef = useRef(null);
   const containerRef = useRef(null);
@@ -71,10 +75,33 @@ const QrScanner = () => {
   });
   const [availableCameras, setAvailableCameras] = useState([]);
   const [currentCameraId, setCurrentCameraId] = useState(null);
+  const [countdown, setCountdown] = useState(0);
+  const [undoing, setUndoing] = useState(false);
   const isScanning = useRef(false);
   const autoCloseTimeout = useRef(null);
+  const countdownInterval = useRef(null);
 
   const { show, type, registration, error, scannedCode, scannerKey } = modalState;
+
+  const clearModalTimers = useCallback(() => {
+    if (autoCloseTimeout.current) {
+      clearTimeout(autoCloseTimeout.current);
+      autoCloseTimeout.current = null;
+    }
+    if (countdownInterval.current) {
+      clearInterval(countdownInterval.current);
+      countdownInterval.current = null;
+    }
+  }, []);
+
+  const startModalTimer = useCallback((seconds) => {
+    clearModalTimers();
+    setCountdown(seconds);
+    countdownInterval.current = setInterval(() => {
+      setCountdown((prev) => Math.max(0, prev - 1));
+    }, 1000);
+    autoCloseTimeout.current = setTimeout(closeModal, seconds * 1000);
+  }, [clearModalTimers]);
 
   const stopScanner = useCallback(async () => {
     if (scannerRef.current) {
@@ -176,7 +203,7 @@ const QrScanner = () => {
         scannerKey: scannerKey,
       });
       triggerSuccessFeedback();
-      autoCloseTimeout.current = setTimeout(closeModal, 2400);
+      startModalTimer(SUCCESS_MODAL_SECONDS);
 
     } catch (err) {
       setModalState({
@@ -191,7 +218,7 @@ const QrScanner = () => {
         scannerKey: scannerKey,
       });
       triggerErrorFeedback();
-      autoCloseTimeout.current = setTimeout(closeModal, 3600);
+      startModalTimer(ERROR_MODAL_SECONDS);
     }
   };
 
@@ -210,14 +237,13 @@ const QrScanner = () => {
       scannerKey: scannerKey,
     });
     triggerPendingFeedback();
-    autoCloseTimeout.current = setTimeout(closeModal, 4500);
+    startModalTimer(SUCCESS_MODAL_SECONDS);
   };
 
   const closeModal = useCallback(() => {
-    if (autoCloseTimeout.current) {
-      clearTimeout(autoCloseTimeout.current);
-      autoCloseTimeout.current = null;
-    }
+    clearModalTimers();
+    setCountdown(0);
+    setUndoing(false);
     setModalState((prev) => ({
       ...prev,
       show: false,
@@ -226,7 +252,55 @@ const QrScanner = () => {
       scannedCode: '',
       scannerKey: prev.scannerKey + 1,
     }));
-  }, []);
+  }, [clearModalTimers]);
+
+  const handleUndoScan = async () => {
+    if (!scannedCode || undoing) return;
+
+    clearModalTimers();
+    setUndoing(true);
+
+    try {
+      const res = await fetch('https://api.aoacon2026.com/api/attendance/scan/revert', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('adminToken') || localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify({ qrCode: scannedCode }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Scan could not be undone');
+      }
+
+      setModalState((prev) => ({
+        ...prev,
+        type: 'warning',
+        registration: data.registration || prev.registration,
+        error: {
+          title: 'Scan undone',
+          desc: 'This attendee is not marked checked in now.',
+        },
+      }));
+      triggerPendingFeedback();
+      startModalTimer(ERROR_MODAL_SECONDS);
+    } catch (err) {
+      setModalState((prev) => ({
+        ...prev,
+        type: 'error',
+        error: {
+          title: err.message || 'Undo failed',
+          desc: 'Please check attendance manually before scanning again.',
+        },
+      }));
+      triggerErrorFeedback();
+      startModalTimer(ERROR_MODAL_SECONDS + 1);
+    } finally {
+      setUndoing(false);
+    }
+  };
 
   useEffect(() => {
     const initCameras = async () => {
@@ -250,9 +324,12 @@ const QrScanner = () => {
     }
     return () => {
       stopScanner();
-      if (autoCloseTimeout.current) clearTimeout(autoCloseTimeout.current);
     };
   }, [currentCameraId, scannerKey, startScanner, stopScanner, show]);
+
+  useEffect(() => () => {
+    clearModalTimers();
+  }, [clearModalTimers]);
 
   const getRoleText = (role) => {
     const texts = {
@@ -354,7 +431,27 @@ const QrScanner = () => {
                     <span className="font-medium text-slate-800 text-right">{getPackageText(registration)}</span>
                   </div>
                 </div>
-                <div className="text-xs text-slate-600 animate-pulse">Ready for next scan...</div>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={handleUndoScan}
+                    disabled={undoing}
+                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                    {undoing ? 'Undoing...' : 'Wrong person? Undo'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    className="rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
+                  >
+                    Looks right
+                  </button>
+                </div>
+                <div className="rounded-full bg-slate-100 px-3 py-2 text-xs font-medium text-slate-600">
+                  Auto-closes in {countdown}s
+                </div>
               </div>
             )}
 
@@ -381,6 +478,9 @@ const QrScanner = () => {
                     </div>
                   </div>
                 )}
+                <div className="rounded-full bg-slate-100 px-3 py-2 text-xs font-medium text-slate-600">
+                  Auto-closes in {countdown}s
+                </div>
               </div>
             )}
 
@@ -390,6 +490,9 @@ const QrScanner = () => {
                 <div>
                   <h3 className="text-lg sm:text-xl font-bold text-red-600">{error.title}</h3>
                   {error.desc && <p className="text-sm text-red-500">{error.desc}</p>}
+                </div>
+                <div className="rounded-full bg-slate-100 px-3 py-2 text-xs font-medium text-slate-600">
+                  Auto-closes in {countdown}s
                 </div>
               </div>
             )}
