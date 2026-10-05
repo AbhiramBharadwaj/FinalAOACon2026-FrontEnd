@@ -3,11 +3,8 @@ import { Html5Qrcode } from 'html5-qrcode';
 import {
   CheckCircle,
   XCircle,
-  Calendar,
-  User,
-  Camera,
+  Clock,
   SwitchCamera,
-  ListChecks,
 } from 'lucide-react';
 import Sidebar from '../../components/admin/Sidebar';
 
@@ -51,6 +48,16 @@ const triggerErrorFeedback = () => {
   playBeep(300, 600, 'sawtooth');
 };
 
+const WORKSHOP_LABELS = {
+  'labour-analgesia': 'Labour Analgesia',
+  'critical-incidents': 'Critical Incidents in Obstetric Anaesthesia',
+  pocus: 'POCUS in Obstetrics',
+  'maternal-collapse': 'Maternal Resuscitation',
+  'critical-incidents-ob-anaesthesia': 'Critical Incidents in Obstetric Anaesthesia',
+  'pocus-regional-anaesthesia-obstetrics': 'POCUS in Obstetrics',
+  'maternal-resuscitation': 'Maternal Resuscitation',
+};
+
 const QrScanner = () => {
   const scannerRef = useRef(null);
   const containerRef = useRef(null);
@@ -66,11 +73,6 @@ const QrScanner = () => {
   const [currentCameraId, setCurrentCameraId] = useState(null);
   const isScanning = useRef(false);
   const autoCloseTimeout = useRef(null);
-
-  // TEST mode state
-  const [allRegistrations, setAllRegistrations] = useState([]);
-  const [testRegId, setTestRegId] = useState('');
-  const [testLoading, setTestLoading] = useState(false);
 
   const { show, type, registration, error, scannedCode, scannerKey } = modalState;
 
@@ -123,9 +125,6 @@ const QrScanner = () => {
     await stopScanner();
 
     try {
-      console.log('🔍 Checking QR:', qr);
-      
-      // Step 1: Check QR validity
       const checkRes = await fetch('https://api.aoacon2026.com/api/attendance/scan/check', {
         method: 'POST',
         headers: {
@@ -136,14 +135,14 @@ const QrScanner = () => {
       });
       const checkData = await checkRes.json();
 
-      console.log('✅ Check response:', checkData);
-
-      if (!checkData.valid) {
+      if (!checkRes.ok || !checkData.valid) {
         throw new Error(checkData.message || checkData.reason || 'Invalid QR');
       }
 
-      // Step 2: Auto-mark entry (1 person by default)
-      console.log('🎯 Auto-marking entry for:', checkData.registration.userId.name);
+      if (checkData.alreadyScanned) {
+        showAlreadyCheckedIn(checkData, qr);
+        return;
+      }
       
       const markRes = await fetch('https://api.aoacon2026.com/api/attendance/scan/mark', {
         method: 'POST',
@@ -160,22 +159,26 @@ const QrScanner = () => {
       });
       const markData = await markRes.json();
 
-      console.log('🎉 Mark response:', markData);
+      if (!markRes.ok || markData.code === 'ALREADY_CHECKED_IN' || markData.alreadyScanned) {
+        if (markData.code === 'ALREADY_CHECKED_IN' || markRes.status === 409) {
+          showAlreadyCheckedIn(markData, qr);
+          return;
+        }
+        throw new Error(markData.message || markData.reason || 'Attendance could not be marked');
+      }
 
-      // Step 3: Show success for 2 seconds
       setModalState({
         show: true,
         type: 'success',
-        registration: checkData.registration,
+        registration: markData.registration || checkData.registration,
         error: { title: markData.message || 'Entry marked!', desc: '' },
         scannedCode: qr,
         scannerKey: scannerKey,
       });
       triggerSuccessFeedback();
-      autoCloseTimeout.current = setTimeout(closeModal, 2000);
+      autoCloseTimeout.current = setTimeout(closeModal, 2400);
 
     } catch (err) {
-      console.error('❌ Scan error:', err);
       setModalState({
         show: true,
         type: 'error',
@@ -188,8 +191,26 @@ const QrScanner = () => {
         scannerKey: scannerKey,
       });
       triggerErrorFeedback();
-      autoCloseTimeout.current = setTimeout(closeModal, 3000);
+      autoCloseTimeout.current = setTimeout(closeModal, 3600);
     }
+  };
+
+  const showAlreadyCheckedIn = (data, qr) => {
+    const firstScan = formatScanTime(data.firstScannedAt || data.scanHistory?.[0]?.scannedAt);
+
+    setModalState({
+      show: true,
+      type: 'warning',
+      registration: data.registration || null,
+      error: {
+        title: data.message || 'Already checked in',
+        desc: firstScan ? `First scan: ${firstScan}` : 'This QR was already used for entry.',
+      },
+      scannedCode: qr,
+      scannerKey: scannerKey,
+    });
+    triggerPendingFeedback();
+    autoCloseTimeout.current = setTimeout(closeModal, 4500);
   };
 
   const closeModal = useCallback(() => {
@@ -233,37 +254,6 @@ const QrScanner = () => {
     };
   }, [currentCameraId, scannerKey, startScanner, stopScanner, show]);
 
-  useEffect(() => {
-    const fetchRegs = async () => {
-      try {
-        const res = await fetch('https://api.aoacon2026.com/api/admin/registrations', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('adminToken') || localStorage.getItem('token')}`,
-          },
-        });
-        const data = await res.json();
-        setAllRegistrations(data || []);
-      } catch (e) {
-        console.error('Test registrations fetch failed', e);
-      }
-    };
-    fetchRegs();
-  }, []);
-
-  const handleTestScan = async () => {
-    if (!testRegId) return;
-    const reg = allRegistrations.find((r) => r._id === testRegId);
-    if (!reg?.registrationNumber) {
-      alert('No registration number found');
-      return;
-    }
-
-    console.log('🧪 Testing with QR:', reg.registrationNumber);
-    setTestLoading(true);
-    await handleScan(reg.registrationNumber);
-    setTestLoading(false);
-  };
-
   const getRoleText = (role) => {
     const texts = {
       AOA: 'AOA Member',
@@ -271,6 +261,27 @@ const QrScanner = () => {
       PGS: 'PGS/Fellow',
     };
     return texts[role] || role;
+  };
+
+  const getPackageText = (reg) => {
+    if (!reg) return 'N/A';
+    const labels = ['Conference'];
+    if (reg.addWorkshop || reg.selectedWorkshop) {
+      labels.push(`Workshop${reg.selectedWorkshop ? ` - ${WORKSHOP_LABELS[reg.selectedWorkshop] || reg.selectedWorkshop}` : ''}`);
+    }
+    if (reg.addAoaCourse) labels.push('AOA Certified Course');
+    if (reg.addLifeMembership) labels.push('AOA Life Membership');
+    return labels.join(' + ');
+  };
+
+  const formatScanTime = (value) => {
+    if (!value) return '';
+    return new Date(value).toLocaleString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   };
 
   return (
@@ -282,7 +293,7 @@ const QrScanner = () => {
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-lg font-semibold text-slate-900">AOACON 2026 Attendance scanner</h1>
-            <p className="text-sm text-slate-600">Attendance with QR ID</p>
+            <p className="text-sm text-slate-600">Scan delegate QR codes and mark first entry.</p>
           </div>
           <div className="flex items-center gap-2">
             {availableCameras.length > 1 && (
@@ -302,44 +313,13 @@ const QrScanner = () => {
       </header>
 
       {}
-      <section className="px-4 pt-3 pb-2">
-        <div className="max-w-xl mx-auto bg-white border border-slate-200 rounded-xl px-3 py-3 flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
-          {}
-          <div className="flex-1 flex gap-2">
-            <select
-              value={testRegId}
-              onChange={(e) => setTestRegId(e.target.value)}
-              className="flex-1 border border-slate-200 rounded-lg px-2 py-1.5 text-xs bg-white text-slate-700 focus:ring-1 focus:ring-emerald-400"
-              disabled={testLoading}
-            >
-                {}
-              <option value="">Select </option>
-              {allRegistrations.slice(0, 50).map((r) => (
-                <option key={r._id} value={r._id}>
-                  {r.registrationNumber} – {r.userId?.name?.substring(0, 20)}
-                </option>
-              ))}
-            </select>
-            <button
-              onClick={handleTestScan}
-              disabled={!testRegId || testLoading}
-              className="inline-flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-medium rounded-lg border border-emerald-500 text-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-emerald-50 transition-all flex-shrink-0"
-            >
-              {}
-              {testLoading ? 'Scanning...' : 'check'}
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {}
       <main className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
             <div className="p-6 bg-slate-50 border-b border-slate-200">
               {}
               <h2 className="text-base font-semibold text-slate-900 mb-1">Auto Attendance</h2>
-              <p className="text-xs text-slate-600">Place middle camera to qr code to scan</p>
+              <p className="text-xs text-slate-600">Center the delegate QR code inside the frame.</p>
             </div>
             <div className="relative bg-slate-900 p-2">
               <div id="qr-reader" ref={containerRef} className="w-full h-64 rounded-xl" />
@@ -362,9 +342,45 @@ const QrScanner = () => {
                 <div>
                   <h2 className="text-lg sm:text-xl font-bold text-emerald-600 mb-1">Entry Marked!</h2>
                   <p className="text-sm text-slate-700">{registration?.userId?.name}</p>
-                  <p className="text-xs text-slate-500">1 person checked in</p>
+                  <p className="text-xs text-slate-500">{registration?.registrationNumber}</p>
+                </div>
+                <div className="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-3 text-left text-xs text-slate-700 space-y-1">
+                  <div className="flex justify-between gap-3">
+                    <span className="text-slate-500">Category</span>
+                    <span className="font-medium text-slate-800">{getRoleText(registration?.userId?.role)}</span>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <span className="text-slate-500">Package</span>
+                    <span className="font-medium text-slate-800 text-right">{getPackageText(registration)}</span>
+                  </div>
                 </div>
                 <div className="text-xs text-slate-600 animate-pulse">Ready for next scan...</div>
+              </div>
+            )}
+
+            {type === 'warning' && (
+              <div className="p-6 sm:p-8 text-center space-y-4">
+                <Clock className="w-16 h-16 sm:w-20 sm:h-20 text-amber-500 mx-auto animate-bounce" />
+                <div>
+                  <h3 className="text-lg sm:text-xl font-bold text-amber-600">{error.title}</h3>
+                  {error.desc && <p className="text-sm text-amber-700">{error.desc}</p>}
+                </div>
+                {registration && (
+                  <div className="rounded-xl bg-amber-50 border border-amber-100 px-4 py-3 text-left text-xs text-slate-700 space-y-1">
+                    <div className="flex justify-between gap-3">
+                      <span className="text-slate-500">Name</span>
+                      <span className="font-medium text-slate-800 text-right">{registration.userId?.name}</span>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <span className="text-slate-500">Reg No</span>
+                      <span className="font-medium text-slate-800">{registration.registrationNumber}</span>
+                    </div>
+                    <div className="flex justify-between gap-3">
+                      <span className="text-slate-500">Package</span>
+                      <span className="font-medium text-slate-800 text-right">{getPackageText(registration)}</span>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
