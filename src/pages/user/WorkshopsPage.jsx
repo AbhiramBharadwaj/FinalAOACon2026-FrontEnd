@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChevronRight, Stethoscope, GraduationCap, Users2 } from 'lucide-react';
+import { Brain, CalendarDays, ChevronRight, Stethoscope, GraduationCap, Trophy, Users2 } from 'lucide-react';
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import Footer from '../../components/common/Footer';
@@ -40,6 +40,45 @@ const WorkshopsPage = () => {
         </section>
 
         <section className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+          <Link
+            to="/workshops/quiz-competition"
+            className="group rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-all overflow-hidden"
+          >
+            <div className="h-2 bg-gradient-to-r from-[#08234f] via-[#005aa9] to-[#0f766e]" />
+            <div className="p-5 sm:p-6">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-[#005aa9]/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#005aa9]">
+                <Brain className="h-3.5 w-3.5" />
+                Quiz Competition
+              </div>
+              <h2 className="text-lg sm:text-xl font-semibold text-slate-900 group-hover:text-[#005aa9] transition-colors">
+                AOACON 2026 Quiz Competition
+              </h2>
+              <p className="mt-3 text-sm text-slate-700 leading-relaxed">
+                A conference quiz competition for postgraduates and fellows. Think, compete, and win exciting prizes.
+              </p>
+
+              <div className="mt-4 space-y-2 text-sm text-slate-700">
+                <p className="flex items-start gap-2">
+                  <CalendarDays className="w-4 h-4 mt-0.5 text-slate-500" />
+                  <span>
+                    <span className="font-semibold text-slate-900">Prelims:</span> 31st October 2026
+                  </span>
+                </p>
+                <p className="flex items-start gap-2">
+                  <Trophy className="w-4 h-4 mt-0.5 text-slate-500" />
+                  <span>
+                    <span className="font-semibold text-slate-900">Finals:</span> 1st November 2026
+                  </span>
+                </p>
+              </div>
+
+              <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#005aa9]">
+                View Quiz Details
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+            </div>
+          </Link>
+
           {WORKSHOPS.map((workshop) => (
             <Link
               key={workshop.slug}

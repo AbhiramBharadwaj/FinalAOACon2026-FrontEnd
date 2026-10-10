@@ -26,6 +26,7 @@ import GalleryPage from './pages/user/GalleryPage';
 import HomePage from './pages/user/HomePage';
 import WorkshopsPage from './pages/user/WorkshopsPage';
 import WorkshopDetailPage from './pages/user/WorkshopDetailPage';
+import QuizCompetitionPage from './pages/user/QuizCompetitionPage';
 import AOACertificateCoursePage from './pages/user/AOACertificateCoursePage';
 import DownloadsPage from './pages/user/DownloadsPage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
@@ -180,6 +181,9 @@ function App() {
               } />
               <Route path="/workshops/aoa-certificate-course" element={
                   <AOACertificateCoursePage />
+              } />
+              <Route path="/workshops/quiz-competition" element={
+                  <QuizCompetitionPage />
               } />
               <Route path="/workshops/:slug" element={
                   <WorkshopDetailPage />

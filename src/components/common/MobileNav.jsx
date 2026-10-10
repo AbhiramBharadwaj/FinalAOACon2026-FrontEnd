@@ -44,6 +44,7 @@ const MobileNav = () => {
     { label: 'Venue', path: '/venue', icon: MapPin },
     { label: 'Scientific Program', path: '/conference-days', icon: Calendar },
     { label: 'Workshops', path: '/workshops', icon: Stethoscope },
+    { label: 'Quiz Competition', path: '/workshops/quiz-competition', icon: Award },
     { label: 'Registration Details', path: '/register-details', icon: FileText },
     { label: 'Registration', path: '/register', icon: FileText },
     { label: 'Abstract', path: '/abstract/rules', icon: FileText },

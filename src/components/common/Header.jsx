@@ -45,6 +45,7 @@ const NAV_ITEMS = [
       { label: 'Accommodation', path: '/accommodation', icon: Hotel },
       { label: 'Scientific Program', path: '/conference-days', icon: Calendar },
       { label: 'Workshops', path: '/workshops', icon: Stethoscope },
+      { label: 'Quiz Competition', path: '/workshops/quiz-competition', icon: Award },
       { label: 'AOA Certified Course', path: '/workshops/aoa-certificate-course', icon: Award },
       { label: 'Abstract', path: '/abstract/rules', icon: FileText },
       { label: 'Award Video Competition', path: '/video/rules', icon: Award },
