@@ -619,8 +619,8 @@ const VideoUploadPage = () => {
               {submitting ? (
                 <div className="mt-3">
                   <div className="mb-1 flex items-center justify-between text-[11px] font-medium text-slate-600">
-                    <span>Uploading video</span>
-                    <span>{uploadProgress}%</span>
+                    <span>{uploadProgress >= 99 ? 'Finalizing submission' : 'Uploading video. Please keep this page open.'}</span>
+                    <span>{uploadProgress >= 99 ? 'Almost done' : 'In progress'}</span>
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-slate-200">
                     <div
