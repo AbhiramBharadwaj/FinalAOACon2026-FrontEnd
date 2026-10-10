@@ -103,11 +103,19 @@ export const videoAPI = {
     ...config,
   }),
   createUploadUrl: (data) => api.post('/video/upload-url', data),
-  uploadToSignedUrl: (uploadUrl, file, { contentType, onUploadProgress } = {}) =>
-    axios.put(uploadUrl, file, {
+  uploadToSignedUrl: async (uploadUrl, file, { contentType } = {}) => {
+    const response = await fetch(uploadUrl, {
+      method: 'PUT',
       headers: { 'Content-Type': contentType || file.type || 'application/octet-stream' },
-      onUploadProgress,
-    }),
+      body: file,
+    });
+
+    if (!response.ok) {
+      throw new Error(`R2 upload failed with status ${response.status}`);
+    }
+
+    return response;
+  },
   submitDirect: (data) => api.post('/video/submit-direct', data),
   getMyVideo: async () => {
     try {

@@ -158,15 +158,8 @@ const VideoUploadPage = () => {
       const { uploadUrl, objectKey, headers = {} } = uploadUrlResponse.data;
       const contentType = headers['Content-Type'] || videoFile.type || 'application/octet-stream';
 
-      await videoAPI.uploadToSignedUrl(uploadUrl, videoFile, {
-        contentType,
-        onUploadProgress: (progressEvent) => {
-          if (!progressEvent.total) return;
-          const percentage = Math.min(99, Math.round((progressEvent.loaded * 99) / progressEvent.total));
-          setUploadProgress(percentage);
-        },
-      });
-
+      setUploadProgress(5);
+      await videoAPI.uploadToSignedUrl(uploadUrl, videoFile, { contentType });
       setUploadProgress(99);
 
       const response = await videoAPI.submitDirect({
