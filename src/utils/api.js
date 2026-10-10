@@ -102,6 +102,13 @@ export const videoAPI = {
     headers: { 'Content-Type': 'multipart/form-data' },
     ...config,
   }),
+  createUploadUrl: (data) => api.post('/video/upload-url', data),
+  uploadToSignedUrl: (uploadUrl, file, { contentType, onUploadProgress } = {}) =>
+    axios.put(uploadUrl, file, {
+      headers: { 'Content-Type': contentType || file.type || 'application/octet-stream' },
+      onUploadProgress,
+    }),
+  submitDirect: (data) => api.post('/video/submit-direct', data),
   getMyVideo: async () => {
     try {
       return await api.get('/video/my-video');

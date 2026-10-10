@@ -149,42 +149,46 @@ const VideoUploadPage = () => {
     setUploadProgress(0);
 
     try {
-      const submitData = new FormData();
-      submitData.append('title', formData.title.trim());
-      submitData.append('presenterName', formData.presenterName.trim());
-      submitData.append('presenterDetails', formData.presenterDetails.trim());
-      submitData.append('description', formData.description.trim());
-      submitData.append('videoFile', videoFile);
+      const uploadUrlResponse = await videoAPI.createUploadUrl({
+        fileName: videoFile.name,
+        fileType: videoFile.type || 'application/octet-stream',
+        fileSize: videoFile.size,
+      });
 
-      const response = await videoAPI.submit(submitData, {
+      const { uploadUrl, objectKey, headers = {} } = uploadUrlResponse.data;
+      const contentType = headers['Content-Type'] || videoFile.type || 'application/octet-stream';
+
+      await videoAPI.uploadToSignedUrl(uploadUrl, videoFile, {
+        contentType,
         onUploadProgress: (progressEvent) => {
           if (!progressEvent.total) return;
-          const percentage = Math.min(
-            100,
-            Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          );
+          const percentage = Math.min(99, Math.round((progressEvent.loaded * 99) / progressEvent.total));
           setUploadProgress(percentage);
         },
       });
+
+      setUploadProgress(99);
+
+      const response = await videoAPI.submitDirect({
+        title: formData.title.trim(),
+        presenterName: formData.presenterName.trim(),
+        presenterDetails: formData.presenterDetails.trim(),
+        description: formData.description.trim(),
+        objectKey,
+        fileType: contentType,
+      });
+
+      setUploadProgress(100);
       setExistingSubmission(response.data.submission);
       setVideoSubmission(response.data.submission);
       setVideoFile(null);
       setErrors({});
       setSuccessMessage('Video submitted successfully. Review updates will appear here once the admin completes evaluation.');
     } catch (error) {
-      const isProxyUploadLimitError =
-        !error.response &&
-        (
-          error.message === 'Network Error' ||
-          /access control|cors|load/i.test(error.message || '')
-        );
-
       setErrors({
         general:
           error.response?.data?.message ||
-          (isProxyUploadLimitError
-            ? 'Upload was rejected by the deployed API server before the application could process it. This is usually a server/proxy upload size limit issue, not a form error.'
-            : 'Failed to submit video. Please try again.'),
+          'Video upload could not be completed. Please check your connection and try again.',
       });
     } finally {
       setSubmitting(false);
