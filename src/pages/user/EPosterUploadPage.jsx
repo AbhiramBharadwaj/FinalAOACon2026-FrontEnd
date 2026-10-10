@@ -14,6 +14,10 @@ import { useApp } from '../../contexts/AppContext';
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import {
+  E_POSTER_SUBMISSION_DEADLINE_LABEL,
+  isEPosterSubmissionOpen,
+} from '../../utils/submissionDeadlines';
 
 const ePosterTemplateNote =
   'Candidates can alter the headings in the e-poster template to suit their category of presentation without altering the logos and the colour theme of the slide.';
@@ -28,6 +32,7 @@ const EPosterUploadPage = () => {
 
   const { setAbstract } = useApp();
   const navigate = useNavigate();
+  const ePosterSubmissionOpen = isEPosterSubmissionOpen();
 
   useEffect(() => {
     checkExistingAbstract();
@@ -93,6 +98,11 @@ const EPosterUploadPage = () => {
   };
 
   const handlePosterSubmit = async () => {
+    if (!ePosterSubmissionOpen) {
+      setPosterError(`Final e-poster upload is closed. The last date for e-poster submission was ${E_POSTER_SUBMISSION_DEADLINE_LABEL}.`);
+      return;
+    }
+
     if (!posterFile) {
       setPosterError('Final e-poster file is required.');
       return;
@@ -273,7 +283,13 @@ const EPosterUploadPage = () => {
                 </div>
               )}
 
-              {!isPosterAccepted && (
+              {!ePosterSubmissionOpen && (
+                <div className="mb-3 rounded-lg border border-red-300/60 bg-red-50 p-3 text-xs text-red-700">
+                  Final e-poster upload is closed. The last date for e-poster submission was {E_POSTER_SUBMISSION_DEADLINE_LABEL}.
+                </div>
+              )}
+
+              {!isPosterAccepted && ePosterSubmissionOpen && (
                 <>
                   <div className="rounded-xl border-2 border-dashed border-slate-200 p-6 text-center">
                     {posterFile ? (

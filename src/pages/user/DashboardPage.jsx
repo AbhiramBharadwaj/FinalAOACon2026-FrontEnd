@@ -33,6 +33,12 @@ import {
 import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import {
+  ABSTRACT_SUBMISSION_DEADLINE_LABEL,
+  E_POSTER_SUBMISSION_DEADLINE_LABEL,
+  isAbstractSubmissionOpen,
+  isEPosterSubmissionOpen,
+} from '../../utils/submissionDeadlines';
 
 const ePosterTemplateNote =
   'Candidates can alter the headings in the e-poster template to suit their category of presentation without altering the logos and the colour theme of the slide.';
@@ -52,7 +58,8 @@ const DashboardPage = () => {
     pocus: 'POCUS in Obstetrics',
     'maternal-collapse': 'Maternal Resuscitation ',
   };
-  const isAbstractOpen = true;
+  const isAbstractOpen = isAbstractSubmissionOpen();
+  const isEPosterOpen = isEPosterSubmissionOpen();
   const isVideoCompetitionOpen = true;
 
   const [loading, setLoading] = useState(true);
@@ -404,26 +411,28 @@ const DashboardPage = () => {
             <FileText className="w-5 h-5 mx-auto mb-2 text-[#7cb342] group-hover:scale-110 transition-transform" />
             <p className="font-semibold text-slate-900">Abstract</p>
             <p className="text-[11px] text-slate-600">
-              {isAbstractOpen ? 'Submit' : 'Coming soon'}
+              {isAbstractOpen ? 'Submit' : 'Closed'}
             </p>
           </button>
           <button
             onClick={() => navigate('/e-poster/upload')}
-            disabled={!isProfileComplete || !isAbstractApproved}
+            disabled={!isProfileComplete || !isAbstractApproved || (!isEPosterOpen && !hasFinalPoster)}
             className={`group bg-white/90 backdrop-blur-xl rounded-2xl px-3 py-3 text-center text-xs sm:text-sm transition-all disabled:cursor-not-allowed ${
-              isAbstractApproved
+              isAbstractApproved && (isEPosterOpen || hasFinalPoster)
                 ? 'border border-[#005aa9]/30 hover:border-[#005aa9]/50'
                 : 'border border-slate-200 opacity-60 grayscale'
             }`}
           >
             <Upload className={`w-5 h-5 mx-auto mb-2 transition-transform ${
-              isAbstractApproved
+              isAbstractApproved && (isEPosterOpen || hasFinalPoster)
                 ? 'text-[#005aa9] group-hover:scale-110'
                 : 'text-slate-400'
             }`} />
             <p className="font-semibold text-slate-900">E-Poster</p>
             <p className="text-[11px] text-slate-600">
-              {isAbstractApproved
+              {!isEPosterOpen && !hasFinalPoster
+                ? 'Closed'
+                : isAbstractApproved
                 ? hasFinalPoster
                   ? 'View upload'
                   : 'Upload'
@@ -817,23 +826,23 @@ const DashboardPage = () => {
                 <div className="text-center py-8">
                   <FileText className="w-10 h-10 text-[#7cb342]/60 mx-auto mb-3" />
                   <p className="text-xs sm:text-sm text-slate-600 mb-2">
-                    Abstract submissions coming soon.
+                    Abstract submissions are closed. Last date: {ABSTRACT_SUBMISSION_DEADLINE_LABEL}.
                   </p>
                   <button
                     disabled
                     className="w-full rounded-xl bg-[#7cb342] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold opacity-60 cursor-not-allowed"
                   >
-                    Coming soon
+                    Closed
                   </button>
                 </div>
               )}
             </div>
 
             <div className={`bg-white/90 backdrop-blur-xl border rounded-2xl px-4 py-4 sm:px-5 sm:py-5 ${
-              isAbstractApproved ? 'border-white/40' : 'border-slate-200/80 opacity-75 grayscale'
+              isAbstractApproved && (isEPosterOpen || hasFinalPoster) ? 'border-white/40' : 'border-slate-200/80 opacity-75 grayscale'
             }`}>
               <h3 className="text-sm font-semibold mb-3 flex items-center gap-2 text-slate-900">
-                <Upload className={`w-4 h-4 ${isAbstractApproved ? 'text-[#005aa9]' : 'text-slate-400'}`} />
+                <Upload className={`w-4 h-4 ${isAbstractApproved && (isEPosterOpen || hasFinalPoster) ? 'text-[#005aa9]' : 'text-slate-400'}`} />
                 E-Poster Upload
               </h3>
               {stats.abstract ? (
@@ -854,7 +863,7 @@ const DashboardPage = () => {
                     )}
                   </div>
                   <p className="font-medium text-slate-900 truncate">{stats.abstract.title}</p>
-                  {isAbstractApproved ? (
+                  {isAbstractApproved && (isEPosterOpen || hasFinalPoster) ? (
                     <>
                       <div className={`rounded-xl border px-3 py-2 text-[11px] font-medium ${
                         hasFinalPoster
@@ -868,12 +877,18 @@ const DashboardPage = () => {
                           {ePosterTemplateNote}
                         </p>
                       )}
-                      <button
-                        onClick={() => navigate('/e-poster/upload')}
-                        className="w-full rounded-xl bg-[#005aa9] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#004684]"
-                      >
-                        {hasFinalPoster ? 'View final e-poster' : 'Upload final e-poster'}
-                      </button>
+                      {isEPosterOpen ? (
+                        <button
+                          onClick={() => navigate('/e-poster/upload')}
+                          className="w-full rounded-xl bg-[#005aa9] text-white px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#004684]"
+                        >
+                          {hasFinalPoster ? 'View final e-poster' : 'Upload final e-poster'}
+                        </button>
+                      ) : (
+                        <div className="rounded-xl border border-slate-200 bg-slate-100 px-3 py-3 text-[11px] font-medium text-slate-500">
+                          E-poster uploads are closed. Last date: {E_POSTER_SUBMISSION_DEADLINE_LABEL}.
+                        </div>
+                      )}
                       {finalPosterUrl && (
                         <a
                           href={finalPosterUrl}
@@ -887,7 +902,9 @@ const DashboardPage = () => {
                     </>
                   ) : (
                     <div className="rounded-xl border border-slate-200 bg-slate-100 px-3 py-3 text-[11px] font-medium text-slate-500">
-                      Once your abstract is accepted, e-poster upload will unlock here.
+                      {!isEPosterOpen
+                        ? `E-poster uploads are closed. Last date: ${E_POSTER_SUBMISSION_DEADLINE_LABEL}.`
+                        : 'Once your abstract is accepted, e-poster upload will unlock here.'}
                     </div>
                   )}
                 </div>

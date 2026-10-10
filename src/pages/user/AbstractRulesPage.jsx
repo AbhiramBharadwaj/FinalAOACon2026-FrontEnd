@@ -6,6 +6,11 @@ import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import ePosterTemplate from '../../files/E-Poster-Template.pptx';
 import abstractAnnouncementImage from '../../images/Abstract/abstract-announcement.jpeg';
+import {
+  ABSTRACT_SUBMISSION_DEADLINE_LABEL,
+  E_POSTER_SUBMISSION_DEADLINE_LABEL,
+  isAbstractSubmissionOpen,
+} from '../../utils/submissionDeadlines';
 
 const ePosterTemplateNote =
   'Candidates can alter the headings in the e-poster template to suit their category of presentation without altering the logos and the colour theme of the slide.';
@@ -15,9 +20,10 @@ const AbstractRulesPage = () => {
   const [showAnnouncement, setShowAnnouncement] = useState(true);
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const abstractSubmissionOpen = isAbstractSubmissionOpen();
 
   const handleProceed = () => {
-    if (acceptedRules) {
+    if (acceptedRules && abstractSubmissionOpen) {
       if (isAuthenticated) {
         navigate('/abstract/upload');
         return;
@@ -52,6 +58,10 @@ const AbstractRulesPage = () => {
         </div>
 
         <div className="max-h-[calc(100vh-7rem)] overflow-y-auto bg-[#f6f1e8] p-3 sm:p-5">
+          <div className="mb-3 border border-[#7cb342]/30 bg-white p-3 text-sm text-slate-800">
+            <p><strong>Updated abstract submission deadline:</strong> {ABSTRACT_SUBMISSION_DEADLINE_LABEL}</p>
+            <p><strong>Updated final e-poster submission deadline:</strong> {E_POSTER_SUBMISSION_DEADLINE_LABEL}</p>
+          </div>
           <figure className="overflow-hidden border border-[#ded2bd] bg-white p-2 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
             <img
               src={abstractAnnouncementImage}
@@ -87,6 +97,17 @@ const AbstractRulesPage = () => {
           </div>
 
           <div className="p-5 lg:p-8 space-y-6">
+          {!abstractSubmissionOpen && (
+            <section className="rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-700">
+              Abstract submission is closed. The last date for abstract submission was <strong>{ABSTRACT_SUBMISSION_DEADLINE_LABEL}</strong>.
+            </section>
+          )}
+
+          <section className="rounded-2xl border border-[#7cb342]/30 bg-[#7cb342]/10 p-5 text-sm text-slate-700">
+            <p><strong>Abstract submission deadline:</strong> {ABSTRACT_SUBMISSION_DEADLINE_LABEL}</p>
+            <p><strong>Final e-poster submission deadline:</strong> {E_POSTER_SUBMISSION_DEADLINE_LABEL}</p>
+          </section>
+
           <section className="rounded-2xl border border-slate-200 bg-white p-5 space-y-2">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">Eligibility</h2>
             <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
@@ -208,7 +229,7 @@ const AbstractRulesPage = () => {
           <section className="rounded-2xl border border-slate-200 bg-white p-5 space-y-2">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">Submission of E-Poster</h2>
             <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
-              <li>Accepted authors must upload the final e-poster file before the deadline of <strong>15th October, 2026</strong>.</li>
+              <li>Accepted authors must upload the final e-poster file before the deadline of <strong>18th October, 2026</strong>.</li>
               <li>Late submissions may not be included in the conference display.</li>
               <li>Posters will be displayed on digital screens during the conference.</li>
             </ul>
@@ -275,8 +296,8 @@ const AbstractRulesPage = () => {
             <section className="rounded-2xl border border-rose-200 bg-rose-50 p-5 space-y-2">
               <h2 className="text-sm lg:text-base font-semibold text-slate-900">Important Dates</h2>
               <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
-                <li>Last date for abstract submission: <strong>10th October, 2026</strong></li>
-                <li>Last date for final e-poster submission by accepted authors: <strong>15th October, 2026</strong></li>
+                <li>Last date for abstract submission: <strong>15th October, 2026</strong></li>
+                <li>Last date for final e-poster submission by accepted authors: <strong>18th October, 2026</strong></li>
               </ul>
             </section>
 
@@ -317,11 +338,11 @@ const AbstractRulesPage = () => {
 
             <button
               onClick={handleProceed}
-              disabled={!acceptedRules}
+              disabled={!acceptedRules || !abstractSubmissionOpen}
               className="w-full px-5 py-3 rounded-md border border-slate-300 bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
             >
               <Upload className="w-4 h-4" />
-              Proceed to Upload
+              {abstractSubmissionOpen ? 'Proceed to Upload' : 'Abstract Submission Closed'}
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

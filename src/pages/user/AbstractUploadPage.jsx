@@ -18,6 +18,11 @@ import Header from '../../components/common/Header';
 import MobileNav from '../../components/common/MobileNav';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import abstractAnnouncementImage from '../../images/Abstract/abstract-announcement.jpeg';
+import {
+  ABSTRACT_SUBMISSION_DEADLINE_LABEL,
+  E_POSTER_SUBMISSION_DEADLINE_LABEL,
+  isAbstractSubmissionOpen,
+} from '../../utils/submissionDeadlines';
 
 const AbstractUploadPage = () => {
   const [formData, setFormData] = useState({
@@ -37,6 +42,7 @@ const AbstractUploadPage = () => {
   const { user, isAuthenticated } = useAuth();
   const { setAbstract } = useApp();
   const navigate = useNavigate();
+  const abstractSubmissionOpen = isAbstractSubmissionOpen();
 
   useEffect(() => {
     checkExistingAbstract();
@@ -144,6 +150,13 @@ const AbstractUploadPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!abstractSubmissionOpen) {
+      setErrors({
+        general: `Abstract submission is closed. The last date for abstract submission was ${ABSTRACT_SUBMISSION_DEADLINE_LABEL}.`
+      });
+      return;
+    }
+
     if (existingAbstract && existingAbstract.status !== 'REJECTED') {
       setErrors({
         general: 'You have already submitted an abstract. You can resubmit only after rejection.'
@@ -225,6 +238,10 @@ const AbstractUploadPage = () => {
         </div>
 
         <div className="max-h-[calc(100vh-7rem)] overflow-y-auto bg-[#f6f1e8] p-3 sm:p-5">
+          <div className="mb-3 border border-[#7cb342]/30 bg-white p-3 text-sm text-slate-800">
+            <p><strong>Updated abstract submission deadline:</strong> {ABSTRACT_SUBMISSION_DEADLINE_LABEL}</p>
+            <p><strong>Updated final e-poster submission deadline:</strong> {E_POSTER_SUBMISSION_DEADLINE_LABEL}</p>
+          </div>
           <figure className="overflow-hidden border border-[#ded2bd] bg-white p-2 shadow-[0_16px_40px_rgba(15,23,42,0.08)]">
             <img
               src={abstractAnnouncementImage}
@@ -480,6 +497,12 @@ const AbstractUploadPage = () => {
           </div>
         )}
 
+        {!abstractSubmissionOpen && (
+          <div className="p-3 border border-red-300/60 bg-red-50 text-red-700 text-sm rounded-xl backdrop-blur-sm">
+            Abstract submission is closed. The last date for abstract submission was {ABSTRACT_SUBMISSION_DEADLINE_LABEL}.
+          </div>
+        )}
+
         {successMessage && (
           <div className="p-3 border border-emerald-300/60 bg-emerald-50 text-emerald-700 text-sm rounded-xl">
             {successMessage}
@@ -639,6 +662,7 @@ const AbstractUploadPage = () => {
                         type="button"
                         onClick={removeFile}
                         className="ml-2 text-[#ff8a1f] hover:text-[#e67e22]"
+                        disabled={!abstractSubmissionOpen}
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>
@@ -658,6 +682,7 @@ const AbstractUploadPage = () => {
                           accept=".pdf,.doc,.docx"
                           onChange={(e) => handleFileChange(e.target.files[0])}
                           className="sr-only"
+                          disabled={!abstractSubmissionOpen}
                         />
                       </label>
                       <p className="text-slate-500 mt-2 text-sm">or drag & drop</p>
@@ -675,7 +700,7 @@ const AbstractUploadPage = () => {
               <button
                 type="button"
                 onClick={handleSubmit}
-                disabled={submitting}
+                disabled={submitting || !abstractSubmissionOpen}
                 className="w-full px-4 py-3 rounded-xl border border-[#9c3253] bg-[#9c3253] text-white text-base font-semibold hover:bg-[#8a2b47] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
                 {submitting ? (
@@ -683,7 +708,11 @@ const AbstractUploadPage = () => {
                 ) : (
                   <>
                     <Upload className="w-4 h-4" />
-                    {isRejectedAbstract ? 'Resubmit E-Poster Abstract' : 'Submit E-Poster Abstract'}
+                    {!abstractSubmissionOpen
+                      ? 'Abstract Submission Closed'
+                      : isRejectedAbstract
+                        ? 'Resubmit E-Poster Abstract'
+                        : 'Submit E-Poster Abstract'}
                   </>
                 )}
               </button>
