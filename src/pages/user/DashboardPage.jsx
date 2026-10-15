@@ -414,6 +414,7 @@ const DashboardPage = () => {
               {isAbstractOpen ? 'Submit' : 'Closed'}
             </p>
           </button>
+          {stats.abstract && (
           <button
             onClick={() => navigate('/e-poster/upload')}
             disabled={!isProfileComplete || !isAbstractApproved || (!isEPosterOpen && !hasFinalPoster)}
@@ -439,6 +440,7 @@ const DashboardPage = () => {
                 : 'After approval'}
             </p>
           </button>
+          )}
           <button
             onClick={() => navigate(hasVideoSubmission ? '/video/upload' : '/video/rules')}
             disabled={!isProfileComplete || !isVideoCompetitionOpen}
@@ -838,6 +840,7 @@ const DashboardPage = () => {
               )}
             </div>
 
+            {stats.abstract && (
             <div className={`bg-white/90 backdrop-blur-xl border rounded-2xl px-4 py-4 sm:px-5 sm:py-5 ${
               isAbstractApproved && (isEPosterOpen || hasFinalPoster) ? 'border-white/40' : 'border-slate-200/80 opacity-75 grayscale'
             }`}>
@@ -845,7 +848,6 @@ const DashboardPage = () => {
                 <Upload className={`w-4 h-4 ${isAbstractApproved && (isEPosterOpen || hasFinalPoster) ? 'text-[#005aa9]' : 'text-slate-400'}`} />
                 E-Poster Upload
               </h3>
-              {stats.abstract ? (
                 <div className="space-y-3 text-xs sm:text-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-slate-600/90">Abstract approval</span>
@@ -908,22 +910,8 @@ const DashboardPage = () => {
                     </div>
                   )}
                 </div>
-              ) : (
-                <div className="text-center py-8">
-                  <Upload className="w-10 h-10 text-slate-400 mx-auto mb-3" />
-                  <p className="text-xs sm:text-sm text-slate-600 mb-2">
-                    Submit an abstract first.
-                  </p>
-                  <button
-                    onClick={() => navigate('/abstract/rules')}
-                    disabled={!isProfileComplete}
-                    className="w-full rounded-xl bg-slate-200 text-slate-600 px-4 py-2.5 text-xs sm:text-sm font-semibold hover:bg-slate-300 disabled:opacity-60 disabled:cursor-not-allowed"
-                  >
-                    Go to abstract
-                  </button>
-                </div>
-              )}
             </div>
+            )}
 
             <div className="bg-white/90 backdrop-blur-xl border border-white/40 rounded-2xl px-4 py-4 sm:px-5 sm:py-5">
               <h3 className="text-sm font-semibold mb-3 flex items-center gap-2 text-slate-900">
