@@ -189,7 +189,7 @@ const AbstractRulesPage = () => {
           <section className="rounded-2xl border border-slate-200 bg-white p-5 space-y-2">
             <h2 className="text-sm lg:text-base font-semibold text-slate-900">Submission of E-Poster</h2>
             <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
-              <li>Accepted authors must upload the final e-poster file before the deadline of <strong>18th October, 2026</strong>.</li>
+              <li>Accepted authors must upload the final e-poster file before the deadline of <strong>{E_POSTER_SUBMISSION_DEADLINE_LABEL}</strong>.</li>
               <li>Late submissions may not be included in the conference display.</li>
               <li>Posters will be displayed on digital screens during the conference.</li>
             </ul>
@@ -256,8 +256,8 @@ const AbstractRulesPage = () => {
             <section className="rounded-2xl border border-rose-200 bg-rose-50 p-5 space-y-2">
               <h2 className="text-sm lg:text-base font-semibold text-slate-900">Important Dates</h2>
               <ul className="list-disc pl-5 space-y-1 text-sm text-slate-700">
-                <li>Last date for abstract submission: <strong>15th October, 2026</strong></li>
-                <li>Last date for final e-poster submission by accepted authors: <strong>18th October, 2026</strong></li>
+                <li>Last date for abstract submission: <strong>{ABSTRACT_SUBMISSION_DEADLINE_LABEL}</strong></li>
+                <li>Last date for final e-poster submission by accepted authors: <strong>{E_POSTER_SUBMISSION_DEADLINE_LABEL}</strong></li>
               </ul>
             </section>
 
