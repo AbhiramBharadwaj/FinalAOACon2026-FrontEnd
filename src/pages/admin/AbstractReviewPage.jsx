@@ -11,6 +11,7 @@ import {
   User
 } from 'lucide-react';
 import { abstractAPI, API_BASE_URL } from '../../utils/api';
+import { downloadPoster } from '../../utils/posterDownload';
 import { ABSTRACT_CATEGORIES } from '../../utils/constants';
 import Sidebar from '../../components/admin/Sidebar';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
@@ -36,6 +37,7 @@ const AbstractReviewPage = () => {
   });
   const [submitting, setSubmitting] = useState(false);
   const [posterSubmitting, setPosterSubmitting] = useState(false);
+  const [downloadingPosterIds, setDownloadingPosterIds] = useState([]);
 
   useEffect(() => {
     fetchAbstracts();
@@ -108,6 +110,18 @@ const AbstractReviewPage = () => {
   const getAssetUrl = (filePath) => {
     if (!filePath) return null;
     return /^https?:\/\//i.test(filePath) ? filePath : `${API_BASE_URL}/${filePath}`;
+  };
+
+  const handlePosterDownload = async (abstract) => {
+    setDownloadingPosterIds(ids => [...ids, abstract._id]);
+    try {
+      await downloadPoster(abstract, getAssetUrl(abstract.finalPosterPath));
+    } catch (error) {
+      console.error('Failed to download e-poster:', error);
+      alert('E-poster could not be downloaded. Please try again.');
+    } finally {
+      setDownloadingPosterIds(ids => ids.filter(id => id !== abstract._id));
+    }
   };
 
   const getPosterStatusLabel = (abstract) => {
@@ -500,14 +514,12 @@ const AbstractReviewPage = () => {
                           <div className="flex flex-col gap-1">
                             {getPosterBadge(abstract)}
                             {abstract.finalPosterPath && (
-                              <a
-                                href={getAssetUrl(abstract.finalPosterPath)}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-[10px] font-medium text-[#005aa9] hover:text-[#004684]"
-                              >
-                                Download
-                              </a>
+                              <div className="flex items-center gap-2">
+                                <a href={getAssetUrl(abstract.finalPosterPath)} target="_blank" rel="noreferrer" className="text-[10px] font-medium text-[#005aa9] hover:text-[#004684]">View</a>
+                                <button type="button" onClick={() => handlePosterDownload(abstract)} disabled={downloadingPosterIds.includes(abstract._id)} className="text-[10px] font-medium text-[#005aa9] hover:text-[#004684] disabled:opacity-50">
+                                  {downloadingPosterIds.includes(abstract._id) ? 'Downloading…' : 'Download'}
+                                </button>
+                              </div>
                             )}
                           </div>
                         </td>
@@ -684,15 +696,16 @@ const AbstractReviewPage = () => {
                               Size: {(selectedAbstract.finalPosterSize / (1024 * 1024)).toFixed(2)} MB
                             </p>
                           )}
-                          <a
-                            href={getAssetUrl(selectedAbstract.finalPosterPath)}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-emerald-700 hover:shadow-md"
+                          <a href={getAssetUrl(selectedAbstract.finalPosterPath)} target="_blank" rel="noreferrer" className="mt-3 inline-block text-xs font-medium text-emerald-800 underline">View Final E-Poster</a>
+                          <button
+                            type="button"
+                            onClick={() => handlePosterDownload(selectedAbstract)}
+                            disabled={downloadingPosterIds.includes(selectedAbstract._id)}
+                            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-emerald-700 hover:shadow-md disabled:opacity-50"
                           >
                             <Download className="h-3.5 w-3.5" />
-                            Download Final E-Poster
-                          </a>
+                            {downloadingPosterIds.includes(selectedAbstract._id) ? 'Downloading…' : 'Download Final E-Poster'}
+                          </button>
                         </>
                       ) : (
                         <p className="mt-2 text-[11px] text-emerald-800">
