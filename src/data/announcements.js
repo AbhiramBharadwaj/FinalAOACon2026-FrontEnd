@@ -1,9 +1,20 @@
+import scientificProgrammeFlyer from '../images/Announcements/scientific-programme-final-2026.jpg';
 import septemberEarlyBirdExtension from '../images/Announcements/early-bird-extension-september-30-2026.png';
 import quizCompetitionFlyer from '../images/QuizCompetition/quiz-competition-2026.jpeg';
 
 // Add new announcements at the beginning of this list. A new `id` makes the
 // bell show it as unread until the visitor opens the notification centre.
 export const announcements = [
+  {
+    id: 'scientific-programme-final-2026-10-19',
+    title: 'Latest Scientific Programme Now Available',
+    summary: 'Explore the latest AOACON 2026 scientific programme with updated session timings, speakers and moderators for Halls A, B and C.',
+    publishedAt: '19 October 2026',
+    image: scientificProgrammeFlyer,
+    imageAlt: 'AOACON 2026 latest scientific programme cover',
+    href: '/conference-days',
+    actionLabel: 'View scientific programme',
+  },
   {
     id: 'quiz-competition-2026-10-08',
     title: 'Quiz Competition for PGs and Fellows',
