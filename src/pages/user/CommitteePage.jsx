@@ -38,7 +38,7 @@ const committees = [
     sectionTitle: 'Chief Patron',
     roles: [
       {
-        role: 'Dean & Director SIMS, Shivamogg',
+        role: 'Dean & Director SIMS, Shivamogga',
         members: [
           {
             name: 'Dr Ramesh Babu K',
@@ -73,11 +73,11 @@ const committees = [
         ],
       },
         {
-        role: 'Head, Dept. of Anaesthesiology, Sahyadri Narayana Multispeciality Hospital Shivamogg',
+        role: 'Head, Dept. of Anaesthesiology, Sahyadri Narayana Multispeciality Hospital Shivamogga',
         members: [
           {
             name: ' Dr. Ajith Kumar Shetty',
-            designation: 'Head, Dept. of Anaesthesiology, Sahyadri Narayana Multispeciality Hospital Shivamogg',
+            designation: 'Head, Dept. of Anaesthesiology, Sahyadri Narayana Multispeciality Hospital Shivamogga',
             image: ajithKumarImg,
           },
         ],
