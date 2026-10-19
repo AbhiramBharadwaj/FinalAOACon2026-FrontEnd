@@ -5,10 +5,13 @@ import MobileNav from '../../components/common/MobileNav';
 import Footer from '../../components/common/Footer';
 import hallADay1Page1 from '../../images/Scientific Program/HALLA-DAY1-Page1.jpg';
 import hallADay1Page2 from '../../images/Scientific Program/HALLA-DAY1-Page2.jpg';
-import hallADay2 from '../../images/Scientific Program/HALLA-DAY2.jpg';
-import hallBDay1 from '../../images/Scientific Program/HALLB-DAY1.jpg';
+import hallADay1Page3 from '../../images/Scientific Program/HALLA-DAY1-Page3.jpg';
+import hallADay2Page1 from '../../images/Scientific Program/HALLA-DAY2-Page1.jpg';
+import hallADay2Page2 from '../../images/Scientific Program/HALLA-DAY2-Page2.jpg';
+import hallBDay1Page1 from '../../images/Scientific Program/HALLB-DAY1-Page1.jpg';
+import hallBDay1Page2 from '../../images/Scientific Program/HALLB-DAY1-Page2.jpg';
 import hallBDay2 from '../../images/Scientific Program/HALLB-DAY2.jpg';
-import hallCDay1 from '../../images/Scientific Program/HALLC-DAY1.jpg';
+import hallCPostersQuiz from '../../images/Scientific Program/HALLC-POSTERS-QUIZ.jpg';
 
 const PROGRAM_HALLS = [
   {
@@ -24,13 +27,17 @@ const PROGRAM_HALLS = [
         images: [
           { src: hallADay1Page1, alt: 'Hall A Day 1 scientific program flyer page 1' },
           { src: hallADay1Page2, alt: 'Hall A Day 1 scientific program flyer page 2' },
+          { src: hallADay1Page3, alt: 'Hall A Day 1 scientific program flyer page 3' },
         ],
       },
       {
         id: 'hall-a-day-2',
         dayLabel: 'Day 2',
         displayDate: 'Sunday, 01-11-2026',
-        images: [{ src: hallADay2, alt: 'Hall A Day 2 scientific program flyer' }],
+        images: [
+          { src: hallADay2Page1, alt: 'Hall A Day 2 scientific program flyer page 1' },
+          { src: hallADay2Page2, alt: 'Hall A Day 2 scientific program flyer page 2' },
+        ],
       },
     ],
   },
@@ -44,7 +51,10 @@ const PROGRAM_HALLS = [
         id: 'hall-b-day-1',
         dayLabel: 'Day 1',
         displayDate: 'Saturday, 31-10-2026',
-        images: [{ src: hallBDay1, alt: 'Hall B Day 1 scientific program flyer' }],
+        images: [
+          { src: hallBDay1Page1, alt: 'Hall B Day 1 scientific program flyer page 1' },
+          { src: hallBDay1Page2, alt: 'Hall B Day 1 scientific program flyer page 2' },
+        ],
       },
       {
         id: 'hall-b-day-2',
@@ -58,13 +68,13 @@ const PROGRAM_HALLS = [
     id: 'hall-c',
     name: 'Hall C',
     accent: 'from-[#334155] via-[#475569] to-[#94a3b8]',
-    summary: 'Day-wise scientific programme for Hall C.',
+    summary: 'E-poster presentations on 30 October and quiz final on 1 November.',
     days: [
       {
-        id: 'hall-c-day-1',
-        dayLabel: 'Day 1',
-        displayDate: 'Saturday, 31-10-2026',
-        images: [{ src: hallCDay1, alt: 'Hall C Day 1 scientific program flyer' }],
+        id: 'hall-c-posters-quiz',
+        dayLabel: 'Poster Presentations & Quiz',
+        displayDate: '30-10-2026 & 01-11-2026',
+        images: [{ src: hallCPostersQuiz, alt: 'Hall C e-poster presentations on 30 October and quiz final on 1 November 2026' }],
       },
     ],
   },
