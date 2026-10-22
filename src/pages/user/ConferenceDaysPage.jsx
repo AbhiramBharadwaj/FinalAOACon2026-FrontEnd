@@ -68,13 +68,13 @@ const PROGRAM_HALLS = [
     id: 'hall-c',
     name: 'Hall C',
     accent: 'from-[#334155] via-[#475569] to-[#94a3b8]',
-    summary: 'E-poster presentations on 30 October and quiz final on 1 November.',
+    summary: 'E-poster presentations on 31 October and quiz final on 1 November.',
     days: [
       {
         id: 'hall-c-posters-quiz',
         dayLabel: 'Poster Presentations & Quiz',
-        displayDate: '30-10-2026 & 01-11-2026',
-        images: [{ src: hallCPostersQuiz, alt: 'Hall C e-poster presentations on 30 October and quiz final on 1 November 2026' }],
+        displayDate: '31-10-2026 & 01-11-2026',
+        images: [{ src: hallCPostersQuiz, alt: 'Hall C e-poster presentations on 31 October and quiz final on 1 November 2026' }],
       },
     ],
   },

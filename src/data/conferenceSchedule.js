@@ -835,7 +835,7 @@ export const CONFERENCE_HALLS = [
       {
         id: 'hall-c-day-1',
         dayLabel: 'Day 1',
-        displayDate: 'Saturday, 30-10-2026',
+        displayDate: 'Saturday, 31-10-2026',
         hall: 'Hall C',
         status: 'live',
         theme: 'This page shows the Hall C schedule for Day 1.',
