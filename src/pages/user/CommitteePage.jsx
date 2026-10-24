@@ -178,8 +178,8 @@ const committees = [
         role: '',
         members: [
           { name: 'Dr Chakravarthy', designation: 'Lead', image: chakravarthyImg },
-          { name: 'Dr Yashoda V', designation: 'Workshop Coordinator', image: yashodhaVImg },
-          { name: 'Dr Sandhya', designation: 'Workshop Coordinator', image: sandhyaDImg },
+          { name: 'Dr Yashoda V', designation: 'Lead', image: yashodhaVImg },
+          { name: 'Dr Sandhya', designation: 'Lead', image: sandhyaDImg },
             { name: 'Dr Vadiraj Kulkarni', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
           { name: 'Dr Vikram A C', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
           { name: 'Dr Bharath', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
