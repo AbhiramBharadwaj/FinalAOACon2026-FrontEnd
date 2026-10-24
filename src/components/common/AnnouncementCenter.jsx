@@ -125,11 +125,13 @@ const AnnouncementCenter = () => {
                     }}
                     className="flex w-full gap-3 border-b border-slate-100 p-3 text-left transition-colors last:border-0 hover:bg-slate-50"
                   >
+                    {announcement.image && (
                     <img
                       src={announcement.image}
                       alt=""
                       className="h-20 w-14 shrink-0 rounded-md border border-slate-200 object-cover"
                     />
+                    )}
                     <span className="min-w-0 flex-1">
                       <span className="flex items-start gap-2">
                         <span className="flex-1 text-sm font-semibold leading-snug">
@@ -187,11 +189,17 @@ const AnnouncementCenter = () => {
             </div>
 
             <div className="min-h-0 flex-1 overflow-y-auto bg-slate-100 p-2 sm:p-4">
+              {activeAnnouncement.image ? (
               <img
                 src={activeAnnouncement.image}
                 alt={activeAnnouncement.imageAlt}
                 className="mx-auto max-h-[calc(94vh-9.5rem)] w-auto max-w-full rounded-lg shadow-sm"
               />
+              ) : (
+                <p className="mx-auto max-w-2xl rounded-lg bg-white p-6 text-base leading-relaxed text-slate-800">
+                  {activeAnnouncement.summary}
+                </p>
+              )}
             </div>
 
             <div className="flex items-center justify-between gap-3 border-t border-slate-200 bg-white px-4 py-3 sm:px-5">

@@ -1,5 +1,4 @@
 import scientificProgrammeFlyer from '../images/Announcements/scientific-programme-final-2026.jpg';
-import septemberEarlyBirdExtension from '../images/Announcements/early-bird-extension-september-30-2026.png';
 import quizCompetitionFlyer from '../images/QuizCompetition/quiz-competition-2026.jpeg';
 
 // Add new announcements at the beginning of this list. A new `id` makes the
@@ -26,13 +25,10 @@ export const announcements = [
     actionLabel: 'View quiz details',
   },
   {
-    id: 'early-bird-extension-2026-08-31',
-    title: 'Early bird registrations till 30th September',
-    summary: 'Early bird registrations are open till 30th September 2026. Regular pricing starts from 1st October 2026.',
-    publishedAt: '31 August 2026',
-    image: septemberEarlyBirdExtension,
-    imageAlt:
-      'AOACON 2026 early bird registrations till 30th September 2026',
+    id: 'early-bird-extension-2026-10-24',
+    title: 'Early bird registrations till 25th October',
+    summary: 'Early bird registrations are open till 25th October 2026. Spot pricing starts from 26th October 2026.',
+    publishedAt: '24 October 2026',
     href: '/register-details',
     actionLabel: 'Register now',
   },
