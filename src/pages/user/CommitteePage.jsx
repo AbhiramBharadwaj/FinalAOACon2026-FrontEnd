@@ -23,6 +23,7 @@ import swethaPurohitImg from '../../images/OrganizingComittee/Dr. Swetha Purohit
 import sandeepKotiImg from '../../images/OrganizingComittee/Dr. Sandeep Koti .png';
 import vandanaHebballiImg from '../../images/OrganizingComittee/Vandana Hebballi.png';
 import rameshBabuImg from '../../images/OrganizingComittee/Dr Ramesh Babu K.png';
+import chakravarthyImg from '../../images/OrganizingComittee/Dr Chakravarthy.jpeg';
 import yashodhaVImg from '../../images/OrganizingComittee/Yashodha V.png';
 import hemanthImg from '../../images/OrganizingComittee/Dr hemanth.png';
 import poojaShahImg from '../../images/OrganizingComittee/Dr Pooja Shah.png';
@@ -176,6 +177,7 @@ const committees = [
       {
         role: '',
         members: [
+          { name: 'Dr Chakravarthy', designation: 'Lead', image: chakravarthyImg },
           { name: 'Dr Yashoda V', designation: 'Workshop Coordinator', image: yashodhaVImg },
           { name: 'Dr Sandhya', designation: 'Workshop Coordinator', image: sandhyaDImg },
             { name: 'Dr Vadiraj Kulkarni', designation: 'Workshop Coordinator', image: PLACEHOLDER_IMAGE },
