@@ -5,19 +5,16 @@ const feeRows = [
   {
     label: 'AOA Member',
     early: { conf: '8000', ws: '10000', combo: null },
-    regular: { conf: '10000', ws: '12000', combo: null },
     spot: { conf: '13000' },
   },
   {
     label: 'Non-AOA Member',
     early: { conf: '11000', ws: '13000', combo: null },
-    regular: { conf: '13000', ws: '15000', combo: null },
     spot: { conf: '16000' },
   },
   {
     label: 'PGs & Fellows',
     early: { conf: '7000', ws: '9000', combo: null },
-    regular: { conf: '9000', ws: '11000', combo: null },
     spot: { conf: '12000' },
   },
 ];
@@ -109,7 +106,7 @@ const RegistrationFeesSection = () => {
           <section className="space-y-3 rounded-2xl border border-pink-200 bg-white p-4 sm:p-5 shadow-sm">
             <div>
               <h3 className="text-lg font-semibold text-[#a21d71]">EARLY BIRD</h3>
-              <p className="text-sm font-semibold text-slate-700">TILL 30TH SEPTEMBER 2026</p>
+              <p className="text-sm font-semibold text-slate-700">TILL 25TH OCTOBER 2026</p>
             </div>
             <div className="w-full overflow-x-auto">
               <table className="w-full text-sm border-collapse min-w-[680px]">
@@ -138,38 +135,8 @@ const RegistrationFeesSection = () => {
 
           <section className="space-y-3 rounded-2xl border border-pink-200 bg-white p-4 sm:p-5 shadow-sm">
             <div>
-              <h3 className="text-lg font-semibold text-[#a21d71]">REGULAR</h3>
-              <p className="text-sm font-semibold text-slate-700">REGULAR PRICING FROM 1ST OCTOBER 2026 - 15TH OCTOBER 2026</p>
-            </div>
-            <div className="w-full overflow-x-auto">
-              <table className="w-full text-sm border-collapse min-w-[680px]">
-                <thead>
-                  <tr className={headerClass}>
-                    <th className="border border-slate-300 px-3 py-2" scope="col">Category</th>
-                    <th className="border border-slate-300 px-3 py-2" scope="col">Conference Only</th>
-                    <th className="border border-slate-300 px-3 py-2" scope="col">Workshop + Conference</th>
-                    <th className="border border-slate-300 px-3 py-2" scope="col">Combo (AOA Life Membership + Conf)</th>
-                  </tr>
-                </thead>
-                <tbody className="text-center">
-                  {feeRows.map((row, index) => (
-                    <tr key={`regular-${row.label}`} className={index % 2 === 0 ? 'bg-white' : 'bg-slate-100'}>
-                      <th className="border border-slate-300 px-3 py-3 font-semibold text-slate-800" scope="row">{row.label}</th>
-                      <td className={cellBaseClass}>{renderCell(row.regular.conf)}</td>
-                      <td className={cellBaseClass}>{renderCell(row.regular.ws)}</td>
-                      <td className={`${cellBaseClass} font-semibold`}>{renderCell(row.regular.combo)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="text-xs text-slate-500 text-right">GST extra as applicable</p>
-          </section>
-
-          <section className="space-y-3 rounded-2xl border border-pink-200 bg-white p-4 sm:p-5 shadow-sm">
-            <div>
               <h3 className="text-lg font-semibold text-[#a21d71]">SPOT REGISTRATION</h3>
-              <p className="text-sm font-semibold text-slate-700">FROM 16TH OCTOBER 2026 ONWARDS</p>
+              <p className="text-sm font-semibold text-slate-700">FROM 26TH OCTOBER 2026 ONWARDS</p>
             </div>
             <div className="w-full overflow-x-auto">
               <table className="w-full text-sm border-collapse min-w-[420px]">
@@ -252,7 +219,7 @@ const RegistrationFeesSection = () => {
           </div>
           <div className="flex items-center gap-3">
             <p className="hidden sm:flex items-center gap-1 text-xs text-slate-500">
-              <CalendarClock className="w-3.5 h-3.5" /> Early bird registrations till 30th September
+              <CalendarClock className="w-3.5 h-3.5" /> Early bird registrations till 25th October
             </p>
             <Link
               to="/login"
