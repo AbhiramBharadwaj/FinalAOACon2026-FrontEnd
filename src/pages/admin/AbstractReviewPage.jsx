@@ -68,7 +68,7 @@ const AbstractReviewPage = () => {
         abstract.userId?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         abstract.userId?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         abstract.registration?.registrationNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        abstract.submissionNumber.toLowerCase().includes(searchTerm.toLowerCase())
+        abstract.submissionNumber?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -127,12 +127,12 @@ const AbstractReviewPage = () => {
   const getPosterStatusLabel = (abstract) => {
     if (abstract.finalPosterPath) {
       return {
-        PENDING: 'Poster Pending',
+        PENDING: 'Awaiting review',
         APPROVED: 'Poster Accepted',
         REJECTED: 'Poster Rejected',
       }[abstract.finalPosterStatus || 'PENDING'];
     }
-    if (abstract.status === 'APPROVED') return 'Pending';
+    if (abstract.status === 'APPROVED') return 'Not submitted';
     return 'Not eligible';
   };
 
@@ -140,10 +140,10 @@ const AbstractReviewPage = () => {
     const status = getPosterStatusLabel(abstract);
     const styles = {
       Uploaded: 'bg-emerald-100 text-emerald-800',
-      'Poster Pending': 'bg-amber-100 text-amber-800',
+      'Awaiting review': 'bg-amber-100 text-amber-800',
       'Poster Accepted': 'bg-emerald-100 text-emerald-800',
       'Poster Rejected': 'bg-red-100 text-red-800',
-      Pending: 'bg-amber-100 text-amber-800',
+      'Not submitted': 'bg-amber-100 text-amber-800',
       'Not eligible': 'bg-slate-100 text-slate-600',
     };
 
@@ -296,6 +296,10 @@ const AbstractReviewPage = () => {
   const uploadedPosters = abstracts.filter(a => a.finalPosterPath).length;
   const pendingPosters = abstracts.filter(a => a.finalPosterPath && (a.finalPosterStatus || 'PENDING') === 'PENDING').length;
 
+  const approvedPosters = abstracts.filter(a => a.finalPosterPath && a.finalPosterStatus === 'APPROVED').length;
+  const rejectedPosters = abstracts.filter(a => a.finalPosterPath && a.finalPosterStatus === 'REJECTED').length;
+  const awaitingUpload = abstracts.filter(a => a.status === 'APPROVED' && !a.finalPosterPath).length;
+
   if (loading) {
     return (
       <div className="flex h-screen bg-slate-50">
@@ -311,17 +315,17 @@ const AbstractReviewPage = () => {
     <div className="flex h-screen bg-slate-50">
       <Sidebar />
       
-      <div className="flex-1 overflow-auto">
-        <div className="p-4 sm:p-6">
+      <div className="min-w-0 flex-1 overflow-auto">
+        <div className="p-4 pt-20 sm:p-6 sm:pt-20 lg:pt-6">
           {}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
             <div>
-              <h1 className="text-base sm:text-lg text-slate-900">Abstract Review</h1>
-              <p className="text-xs text-slate-600">{filteredAbstracts.length} of {totalAbstracts} abstracts</p>
+              <h1 className="text-base sm:text-lg text-slate-900">Abstracts &amp; E-Posters</h1>
+              <p className="text-xs text-slate-600">Track abstract decisions and final e-poster submissions separately.</p>
             </div>
             <button
               onClick={exportToCSV}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[#005aa9] text-white rounded-xl hover:bg-[#004684] transition-colors"
+              className="flex min-h-11 items-center justify-center gap-1.5 px-4 py-2 text-sm bg-[#005aa9] text-white rounded-xl hover:bg-[#004684] transition-colors"
             >
               <Download className="w-3 h-3" />
               Export CSV
@@ -329,58 +333,51 @@ const AbstractReviewPage = () => {
           </div>
 
           {}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-5">
-            <div className="flex items-center gap-2.5 p-3 bg-white border border-slate-200 rounded-xl">
-              <div className="w-9 h-9 bg-sky-50 rounded-xl flex items-center justify-center">
-                <FileText className="w-4 h-4 text-sky-600" />
+          <section aria-label="Submission overview" className="mb-5 grid grid-cols-1 gap-4 xl:grid-cols-2">
+            {[
+              {
+                title: 'Abstracts submitted', count: totalAbstracts, icon: FileText,
+                description: 'Current abstract submissions across all categories.',
+                stats: [
+                  { label: 'Awaiting review', count: pendingAbstracts, tone: 'text-amber-700' },
+                  { label: 'Approved', count: approvedAbstracts, tone: 'text-emerald-700' },
+                  { label: 'Rejected', count: rejectedAbstracts, tone: 'text-red-700' },
+                ],
+              },
+              {
+                title: 'E-posters submitted', count: uploadedPosters, icon: Download,
+                description: 'Final e-poster files uploaded after abstract approval.',
+                stats: [
+                  { label: 'Awaiting review', count: pendingPosters, tone: 'text-amber-700' },
+                  { label: 'Accepted', count: approvedPosters, tone: 'text-emerald-700' },
+                  { label: 'Rejected', count: rejectedPosters, tone: 'text-red-700' },
+                ],
+              },
+            ].map(({ title, count, icon: Icon, description, stats }) => (
+              <div key={title} className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h2 className="text-sm font-medium text-slate-600">{title}</h2>
+                    <p className="mt-1 text-3xl font-semibold tabular-nums text-slate-900">{count}</p>
+                  </div>
+                  <div className="rounded-xl bg-sky-50 p-3 text-[#005aa9]"><Icon className="h-5 w-5" /></div>
+                </div>
+                <p className="mt-2 text-sm text-slate-500">{description}</p>
+                <dl className="mt-4 grid grid-cols-3 gap-2 border-t border-slate-100 pt-4">
+                  {stats.map(stat => (
+                    <div key={stat.label}>
+                      <dt className="text-xs text-slate-600">{stat.label}</dt>
+                      <dd className={`mt-1 text-xl font-semibold tabular-nums ${stat.tone}`}>{stat.count}</dd>
+                    </div>
+                  ))}
+                </dl>
               </div>
-              <div>
-                <p className="text-xs text-slate-600">Total</p>
-                <p className="text-sm text-slate-900">{totalAbstracts}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2.5 p-3 bg-white border border-slate-200 rounded-xl">
-              <div className="w-9 h-9 bg-amber-50 rounded-xl flex items-center justify-center">
-                <Clock className="w-4 h-4 text-amber-600" />
-              </div>
-              <div>
-                <p className="text-xs text-slate-600">Pending</p>
-                <p className="text-sm text-slate-900">{pendingAbstracts}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2.5 p-3 bg-white border border-slate-200 rounded-xl">
-              <div className="w-9 h-9 bg-emerald-50 rounded-xl flex items-center justify-center">
-                <CheckCircle className="w-4 h-4 text-emerald-600" />
-              </div>
-              <div>
-                <p className="text-xs text-slate-600">Approved</p>
-                <p className="text-sm text-slate-900">{approvedAbstracts}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2.5 p-3 bg-white border border-slate-200 rounded-xl">
-              <div className="w-9 h-9 bg-red-50 rounded-xl flex items-center justify-center">
-                <XCircle className="w-4 h-4 text-red-600" />
-              </div>
-              <div>
-                <p className="text-xs text-slate-600">Rejected</p>
-                <p className="text-sm text-slate-900">{rejectedAbstracts}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2.5 p-3 bg-white border border-slate-200 rounded-xl">
-              <div className="w-9 h-9 bg-[#005aa9]/10 rounded-xl flex items-center justify-center">
-                <Download className="w-4 h-4 text-[#005aa9]" />
-              </div>
-              <div>
-                <p className="text-xs text-slate-600">E-Posters</p>
-                <p className="text-sm text-slate-900">{uploadedPosters}</p>
-                <p className="text-[10px] text-amber-700">{pendingPosters} pending review</p>
-              </div>
-            </div>
-          </div>
+            ))}
+            <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900 xl:col-span-2">
+              <strong className="tabular-nums">{awaitingUpload}</strong> approved abstracts are still awaiting an e-poster upload.
+              <span className="mt-1 block text-xs text-slate-600">Overview counts always include all submissions, regardless of the filters below.</span>
+            </p>
+          </section>
 
           {}
           <div className="bg-white border border-slate-200 rounded-2xl p-4 mb-4">
@@ -389,26 +386,29 @@ const AbstractReviewPage = () => {
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 w-3.5 h-3.5" />
                 <input
                   type="text"
+                  aria-label="Search submissions"
                   placeholder="Search title, authors, submitter..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9]"
+                  className="min-h-11 w-full pl-9 pr-3 py-2 text-base sm:text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9]"
                 />
               </div>
               <select
+                aria-label="Abstract review status"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="text-sm border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9]"
+                className="min-h-11 min-w-0 w-full text-base sm:text-sm border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9]"
               >
-                <option value="">All Status</option>
+                <option value="">All abstract statuses</option>
                 <option value="PENDING">Pending</option>
                 <option value="APPROVED">Approved</option>
                 <option value="REJECTED">Rejected</option>
               </select>
               <select
+                aria-label="Abstract category"
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="text-sm border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9]"
+                className="min-h-11 min-w-0 w-full text-base sm:text-sm border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9]"
               >
                 <option value="">All Categories</option>
                 {ABSTRACT_CATEGORIES.map((category) => (
@@ -418,9 +418,10 @@ const AbstractReviewPage = () => {
                 ))}
               </select>
               <select
+                aria-label="E-poster submission and review status"
                 value={posterFilter}
                 onChange={(e) => setPosterFilter(e.target.value)}
-                className="text-sm border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9]"
+                className="min-h-11 min-w-0 w-full text-base sm:text-sm border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#005aa9] focus:border-[#005aa9]"
               >
                 <option value="">All E-Posters</option>
                 <option value="UPLOADED">Uploaded</option>
@@ -434,26 +435,32 @@ const AbstractReviewPage = () => {
           </div>
 
           {}
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <p className="text-sm text-slate-600" aria-live="polite">Showing <strong>{filteredAbstracts.length}</strong> of {totalAbstracts} abstract submissions</p>
+            {(searchTerm || statusFilter || categoryFilter || posterFilter) && (
+              <button type="button" onClick={() => { setSearchTerm(''); setStatusFilter(''); setCategoryFilter(''); setPosterFilter(''); }} className="min-h-11 rounded-lg px-3 text-sm font-medium text-[#005aa9] hover:bg-sky-50">Clear filters</button>
+            )}
+          </div>
           <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               {}
-              <div className="sm:hidden space-y-2 p-3">
+              <div className="lg:hidden space-y-3 p-3">
                 {filteredAbstracts.map((abstract) => (
                   <div key={abstract._id} className="p-3 border border-slate-100 rounded-xl bg-slate-50/50 hover:bg-slate-50">
-                    <div className="flex items-start justify-between mb-2">
+                    <div className="flex flex-col items-start gap-2 mb-3">
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-slate-900 truncate">{abstract.title}</p>
-                        <p className="text-xs text-slate-600 truncate">{abstract.authors}</p>
+                        <p className="text-sm font-medium text-slate-900 break-words">{abstract.title}</p>
+                        <p className="text-xs text-slate-600 break-words">{abstract.authors}</p>
                       </div>
-                      <div className="ml-2 flex-shrink-0">
-                        {getStatusBadge(abstract.status)}
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                        <span>Abstract:</span> {getStatusBadge(abstract.status)}
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs mb-2">
                       <div>
                         <span className="text-slate-500">#{abstract.submissionNumber} • Attempt {getCurrentAttemptNumber(abstract)}</span>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right break-words">
                         <span className="font-medium">{getCategoryLabel(abstract.category)}</span>
                       </div>
                     </div>
@@ -467,7 +474,7 @@ const AbstractReviewPage = () => {
                     </div>
                     <button
                       onClick={() => handleReview(abstract)}
-                      className="w-full flex items-center justify-center gap-1 text-xs text-[#005aa9] hover:text-[#004684] py-2 rounded-lg border border-[#005aa9]/20 hover:bg-[#005aa9]/5 transition-colors"
+                      className="min-h-11 w-full flex items-center justify-center gap-1 text-sm text-[#005aa9] hover:text-[#004684] py-2 rounded-lg border border-[#005aa9]/20 hover:bg-[#005aa9]/5 transition-colors"
                     >
                       <Eye className="w-3 h-3" />
                       Review
@@ -477,7 +484,7 @@ const AbstractReviewPage = () => {
               </div>
 
               {}
-              <div className="hidden sm:block">
+              <div className="hidden lg:block">
                 <table className="min-w-full divide-y divide-slate-100">
                   <thead className="bg-slate-50">
                     <tr>
