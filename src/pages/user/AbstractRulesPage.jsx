@@ -225,9 +225,9 @@ const AbstractRulesPage = () => {
               <li>Top six e-posters will be selected for podium presentation on Day 2.</li>
               <li><strong>During the podium presentation, only the presenter&apos;s name should appear. The institute and guide details must not be disclosed.</strong></li>
               <li><strong>1st Prize:</strong> Best Research / Audit Paper - Dr. Sunanda Gupta Gold Medal + complimentary conference registration for AOA 2027</li>
-              <li><strong>2nd Prize:</strong> Cash Reward Rs. 8000/-</li>
-              <li><strong>3rd Prize:</strong> Cash Reward Rs. 5000/-</li>
-              <li>Best Case Report: Cash Reward Rs. 5000/-</li>
+              <li><strong>2nd Prize:</strong> Cash Reward</li>
+              <li><strong>3rd Prize:</strong> Cash Reward</li>
+              <li>Best Case Report: Cash Reward</li>
               <li>Awards will be announced and presented during the valedictory session of the conference.</li>
             </ul>
           </section>
