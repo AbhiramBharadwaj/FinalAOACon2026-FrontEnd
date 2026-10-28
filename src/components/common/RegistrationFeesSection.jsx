@@ -5,17 +5,17 @@ const feeRows = [
   {
     label: 'AOA Member',
     early: { conf: '8000', ws: '10000', combo: null },
-    spot: { conf: '13000' },
+    spot: { conf: '13000', ws: '15000' },
   },
   {
     label: 'Non-AOA Member',
     early: { conf: '11000', ws: '13000', combo: null },
-    spot: { conf: '16000' },
+    spot: { conf: '16000', ws: '18000' },
   },
   {
     label: 'PGs & Fellows',
     early: { conf: '7000', ws: '9000', combo: null },
-    spot: { conf: '12000' },
+    spot: { conf: '12000', ws: '14000' },
   },
 ];
 
@@ -144,6 +144,7 @@ const RegistrationFeesSection = () => {
                   <tr className={headerClass}>
                     <th className="border border-slate-300 px-3 py-2" scope="col">Category</th>
                     <th className="border border-slate-300 px-3 py-2" scope="col">Conference Only</th>
+                    <th className="border border-slate-300 px-3 py-2" scope="col">Workshop + Conference</th>
                   </tr>
                 </thead>
                 <tbody className="text-center">
@@ -151,6 +152,7 @@ const RegistrationFeesSection = () => {
                     <tr key={`spot-${row.label}`} className={index % 2 === 0 ? 'bg-white' : 'bg-slate-100'}>
                       <th className="border border-slate-300 px-3 py-3 font-semibold text-slate-800" scope="row">{row.label}</th>
                       <td className={`${cellBaseClass} font-semibold`}>{renderCell(row.spot.conf)}</td>
+                      <td className={cellBaseClass}>{renderCell(row.spot.ws)}</td>
                     </tr>
                   ))}
                 </tbody>
