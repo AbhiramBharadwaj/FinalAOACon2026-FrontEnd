@@ -13,7 +13,7 @@ import MobileNav from '../../components/common/MobileNav';
 import Footer from '../../components/common/Footer';
 import quizFlyer from '../../images/QuizCompetition/quiz-competition-2026.jpeg';
 
-const quizRegistrationUrl = 'https://forms.gle/zpfjm6yDdrrqSDD6';
+const quizRegistrationUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSeXe5a6LTfBGllBjO6bvBesvUfCPUhF4QNdO2eC_o9mHyea_A/viewform?pli=1';
 
 const QuizCompetitionPage = () => {
   const rules = [
