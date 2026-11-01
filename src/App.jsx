@@ -50,6 +50,7 @@ import MessageDetailPage from './pages/user/MessageDetailPage';
 import MaintenancePage from './pages/MaintenancePage';
 import { siteMode } from './config/siteMode';
 import FacultyCvUploadPage from './pages/user/FacultyCvUploadPage';
+import EventClosedPage from './pages/EventClosedPage';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -78,10 +79,6 @@ const ProfileGateRoute = ({ children }) => {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
-  }
-
-  if (!isAdmin && user?.isProfileComplete === false) {
-    return <Navigate to="/profile" replace />;
   }
 
   return children;
@@ -149,6 +146,9 @@ function App() {
 
         <Router>
           <ScrollToTop/>
+          <div role="status" className="bg-[#005aa9] text-white text-center px-4 py-3 text-sm">
+            AOACON 2026 has concluded. Thank you for being part of it. This website is now view-only; registrations, payments, bookings and submissions are closed.
+          </div>
           <div className="App">
             <Routes>
               {}
@@ -175,7 +175,7 @@ function App() {
                   <GalleryPage />
               } />
               <Route path="/downloads" element={<DownloadsPage />} />
-              <Route path="/faculty-cv" element={<FacultyCvUploadPage />} />
+              <Route path="/faculty-cv" element={<EventClosedPage />} />
               <Route path="/workshops" element={
                   <WorkshopsPage />
               } />
@@ -196,9 +196,7 @@ function App() {
               } />
               
               
-              <Route path="/register" element={
-                  <RegisterPage />
-              } />
+              <Route path="/register" element={<EventClosedPage />} />
 
               {}
               <Route path="/login" element={<LoginPage />} />
@@ -214,21 +212,9 @@ function App() {
                   <DashboardPage />
                 </ProfileGateRoute>
               } />
-              <Route path="/profile" element={
-                <ProtectedRoute>
-                  <ProfilePage />
-                </ProtectedRoute>
-              } />
-              <Route path="/registration" element={
-                <ProtectedRoute>
-                  <RegistrationPage />
-                </ProtectedRoute>
-              } />
-              <Route path="/checkout" element={
-                <ProtectedRoute>
-                  <CheckoutPage />
-                </ProtectedRoute>
-              } />
+              <Route path="/profile" element={<EventClosedPage />} />
+              <Route path="/registration" element={<EventClosedPage />} />
+              <Route path="/checkout" element={<EventClosedPage />} />
               <Route path="/payment-status" element={
                 <ProtectedRoute>
                   <PaymentStatusPage />
@@ -240,28 +226,12 @@ function App() {
               <Route path="/conference-days" element={<ConferenceDaysPage />} />
               <Route path="/abstract" element={<Navigate to="/abstract/rules" replace />} />
               <Route path="/abstract/rules" element={<AbstractRulesPage />} />
-              <Route path="/abstract/upload" element={
-                <ProtectedRoute>
-                  <AbstractUploadPage />
-                </ProtectedRoute>
-              } />
-              <Route path="/e-poster/upload" element={
-                <ProtectedRoute>
-                  <EPosterUploadPage />
-                </ProtectedRoute>
-              } />
+              <Route path="/abstract/upload" element={<EventClosedPage />} />
+              <Route path="/e-poster/upload" element={<EventClosedPage />} />
               <Route path="/video" element={<Navigate to="/video/rules" replace />} />
               <Route path="/video/rules" element={<VideoRulesPage />} />
-              <Route path="/video/upload" element={
-                <ProtectedRoute>
-                  <VideoUploadPage />
-                </ProtectedRoute>
-              } />
-              <Route path="/feedback" element={
-                <ProtectedRoute>
-                  <FeedbackPage />
-                </ProtectedRoute>
-              } />
+              <Route path="/video/upload" element={<EventClosedPage />} />
+              <Route path="/feedback" element={<EventClosedPage />} />
 
               {}
               <Route path="/admin/dashboard" element={
@@ -279,11 +249,7 @@ function App() {
                   <UsersManagementPage />
                 </AdminRoute>
               } />
-              <Route path="/admin/scanner" element={
-                <AdminRoute>
-                  <QrScanner />
-                </AdminRoute>
-              } />
+              <Route path="/admin/scanner" element={<EventClosedPage />} />
               <Route path="/admin/check/attendance" element={
                 <AdminRoute>
                   <AttendanceManagementPage />
@@ -319,16 +285,8 @@ function App() {
                   <FeedbackViewerPage />
                 </AdminRoute>
               } />
-              <Route path="/admin/manual-registrations" element={
-                <AdminRoute>
-                  <ManualRegistrationsPage />
-                </AdminRoute>
-              } />
-              <Route path="/admin/counter" element={
-                <AdminRoute>
-                  <CounterManagementPage />
-                </AdminRoute>
-              } />
+              <Route path="/admin/manual-registrations" element={<EventClosedPage />} />
+              <Route path="/admin/counter" element={<EventClosedPage />} />
 
               {}
               <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
