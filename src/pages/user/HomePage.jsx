@@ -15,9 +15,6 @@ const descriptionTextClass = 'text-[17px] sm:text-[19px] leading-relaxed';
 const descriptionTextLightClass = 'text-[17px] sm:text-[19px] leading-relaxed text-slate-100';
 
 const HomePage = () => {
-  return () => clearInterval(id);
-  }, []);
-
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900">
       <Header />
