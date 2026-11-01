@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Clock, Stethoscope, Building2, ArrowUpRight } from 'lucide-react';
+import { MapPin, Stethoscope, Building2, ArrowUpRight } from 'lucide-react';
 import Header from '../../components/common/Header';
 import Footer from '../../components/common/Footer';
 import logo from '../../images/main-logo.png';
@@ -12,49 +11,11 @@ import anjuGrewalImg from '../../images/AOAOfficeBearers/Anju-Grewal-President.p
 import sunandaGuptaImg from '../../images/AOAOfficeBearers/Sunanda-Gupta-Founder-President.png';
 import { WORKSHOPS } from '../../data/workshopsData';
 
-const targetDate = new Date('2026-10-30T09:00:00+05:30');
 const descriptionTextClass = 'text-[17px] sm:text-[19px] leading-relaxed';
 const descriptionTextLightClass = 'text-[17px] sm:text-[19px] leading-relaxed text-slate-100';
 
 const HomePage = () => {
-  const [countdown, setCountdown] = useState({
-    days: '00',
-    hours: '00',
-    minutes: '00',
-    seconds: '00',
-  });
-
-  useEffect(() => {
-    const update = () => {
-      const now = new Date().getTime();
-      const diff = targetDate.getTime() - now;
-
-      if (diff <= 0) {
-        setCountdown({
-          days: '00',
-          hours: '00',
-          minutes: '00',
-          seconds: '00',
-        });
-        return;
-      }
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
-
-      setCountdown({
-        days: String(days).padStart(2, '0'),
-        hours: String(hours).padStart(2, '0'),
-        minutes: String(minutes).padStart(2, '0'),
-        seconds: String(seconds).padStart(2, '0'),
-      });
-    };
-
-    update();
-    const id = setInterval(update, 1000);
-    return () => clearInterval(id);
+  return () => clearInterval(id);
   }, []);
 
   return (
@@ -98,33 +59,6 @@ const HomePage = () => {
 
             {}
             <div className="space-y-5">
-              <div className="bg-[#0b3c7d] border border-sky-300 px-5 py-5">
-                <div className="flex items-center gap-2 mb-3 text-[18px] font-semibold">
-                  <Clock className="w-5 h-5" />
-                  <span>Conference starts in</span>
-                </div>
-                <div className="grid grid-cols-4 gap-2">
-                  {[
-                    { label: 'Days', value: countdown.days },
-                    { label: 'Hours', value: countdown.hours },
-                    { label: 'Minutes', value: countdown.minutes },
-                    { label: 'Seconds', value: countdown.seconds },
-                  ].map((item) => (
-                    <div
-                      key={item.label}
-                      className="flex flex-col items-center justify-center bg-[#0d47a1] border border-sky-300 px-3 py-2 text-center"
-                    >
-                      <span className="text-[20px] font-bold leading-none">
-                        {item.value}
-                      </span>
-                      <span className="text-[12px] uppercase tracking-wide">
-                        {item.label}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
               <div className="hidden sm:block bg-white border border-slate-300">
                 <img
                   src={logo}
